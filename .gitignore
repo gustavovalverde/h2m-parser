@@ -2,9 +2,7 @@ node_modules
 .DS_Store
 dist
 coverage
-.results
 .bench
-bench/.results
 bench/output
 fixtures/
 .vscode
@@ -12,9 +10,6 @@ fixtures/
 *.log
 .env*
 .nyc_output
-
-# Changeset state
-.changeset
 
 # TypeDoc generated documentation
 docs/api

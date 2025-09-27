@@ -1,6 +1,6 @@
 {
   "name": "h2m-parser",
-  "version": "0.1.0-alpha.0",
+  "version": "0.2.0",
   "description": "LLM-ready HTML to Markdown pipeline with Readability, htmlparser2, and post-processing utilities.",
   "type": "module",
   "keywords": [
@@ -40,7 +40,7 @@
     "url": "https://github.com/gustavovalverde/h2m-parser/issues"
   },
   "engines": {
-    "node": ">=20.11"
+    "node": ">=22"
   },
   "exports": {
     ".": {
@@ -115,6 +115,6 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": false
+    "provenance": true
   }
 }
