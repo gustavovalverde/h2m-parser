@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0
+
+### Minor Changes
+
+- e06a280: Fast HTML to Markdown converter with Mozilla Readability extraction, streaming renderer, and LLM-ready output. 3.75x faster than alternatives
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
