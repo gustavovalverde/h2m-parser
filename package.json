@@ -1,6 +1,6 @@
 {
   "name": "h2m-parser",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "LLM-ready HTML to Markdown pipeline with Readability, htmlparser2, and post-processing utilities.",
   "type": "module",
   "keywords": [
