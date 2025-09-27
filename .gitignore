@@ -1,0 +1,21 @@
+node_modules
+.DS_Store
+dist
+coverage
+.results
+.bench
+bench/.results
+bench/output
+fixtures/
+.vscode
+.idea
+*.log
+.env*
+.nyc_output
+
+# Changeset state
+.changeset
+
+# TypeDoc generated documentation
+docs/api
+docs/api-markdown

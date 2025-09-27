@@ -1,0 +1,120 @@
+{
+  "name": "h2m-parser",
+  "version": "0.1.0-alpha.0",
+  "description": "LLM-ready HTML to Markdown pipeline with Readability, htmlparser2, and post-processing utilities.",
+  "type": "module",
+  "keywords": [
+    "html",
+    "markdown",
+    "converter",
+    "html-to-markdown",
+    "readability",
+    "mozilla-readability",
+    "article-extraction",
+    "content-extraction",
+    "llm",
+    "ai",
+    "gpt",
+    "claude",
+    "chunking",
+    "front-matter",
+    "yaml",
+    "scraping",
+    "web-scraping",
+    "htmlparser2",
+    "streaming",
+    "fast",
+    "typescript",
+    "esm",
+    "cjs",
+    "micrawl"
+  ],
+  "license": "MIT",
+  "author": "Gustavo Valverde",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavovalverde/h2m-parser.git"
+  },
+  "homepage": "https://github.com/gustavovalverde/h2m-parser#readme",
+  "bugs": {
+    "url": "https://github.com/gustavovalverde/h2m-parser/issues"
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.mjs",
+      "require": "./dist/cli.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "h2m": "dist/cli.cjs"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format:fix": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
+    "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs/api-markdown",
+    "bench": "node bench/cli.js",
+    "bench:quick": "node bench/cli.js quick",
+    "prepare": "husky",
+    "changeset": "changeset",
+    "release": "pnpm run build && pnpm changeset publish",
+    "prepack": "pnpm build"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "domhandler": "5.0.3",
+    "htmlparser2": "^10.0.0",
+    "js-tiktoken": "^1.0.21",
+    "linkedom": "^0.18.12",
+    "turndown": "^7.2.1",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "^24.5.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.1",
+    "node-html-markdown": "^1.3.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,cts,mts,js,jsx,json}": "biome check --write"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": false
+  }
+}

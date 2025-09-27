@@ -1,0 +1,132 @@
+name: Performance Regression Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  performance-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10.17.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Checkout main branch baseline
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin main
+          git checkout origin/main -- bench/.baseline/performance-baseline.json || true
+          git checkout -
+
+      - name: Capture baseline (main branch only)
+        if: github.ref == 'refs/heads/main'
+        run: node bench/capture-baseline.js
+
+      - name: Check for regressions
+        if: github.event_name == 'pull_request'
+        id: regression-check
+        run: |
+          if node bench/check-regression.js; then
+            echo "regression_detected=false" >> $GITHUB_OUTPUT
+          else
+            echo "regression_detected=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload regression report
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: regression-report
+          path: bench/.results/regression-report.md
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            try {
+              const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'bench', '.results', 'regression-report.md');
+              if (fs.existsSync(reportPath)) {
+                const report = fs.readFileSync(reportPath, 'utf8');
+
+                // Find existing comment
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                });
+
+                const botComment = comments.find(comment =>
+                  comment.user.type === 'Bot' &&
+                  comment.body.includes('Performance Regression Report')
+                );
+
+                const body = `🤖 **Performance Check Results**\n\n${report}`;
+
+                if (botComment) {
+                  // Update existing comment
+                  await github.rest.issues.updateComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    comment_id: botComment.id,
+                    body
+                  });
+                } else {
+                  // Create new comment
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    body
+                  });
+                }
+              }
+            } catch (error) {
+              console.error('Failed to comment on PR:', error);
+            }
+
+      - name: Fail if regression detected
+        if: steps.regression-check.outputs.regression_detected == 'true'
+        run: |
+          echo "❌ Performance regression detected! See report above."
+          exit 1
+
+      - name: Commit baseline updates (main branch only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add bench/.baseline/performance-baseline.json
+          git diff --staged --quiet || git commit -m "chore: update performance baseline [skip ci]"
+          git push || true

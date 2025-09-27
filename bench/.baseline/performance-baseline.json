@@ -1,0 +1,103 @@
+{
+  "capturedAt": "2025-09-27T19:43:58.661Z",
+  "branch": "main",
+  "commit": "2f950987f42e33f1a4e1064eaefc89da4e0ff2c5",
+  "nodeVersion": "v24.1.0",
+  "platform": "darwin",
+  "metrics": {
+    "h2mParserNoReadability": {
+      "mean": 1.3181268586956618,
+      "files": {}
+    },
+    "h2mParserWithReadability": {
+      "mean": 6.0132236347826264,
+      "files": {}
+    },
+    "comparisons": {
+      "vsTurndown": 3.6033111454741906,
+      "vsNodeHtmlMarkdown": 2.009523342787692
+    }
+  },
+  "fileResults": [
+    {
+      "name": "tiny",
+      "size": 18,
+      "h2mParserNoReadability": 0.014070774999999359,
+      "h2mParserWithReadability": 0.20383229999999983,
+      "turndown": 0.022940649999999608,
+      "nodeHtmlMarkdown": 0.009574925000000789
+    },
+    {
+      "name": "small",
+      "size": 84,
+      "h2mParserNoReadability": 0.021698975000000332,
+      "h2mParserWithReadability": 0.22056765000000134,
+      "turndown": 0.047032474999998894,
+      "nodeHtmlMarkdown": 0.0266989750000036
+    },
+    {
+      "name": "medium",
+      "size": 369,
+      "h2mParserNoReadability": 0.01850942500000059,
+      "h2mParserWithReadability": 0.23754782500000077,
+      "turndown": 0.047794800000003336,
+      "nodeHtmlMarkdown": 0.02445837500000252
+    },
+    {
+      "name": "file_1",
+      "size": 89721,
+      "h2mParserNoReadability": 1.5306114750000013,
+      "h2mParserWithReadability": 6.978500025,
+      "turndown": 6.096612424999995,
+      "nodeHtmlMarkdown": 3.037917650000014
+    },
+    {
+      "name": "file_2",
+      "size": 70337,
+      "h2mParserNoReadability": 1.1506271499999854,
+      "h2mParserWithReadability": 4.898538500000006,
+      "turndown": 4.321981200000022,
+      "nodeHtmlMarkdown": 2.01835932500004
+    },
+    {
+      "name": "file_3",
+      "size": 160839,
+      "h2mParserNoReadability": 3.0746416500000238,
+      "h2mParserWithReadability": 12.587037425000005,
+      "turndown": 9.406976075000022,
+      "nodeHtmlMarkdown": 4.184693750000008
+    },
+    {
+      "name": "file_4",
+      "size": 99724,
+      "h2mParserNoReadability": 1.1145854249999048,
+      "h2mParserWithReadability": 6.1392834499999935,
+      "turndown": 4.492913549999821,
+      "nodeHtmlMarkdown": 2.36875727500003
+    },
+    {
+      "name": "file_5",
+      "size": 105057,
+      "h2mParserNoReadability": 1.6134791999999833,
+      "h2mParserWithReadability": 7.44600937500004,
+      "turndown": 6.361853100000007,
+      "nodeHtmlMarkdown": 3.459072925000078
+    },
+    {
+      "name": "file_6",
+      "size": 94725,
+      "h2mParserNoReadability": 1.8323550999999951,
+      "h2mParserWithReadability": 7.435121774999902,
+      "turndown": 8.079896825000015,
+      "nodeHtmlMarkdown": 4.447152024999991
+    },
+    {
+      "name": "file_7",
+      "size": 62759,
+      "h2mParserNoReadability": 1.0260008999999854,
+      "h2mParserWithReadability": 5.040701075000015,
+      "turndown": 4.062495975000047,
+      "nodeHtmlMarkdown": 2.130088574999854
+    }
+  ]
+}

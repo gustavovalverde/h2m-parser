@@ -1,0 +1,33 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "out": "docs/api",
+  "name": "h2m-parser",
+  "readme": "./README.md",
+  "plugin": ["typedoc-plugin-markdown"],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "excludeNotDocumented": false,
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": ["Main", "Options", "Types", "*"],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "sidebarLinks": {
+    "GitHub": "https://github.com/gustavovalverde/h2m-parser",
+    "npm": "https://www.npmjs.com/package/h2m-parser"
+  },
+  "gitRevision": "main",
+  "theme": "default",
+  "treatWarningsAsErrors": false,
+  "validation": {
+    "notExported": false,
+    "invalidLink": true
+  },
+  "hideGenerator": false,
+  "searchInComments": true,
+  "cleanOutputDir": true,
+  "exclude": ["**/fixtures/**", "**/tests/**", "**/bench/**", "**/*.html"]
+}
