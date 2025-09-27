@@ -21,6 +21,7 @@ Thanks for your interest in improving h2m-parser! Keeping cognitive load low is 
 
 - Husky runs `lint-staged` to format/lint staged files. Make sure your commits are clean.
 - Use [Changesets](https://github.com/changesets/changesets) for release notes. After feature work, run `pnpm changeset` to document changes and version bumps.
+- When the release PR opens, review the changelog and, after merging, approve the pending run in the `release` environment to publish.
 - CI runs `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build`. Keep the `verify` script green locally before pushing.
 
 ## Reporting issues
