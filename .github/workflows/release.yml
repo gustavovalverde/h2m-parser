@@ -17,6 +17,9 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://www.npmjs.com/package/@lgtm/htmltomd
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
@@ -35,6 +38,7 @@ jobs:
           node-version: 20
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+          always-auth: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -57,7 +61,6 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || '' }}  # TODO: remove when OIDC is configured
 
       - name: Publish notification
         if: steps.changesets.outputs.published == 'true'

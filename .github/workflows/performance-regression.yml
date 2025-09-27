@@ -14,24 +14,29 @@ permissions:
   contents: read
 
 jobs:
-  performance-check:
+  regression:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout PR
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: '20'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 10.17.1
+          run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -39,19 +44,12 @@ jobs:
       - name: Build project
         run: pnpm build
 
-      - name: Checkout main branch baseline
-        if: github.event_name == 'pull_request'
+      - name: Restore main baseline
         run: |
-          git fetch origin main
+          git fetch origin main --depth=1
           git checkout origin/main -- bench/.baseline/performance-baseline.json || true
-          git checkout -
-
-      - name: Capture baseline (main branch only)
-        if: github.ref == 'refs/heads/main'
-        run: node bench/capture-baseline.js
 
       - name: Check for regressions
-        if: github.event_name == 'pull_request'
         id: regression-check
         run: |
           if node bench/check-regression.js; then
@@ -61,59 +59,58 @@ jobs:
           fi
 
       - name: Upload regression report
-        if: github.event_name == 'pull_request' && always()
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: regression-report
           path: bench/.results/regression-report.md
+          if-no-files-found: ignore
 
       - name: Comment PR with results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+        if: always()
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
+            const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'bench', '.results', 'regression-report.md');
 
-            try {
-              const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'bench', '.results', 'regression-report.md');
-              if (fs.existsSync(reportPath)) {
-                const report = fs.readFileSync(reportPath, 'utf8');
+            if (!fs.existsSync(reportPath)) {
+              return;
+            }
 
-                // Find existing comment
-                const { data: comments } = await github.rest.issues.listComments({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                });
+            const report = fs.readFileSync(reportPath, 'utf8');
+            const body = `🤖 **Performance Check Results**
 
-                const botComment = comments.find(comment =>
-                  comment.user.type === 'Bot' &&
-                  comment.body.includes('Performance Regression Report')
-                );
+            ${report}`;
 
-                const body = `🤖 **Performance Check Results**\n\n${report}`;
+            const response = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
 
-                if (botComment) {
-                  // Update existing comment
-                  await github.rest.issues.updateComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    comment_id: botComment.id,
-                    body
-                  });
-                } else {
-                  // Create new comment
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body
-                  });
-                }
-              }
-            } catch (error) {
-              console.error('Failed to comment on PR:', error);
+            const comments = response.data;
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Performance Check Results')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
             }
 
       - name: Fail if regression detected
@@ -122,8 +119,41 @@ jobs:
           echo "❌ Performance regression detected! See report above."
           exit 1
 
-      - name: Commit baseline updates (main branch only)
-        if: github.ref == 'refs/heads/main'
+  update-baseline:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10.17.1
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Capture baseline
+        run: node bench/capture-baseline.js
+
+      - name: Commit baseline updates
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
