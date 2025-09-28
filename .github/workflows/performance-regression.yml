@@ -17,6 +17,9 @@ jobs:
   regression:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout repository
@@ -63,7 +66,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Comment PR with results
-        if: always()
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
