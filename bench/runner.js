@@ -4,7 +4,7 @@ import os from "node:os";
 import { join, resolve } from "node:path";
 import { monitorEventLoopDelay, performance } from "node:perf_hooks";
 import { Worker } from "node:worker_threads";
-import { ProgressBar, Spinner } from "./progress.js";
+import { ProgressBar } from "./progress.js";
 
 const DEFAULT_DATASET = join(process.cwd(), "tests", "fixtures");
 const DEFAULT_CONCURRENCY = Math.max(1, os.cpus().length);
@@ -56,7 +56,10 @@ function parseArgs(argv) {
         break;
       case "--timeout":
       case "--timeout-ms":
-        opts.timeoutMs = Math.max(1_000, Number.parseInt(argv[++i] ?? String(DEFAULT_TIMEOUT_MS), 10));
+        opts.timeoutMs = Math.max(
+          1_000,
+          Number.parseInt(argv[++i] ?? String(DEFAULT_TIMEOUT_MS), 10),
+        );
         break;
       case "--no-shuffle":
         opts.shuffle = false;
@@ -71,7 +74,9 @@ function parseArgs(argv) {
       case "--instance-mode":
         opts.instanceMode = argv[++i] ?? "reuse";
         if (!["reuse", "fresh"].includes(opts.instanceMode)) {
-          throw new Error(`Invalid instance mode: ${opts.instanceMode}. Must be 'reuse' or 'fresh'`);
+          throw new Error(
+            `Invalid instance mode: ${opts.instanceMode}. Must be 'reuse' or 'fresh'`,
+          );
         }
         break;
       case "--no-progress":
@@ -124,21 +129,27 @@ function shuffleInPlace(arr) {
 }
 
 function percentile(values, p) {
-  if (!values.length) return 0;
+  if (!values.length) {
+    return 0;
+  }
   const sorted = values.slice().sort((a, b) => a - b);
   const idx = Math.floor((sorted.length - 1) * p);
   return sorted[idx];
 }
 
 function mean(values) {
-  if (!values.length) return 0;
+  if (!values.length) {
+    return 0;
+  }
   return values.reduce((sum, v) => sum + v, 0) / values.length;
 }
 
 function stdDev(values) {
-  if (values.length < 2) return 0;
+  if (values.length < 2) {
+    return 0;
+  }
   const avg = mean(values);
-  const squareDiffs = values.map(v => Math.pow(v - avg, 2));
+  const squareDiffs = values.map((v) => (v - avg) ** 2);
   return Math.sqrt(mean(squareDiffs));
 }
 
@@ -147,7 +158,7 @@ async function run() {
   const distPath = resolve("dist", "index.mjs");
   try {
     await stat(distPath);
-  } catch (error) {
+  } catch (_error) {
     throw new Error("dist/index.mjs not found. Run `pnpm build` before executing the benchmark.");
   }
 
@@ -197,7 +208,10 @@ async function run() {
   const workerScript = new URL("./worker.js", import.meta.url);
   const workerOptions = { type: "module" };
   const workerCount = Math.max(1, Math.min(opts.concurrency, tasks.length));
-  const workers = Array.from({ length: workerCount }, () => new Worker(workerScript, workerOptions));
+  const workers = Array.from(
+    { length: workerCount },
+    () => new Worker(workerScript, workerOptions),
+  );
 
   // Set instance mode for all workers
   if (opts.instanceMode) {
@@ -241,7 +255,9 @@ async function run() {
   await new Promise((resolveDone) => {
     timeoutHandle = setTimeout(() => {
       aborted = true;
-      if (progressBar) progressBar.terminate();
+      if (progressBar) {
+        progressBar.terminate();
+      }
       console.error(`Benchmark timed out after ${opts.timeoutMs}ms. Aborting...`);
       for (const worker of workers) {
         worker.terminate().catch(() => {});
@@ -273,7 +289,9 @@ async function run() {
       worker.on("message", (msg) => {
         if (msg?.done) {
           pending.delete(worker);
-          if (pending.size === 0) resolveDone();
+          if (pending.size === 0) {
+            resolveDone();
+          }
           return;
         }
 
@@ -281,7 +299,9 @@ async function run() {
         inFlight.delete(worker.threadId);
         if (msg.ok) {
           if (!opts.showProgress) {
-            console.log(`[bench] completed: ${msg.path} (${msg.ms.toFixed(0)}ms, ${msg.chunks ?? 0} chunks)`);
+            console.log(
+              `[bench] completed: ${msg.path} (${msg.ms.toFixed(0)}ms, ${msg.chunks ?? 0} chunks)`,
+            );
           } else if (progressBar) {
             progressBar.tick();
           }
@@ -300,8 +320,12 @@ async function run() {
             };
             bucket.count += 1;
             bucket.totalMs += timing.durationMs;
-            if (typeof timing.bytesIn === "number") bucket.totalBytesIn += timing.bytesIn;
-            if (typeof timing.bytesOut === "number") bucket.totalBytesOut += timing.bytesOut;
+            if (typeof timing.bytesIn === "number") {
+              bucket.totalBytesIn += timing.bytesIn;
+            }
+            if (typeof timing.bytesOut === "number") {
+              bucket.totalBytesOut += timing.bytesOut;
+            }
             stageTotals.set(timing.stage, bucket);
           }
         } else {
@@ -328,12 +352,16 @@ async function run() {
 
       worker.on("error", (error) => {
         const inFlightTask = inFlight.get(worker.threadId);
-        console.error(`[bench] WORKER ERROR: ${inFlightTask?.path ?? "<unknown>"} - ${error.message}`);
+        console.error(
+          `[bench] WORKER ERROR: ${inFlightTask?.path ?? "<unknown>"} - ${error.message}`,
+        );
         failures.push({ path: inFlightTask?.path ?? "<worker>", error: error.message });
         inFlight.delete(worker.threadId);
         if (sent >= tasks.length && pending.has(worker)) {
           pending.delete(worker);
-          if (pending.size === 0) resolveDone();
+          if (pending.size === 0) {
+            resolveDone();
+          }
         }
       });
 
@@ -349,25 +377,30 @@ async function run() {
     worker.postMessage("die");
   }
 
-  await Promise.all(workers.map((worker) => new Promise((resolveWorker) => {
-    const timeoutId = setTimeout(() => {
-      console.log(`[bench] Force terminating worker ${worker.threadId}`);
-      worker.terminate();
-      resolveWorker();
-    }, 2000);
+  await Promise.all(
+    workers.map(
+      (worker) =>
+        new Promise((resolveWorker) => {
+          const timeoutId = setTimeout(() => {
+            console.log(`[bench] Force terminating worker ${worker.threadId}`);
+            worker.terminate();
+            resolveWorker();
+          }, 2000);
 
-    worker.once("exit", () => {
-      clearTimeout(timeoutId);
-      resolveWorker();
-    });
-  })));
+          worker.once("exit", () => {
+            clearTimeout(timeoutId);
+            resolveWorker();
+          });
+        }),
+    ),
+  );
   console.log(`[bench] All workers terminated`);
 
   histogram.disable();
 
   const durationSeconds = (performance.now() - start) / 1000;
   const docs = latencies.length;
-  const throughputMBps = docs === 0 ? 0 : (totalBytesIn / (1024 * 1024)) / durationSeconds;
+  const throughputMBps = docs === 0 ? 0 : totalBytesIn / (1024 * 1024) / durationSeconds;
   const docsPerSec = docs === 0 ? 0 : docs / durationSeconds;
   const meanLatency = mean(latencies);
   const stdDevLatency = stdDev(latencies);
@@ -420,13 +453,19 @@ async function run() {
   };
 
   await mkdir(RESULTS_DIR, { recursive: true });
-  await writeFile(join(RESULTS_DIR, "latest.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+  await writeFile(
+    join(RESULTS_DIR, "latest.json"),
+    `${JSON.stringify(summary, null, 2)}\n`,
+    "utf8",
+  );
 
   console.log("\n=== h2m-parser Benchmark Summary ===");
   console.log(`Dataset: ${summary.dataset}`);
   console.log(`Files processed: ${docs}`);
   console.log(`Duration: ${durationSeconds.toFixed(2)} s`);
-  console.log(`Throughput: ${summary.throughput.mbPerSecond.toFixed(2)} MB/s | ${summary.throughput.docsPerSecond.toFixed(1)} docs/s`);
+  console.log(
+    `Throughput: ${summary.throughput.mbPerSecond.toFixed(2)} MB/s | ${summary.throughput.docsPerSecond.toFixed(1)} docs/s`,
+  );
   console.log(
     `Latency mean=${summary.latencyMs.mean.toFixed(1)} ms  stdDev=${summary.latencyMs.stdDev.toFixed(1)} ms`,
   );

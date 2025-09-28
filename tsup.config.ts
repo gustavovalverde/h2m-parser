@@ -6,21 +6,22 @@ export default defineConfig((options) => ({
     cli: "src/cli.ts",
   },
   format: ["esm", "cjs"],
-  target: "node20",
+  target: "node22",
   platform: "node",
   sourcemap: true,
   clean: !options.watch,
   dts: true,
   splitting: false,
   treeshake: true,
-  minify: false,
+  minify: !options.watch,
   shims: false,
   keepNames: true,
   outExtension: ({ format }) => ({
     js: format === "esm" ? ".mjs" : ".cjs",
   }),
-  esbuildOptions(esbuildOptions, context) {
-    if (context.entry === "cli") {
+  esbuildOptions(esbuildOptions) {
+    // Add shebang to CLI entry point
+    if (esbuildOptions.entryPoints?.[0]?.includes("cli")) {
       esbuildOptions.banner = {
         js: "#!/usr/bin/env node",
       };

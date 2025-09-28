@@ -3,10 +3,10 @@
  * Provides a single source of truth for converter initialization and benchmark execution
  */
 
-import { performance } from 'node:perf_hooks';
-import { NodeHtmlMarkdown } from 'node-html-markdown';
-import TurndownService from 'turndown';
-import { H2MParser } from '../../dist/index.mjs';
+import { performance } from "node:perf_hooks";
+import { NodeHtmlMarkdown } from "node-html-markdown";
+import TurndownService from "turndown";
+import { H2MParser } from "../../dist/index.mjs";
 
 /**
  * Singleton converter manager to ensure we reuse instances
@@ -28,32 +28,32 @@ class ConverterManager {
       let converter;
 
       switch (type) {
-        case 'h2m-parser':
-        case 'h2m-parser_custom':
+        case "h2m-parser":
+        case "h2m-parser_custom":
           converter = new H2MParser(options);
           break;
 
-        case 'h2m-parser_no_readability':
+        case "h2m-parser_no_readability":
           converter = new H2MParser({
             extract: { readability: false },
             llm: { frontMatter: false, addHash: false, chunk: false },
-            ...options
+            ...options,
           });
           break;
 
-        case 'h2m-parser_with_readability':
+        case "h2m-parser_with_readability":
           converter = new H2MParser({
             extract: { readability: true },
             llm: { frontMatter: false, addHash: false, chunk: false },
-            ...options
+            ...options,
           });
           break;
 
-        case 'turndown':
+        case "turndown":
           converter = new TurndownService(options);
           break;
 
-        case 'node_html_markdown':
+        case "node_html_markdown":
           converter = new NodeHtmlMarkdown(options);
           break;
 
@@ -90,7 +90,7 @@ export async function runSingleBenchmark(html, converterType, options = {}) {
     iterations = 100,
     warmupIterations = 10,
     converterOptions = {},
-    url = 'https://example.com'
+    url = "https://example.com",
   } = options;
 
   const converter = converterManager.getConverter(converterType, converterOptions);
@@ -143,7 +143,7 @@ export async function batchBenchmark(files, converterTypes, options = {}) {
       name: file.name,
       size: file.size,
       filename: file.filename,
-      benchmarks: await runComparison(file.html, converterTypes, options)
+      benchmarks: await runComparison(file.html, converterTypes, options),
     };
 
     results.push(fileResults);
@@ -162,16 +162,16 @@ export async function batchBenchmark(files, converterTypes, options = {}) {
  */
 async function convertHtml(converter, converterType, html, url) {
   switch (converterType) {
-    case 'h2m-parser':
-    case 'h2m-parser_custom':
-    case 'h2m-parser_no_readability':
-    case 'h2m-parser_with_readability':
+    case "h2m-parser":
+    case "h2m-parser_custom":
+    case "h2m-parser_no_readability":
+    case "h2m-parser_with_readability":
       return await converter.process(html, url);
 
-    case 'turndown':
+    case "turndown":
       return converter.turndown(html);
 
-    case 'node_html_markdown':
+    case "node_html_markdown":
       return converter.translate(html);
 
     default:
@@ -204,7 +204,7 @@ function calculateStats(times) {
     p99: trimmed[Math.floor(trimmed.length * 0.99)] || trimmed[trimmed.length - 1],
     min: trimmed[0],
     max: trimmed[trimmed.length - 1],
-    samples: trimmed.length
+    samples: trimmed.length,
   };
 }
 
@@ -216,19 +216,20 @@ export function generateSummary(results, options = {}) {
 
   // Calculate averages across all files
   const avgTimes = {
-    'h2m-parser_no_readability': 0,
-    'h2m-parser_with_readability': 0,
+    "h2m-parser_no_readability": 0,
+    "h2m-parser_with_readability": 0,
     turndown: 0,
     node_html_markdown: 0,
   };
 
   let count = 0;
   for (const result of results) {
-    if (result.benchmarks['h2m-parser_no_readability']) {
-      avgTimes['h2m-parser_no_readability'] += result.benchmarks['h2m-parser_no_readability'].mean;
+    if (result.benchmarks["h2m-parser_no_readability"]) {
+      avgTimes["h2m-parser_no_readability"] += result.benchmarks["h2m-parser_no_readability"].mean;
     }
-    if (result.benchmarks['h2m-parser_with_readability']) {
-      avgTimes['h2m-parser_with_readability'] += result.benchmarks['h2m-parser_with_readability'].mean;
+    if (result.benchmarks["h2m-parser_with_readability"]) {
+      avgTimes["h2m-parser_with_readability"] +=
+        result.benchmarks["h2m-parser_with_readability"].mean;
     }
     if (result.benchmarks.turndown) {
       avgTimes.turndown += result.benchmarks.turndown.mean;
@@ -239,8 +240,8 @@ export function generateSummary(results, options = {}) {
     count++;
   }
 
-  const h2mParserAvg = avgTimes['h2m-parser_no_readability'] / count;
-  const h2mParserWithReadabilityAvg = avgTimes['h2m-parser_with_readability'] / count;
+  const h2mParserAvg = avgTimes["h2m-parser_no_readability"] / count;
+  const h2mParserWithReadabilityAvg = avgTimes["h2m-parser_with_readability"] / count;
   const turndownAvg = avgTimes.turndown / count;
   const nhmAvg = avgTimes.node_html_markdown / count;
   const readabilityOverhead = h2mParserWithReadabilityAvg - h2mParserAvg;
@@ -252,15 +253,20 @@ export function generateSummary(results, options = {}) {
       h2mParserWithReadability: testReadability ? h2mParserWithReadabilityAvg : null,
       turndown: turndownAvg,
       nodeHtmlMarkdown: nhmAvg,
-      readabilityOverhead: testReadability ? readabilityOverhead : null
+      readabilityOverhead: testReadability ? readabilityOverhead : null,
     },
     comparisons: {
       vsTurndown: turndownAvg / h2mParserAvg,
-      vsNodeHtmlMarkdown: nhmAvg / h2mParserAvg
+      vsNodeHtmlMarkdown: nhmAvg / h2mParserAvg,
     },
-    verdict: h2mParserAvg === fastest ? 'fastest' :
-             h2mParserAvg / fastest < 1.5 ? 'competitive' :
-             h2mParserAvg / fastest < 3 ? 'slower' : 'needs_improvement'
+    verdict:
+      h2mParserAvg === fastest
+        ? "fastest"
+        : h2mParserAvg / fastest < 1.5
+          ? "competitive"
+          : h2mParserAvg / fastest < 3
+            ? "slower"
+            : "needs_improvement",
   };
 }
 
@@ -268,12 +274,12 @@ export function generateSummary(results, options = {}) {
  * Load benchmark results from JSON file
  */
 export async function loadBenchmarkResults(path) {
-  const { readFile } = await import('node:fs/promises');
+  const { readFile } = await import("node:fs/promises");
   try {
-    const data = await readFile(path, 'utf8');
+    const data = await readFile(path, "utf8");
     return JSON.parse(data);
   } catch (error) {
-    console.error('Failed to load benchmark results:', error.message);
+    console.error("Failed to load benchmark results:", error.message);
     return null;
   }
 }
@@ -282,15 +288,15 @@ export async function loadBenchmarkResults(path) {
  * Save benchmark results to JSON file
  */
 export async function saveBenchmarkResults(path, results) {
-  const { writeFile, mkdir } = await import('node:fs/promises');
-  const { dirname } = await import('node:path');
+  const { writeFile, mkdir } = await import("node:fs/promises");
+  const { dirname } = await import("node:path");
 
   try {
     await mkdir(dirname(path), { recursive: true });
     await writeFile(path, JSON.stringify(results, null, 2));
     return true;
   } catch (error) {
-    console.error('Failed to save benchmark results:', error.message);
+    console.error("Failed to save benchmark results:", error.message);
     return false;
   }
 }

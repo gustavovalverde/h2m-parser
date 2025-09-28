@@ -73,7 +73,8 @@ parentPort.on("message", async (job) => {
       const start = performance.now();
       const result = await h2mParser.process(html, baseUrl ?? "https://example.local/");
       const duration = performance.now() - start;
-      const rssUsage = typeof process.resourceUsage === "function" ? process.resourceUsage().maxRSS : 0;
+      const rssUsage =
+        typeof process.resourceUsage === "function" ? process.resourceUsage().maxRSS : 0;
 
       return {
         ok: true,
@@ -90,6 +91,6 @@ parentPort.on("message", async (job) => {
     const result = await withTimeout(processFile(), WORKER_TIMEOUT_MS, path);
     parentPort.postMessage(result);
   } catch (error) {
-    parentPort.postMessage({ ok: false, path, error: (error && error.message) || String(error) });
+    parentPort.postMessage({ ok: false, path, error: error?.message || String(error) });
   }
 });

@@ -152,7 +152,6 @@ function createTagHandlers(): Map<
   const blockHandler = (element: Element, state: RenderState, context: RenderContext) => {
     openBlock(state);
     renderChildren(element, state, { ...context, inline: true });
-    ensureTrailingBlankLine(state);
   };
 
   handlers.set("p", blockHandler);
@@ -445,7 +444,23 @@ function renderLink(element: Element, state: RenderState, context: RenderContext
   }
 
   write(state, "[");
+  // Save current buffer position to trim whitespace
+  const startPos = state.bufferIndex;
   renderChildren(element, state, { ...context, inline: true });
+  // Trim leading and trailing whitespace from the link text
+  if (state.bufferIndex > startPos) {
+    // Trim leading whitespace
+    if (startPos < state.bufferIndex) {
+      const firstValue = state.buffer[startPos] ?? "";
+      state.buffer[startPos] = firstValue.trimStart();
+    }
+    // Trim trailing whitespace
+    if (state.bufferIndex > 0) {
+      const lastIndex = state.bufferIndex - 1;
+      const lastValue = state.buffer[lastIndex] ?? "";
+      state.buffer[lastIndex] = lastValue.trimEnd();
+    }
+  }
   const titlePart = title ? ` "${escapeTitle(title)}"` : "";
   write(state, `](${href}${titlePart})`);
 }
@@ -650,7 +665,7 @@ function appendReferenceLinks(state: RenderState): void {
   if (!state.referenceLinks.size) {
     return;
   }
-  write(state, "\n");
+  write(state, "\n\n");
   const entries = Array.from(state.referenceLinks.values()).sort((a, b) => a.index - b.index);
   entries.forEach((definition) => {
     const title = definition.title ? ` "${escapeTitle(definition.title)}"` : "";

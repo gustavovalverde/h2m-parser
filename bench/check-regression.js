@@ -18,7 +18,7 @@ async function checkRegression(options = {}) {
   const {
     threshold = REGRESSION_THRESHOLD,
     exitOnRegression = true,
-    generateReport = true
+    generateReport = true,
   } = options;
 
   console.log("🔍 Checking for Performance Regressions\n");
@@ -44,31 +44,38 @@ async function checkRegression(options = {}) {
     h2mParserNoReadability: {
       baseline: baseline.metrics.h2mParserNoReadability.mean,
       current: current.summary.averages.h2mParserNoReadability,
-      ratio: current.summary.averages.h2mParserNoReadability / baseline.metrics.h2mParserNoReadability.mean,
-      status: "unchanged"
+      ratio:
+        current.summary.averages.h2mParserNoReadability /
+        baseline.metrics.h2mParserNoReadability.mean,
+      status: "unchanged",
     },
     h2mParserWithReadability: {
       baseline: baseline.metrics.h2mParserWithReadability.mean,
       current: current.summary.averages.h2mParserWithReadability,
-      ratio: current.summary.averages.h2mParserWithReadability / baseline.metrics.h2mParserWithReadability.mean,
-      status: "unchanged"
+      ratio:
+        current.summary.averages.h2mParserWithReadability /
+        baseline.metrics.h2mParserWithReadability.mean,
+      status: "unchanged",
     },
     vsTurndown: {
       baseline: baseline.metrics.comparisons.vsTurndown,
       current: current.summary.comparisons.vsTurndown,
       ratio: current.summary.comparisons.vsTurndown / baseline.metrics.comparisons.vsTurndown,
-      status: "unchanged"
+      status: "unchanged",
     },
     vsNodeHtmlMarkdown: {
       baseline: baseline.metrics.comparisons.vsNodeHtmlMarkdown,
       current: current.summary.comparisons.vsNodeHtmlMarkdown,
-      ratio: current.summary.comparisons.vsNodeHtmlMarkdown / baseline.metrics.comparisons.vsNodeHtmlMarkdown,
-      status: "unchanged"
-    }
+      ratio:
+        current.summary.comparisons.vsNodeHtmlMarkdown /
+        baseline.metrics.comparisons.vsNodeHtmlMarkdown,
+      status: "unchanged",
+    },
   };
 
   // Determine status for each metric
-  let hasRegression = false;
+  let hasRegressionH2M = false;
+  let hasRegressionCompetitor = false;
   let hasImprovement = false;
 
   for (const [key, metric] of Object.entries(comparison)) {
@@ -76,7 +83,7 @@ async function checkRegression(options = {}) {
       // For comparison metrics, higher is better
       if (metric.ratio < 1 / threshold) {
         metric.status = "regression";
-        hasRegression = true;
+        hasRegressionCompetitor = true;
       } else if (metric.ratio > 1 / IMPROVEMENT_THRESHOLD) {
         metric.status = "improvement";
         hasImprovement = true;
@@ -85,7 +92,7 @@ async function checkRegression(options = {}) {
       // For time metrics, lower is better
       if (metric.ratio > threshold) {
         metric.status = "regression";
-        hasRegression = true;
+        hasRegressionH2M = true;
       } else if (metric.ratio < IMPROVEMENT_THRESHOLD) {
         metric.status = "improvement";
         hasImprovement = true;
@@ -94,18 +101,26 @@ async function checkRegression(options = {}) {
   }
 
   // Generate report
-  console.log("\n" + "=".repeat(80));
+  console.log(`\n${"=".repeat(80)}`);
   console.log("PERFORMANCE REGRESSION REPORT");
-  console.log("=".repeat(80) + "\n");
+  console.log(`${"=".repeat(80)}\n`);
 
   const formatChange = (ratio, isTimeMetric = true) => {
     const percent = Math.abs((ratio - 1) * 100).toFixed(1);
     if (isTimeMetric) {
-      if (ratio > 1) return `🔴 ${percent}% slower`;
-      if (ratio < 1) return `🟢 ${percent}% faster`;
+      if (ratio > 1) {
+        return `🔴 ${percent}% slower`;
+      }
+      if (ratio < 1) {
+        return `🟢 ${percent}% faster`;
+      }
     } else {
-      if (ratio < 1) return `🔴 ${percent}% worse`;
-      if (ratio > 1) return `🟢 ${percent}% better`;
+      if (ratio < 1) {
+        return `🔴 ${percent}% worse`;
+      }
+      if (ratio > 1) {
+        return `🟢 ${percent}% better`;
+      }
     }
     return "⚪ unchanged";
   };
@@ -133,7 +148,7 @@ async function checkRegression(options = {}) {
 
   // Overall status
   console.log("=".repeat(80));
-  if (hasRegression) {
+  if (hasRegressionH2M) {
     console.log("❌ REGRESSION DETECTED!");
     console.log("   Performance has degraded beyond acceptable threshold.");
   } else if (hasImprovement) {
@@ -143,38 +158,66 @@ async function checkRegression(options = {}) {
     console.log("✅ NO REGRESSION DETECTED");
     console.log("   Performance is within acceptable range.");
   }
-  console.log("=".repeat(80) + "\n");
+  if (!hasRegressionH2M && hasRegressionCompetitor) {
+    console.log(
+      "ℹ️ NOTE: Competitor comparison metrics slowed down, but h2m performance stayed within the threshold.",
+    );
+  }
+  console.log(`${"=".repeat(80)}\n`);
 
   // Generate markdown report for PR comments
   if (generateReport) {
-    const report = generateMarkdownReport(comparison, baseline, current);
+    const report = generateMarkdownReport(comparison, baseline, current, {
+      hasRegressionH2M,
+      hasRegressionCompetitor,
+      hasImprovement,
+    });
     const reportPath = join(process.cwd(), "bench", ".results", "regression-report.md");
     await writeFile(reportPath, report);
     console.log(`📝 Detailed report saved to: ${reportPath}\n`);
   }
 
   // Exit with error if regression detected
-  if (hasRegression && exitOnRegression) {
+  if (hasRegressionH2M && exitOnRegression) {
     process.exit(1);
   }
 
   return {
-    status: hasRegression ? "regression" : hasImprovement ? "improvement" : "no-change",
+    status: hasRegressionH2M
+      ? "regression"
+      : hasImprovement
+        ? "improvement"
+        : hasRegressionCompetitor
+          ? "competitor-regression"
+          : "no-change",
     comparison,
     baseline,
-    current
+    current,
   };
 }
 
-function generateMarkdownReport(comparison, baseline, current) {
+function generateMarkdownReport(
+  comparison,
+  baseline,
+  current,
+  { hasRegressionH2M = false, hasRegressionCompetitor = false, hasImprovement = false } = {},
+) {
   const formatChange = (ratio, isTimeMetric = true) => {
     const percent = Math.abs((ratio - 1) * 100).toFixed(1);
     if (isTimeMetric) {
-      if (ratio > 1.05) return `🔴 **${percent}% slower**`;
-      if (ratio < 0.95) return `🟢 **${percent}% faster**`;
+      if (ratio > 1.05) {
+        return `🔴 **${percent}% slower**`;
+      }
+      if (ratio < 0.95) {
+        return `🟢 **${percent}% faster**`;
+      }
     } else {
-      if (ratio < 0.95) return `🔴 **${percent}% worse**`;
-      if (ratio > 1.05) return `🟢 **${percent}% better**`;
+      if (ratio < 0.95) {
+        return `🔴 **${percent}% worse**`;
+      }
+      if (ratio > 1.05) {
+        return `🟢 **${percent}% better**`;
+      }
     }
     return "⚪ No significant change";
   };
@@ -199,10 +242,7 @@ function generateMarkdownReport(comparison, baseline, current) {
 `;
 
   // Determine overall status
-  const hasRegression = Object.values(comparison).some(m => m.status === "regression");
-  const hasImprovement = Object.values(comparison).some(m => m.status === "improvement");
-
-  if (hasRegression) {
+  if (hasRegressionH2M) {
     report += `
 ### ❌ Regression Detected
 
@@ -219,6 +259,12 @@ Great work! Performance has improved. Consider:
 1. Updating the baseline to capture these improvements
 2. Documenting what optimizations were made
 `;
+  } else if (hasRegressionCompetitor) {
+    report += `
+### ⚠️ Competitor Comparison Slower
+
+Our h2m benchmarks stayed within the acceptable threshold, but comparisons versus competitor libraries regressed. Review the results if maintaining a competitive advantage is important for this change.
+`;
   } else {
     report += `
 ### ✅ No Regression
@@ -232,7 +278,7 @@ Performance is within acceptable range. No action needed.
 
 // CLI
 if (import.meta.url === `file://${process.argv[1]}`) {
-  checkRegression().catch(error => {
+  checkRegression().catch((error) => {
     console.error("Error:", error.message);
     process.exit(1);
   });

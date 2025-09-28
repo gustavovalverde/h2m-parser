@@ -5,10 +5,10 @@
  * Stores historical data for long-term performance analysis.
  */
 
+import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { execSync } from "child_process";
 
 const HISTORY_DIR = join(process.cwd(), "bench", ".history");
 const HISTORY_FILE = join(HISTORY_DIR, "performance-history.json");
@@ -36,7 +36,7 @@ async function trackPerformance() {
   console.log("Running benchmark...\n");
   execSync("node bench/compare.js --iterations 30 --max-files 10", {
     encoding: "utf8",
-    stdio: "inherit"
+    stdio: "inherit",
   });
 
   // Load results
@@ -50,20 +50,20 @@ async function trackPerformance() {
       hash: commit,
       branch: branch,
       message: commitMessage.split("\n")[0], // First line only
-      date: commitDate
+      date: commitDate,
     },
     metrics: {
       h2mParserNoReadability: results.summary.averages.h2mParserNoReadability,
       h2mParserWithReadability: results.summary.averages.h2mParserWithReadability,
       vsTurndown: results.summary.comparisons.vsTurndown,
       vsNodeHtmlMarkdown: results.summary.comparisons.vsNodeHtmlMarkdown,
-      readabilityOverhead: results.summary.averages.readabilityOverhead
+      readabilityOverhead: results.summary.averages.readabilityOverhead,
     },
     environment: {
       nodeVersion: process.version,
       platform: process.platform,
-      arch: process.arch
-    }
+      arch: process.arch,
+    },
   };
 
   // Add to history
@@ -94,16 +94,20 @@ async function generateTrendReport(history) {
 
   // Calculate trends
   const calculateTrend = (values) => {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {
+      return 0;
+    }
     const first = values[0];
     const last = values[values.length - 1];
     return ((last - first) / first) * 100;
   };
 
-  const h2mParserTrend = calculateTrend(recent.map(e => e.metrics.h2mParserNoReadability));
-  const h2mParserReadabilityTrend = calculateTrend(recent.map(e => e.metrics.h2mParserWithReadability));
-  const turndownTrend = calculateTrend(recent.map(e => e.metrics.vsTurndown));
-  const nodeHtmlMarkdownTrend = calculateTrend(recent.map(e => e.metrics.vsNodeHtmlMarkdown));
+  const h2mParserTrend = calculateTrend(recent.map((e) => e.metrics.h2mParserNoReadability));
+  const _h2mParserReadabilityTrend = calculateTrend(
+    recent.map((e) => e.metrics.h2mParserWithReadability),
+  );
+  const turndownTrend = calculateTrend(recent.map((e) => e.metrics.vsTurndown));
+  const nodeHtmlMarkdownTrend = calculateTrend(recent.map((e) => e.metrics.vsNodeHtmlMarkdown));
 
   // Display table
   console.log("Date       | Commit   | h2m-parser (ms) | w/Readability | vs Turndown | vs NHM");
@@ -117,18 +121,22 @@ async function generateTrendReport(history) {
     const vsT = entry.metrics.vsTurndown.toFixed(2);
     const vsN = entry.metrics.vsNodeHtmlMarkdown.toFixed(2);
 
-    console.log(`${date} | ${commit} | ${h2mParser.padStart(9)} | ${h2mParserR.padStart(13)} | ${vsT.padStart(11)}x | ${vsN.padStart(6)}x`);
+    console.log(
+      `${date} | ${commit} | ${h2mParser.padStart(9)} | ${h2mParserR.padStart(13)} | ${vsT.padStart(11)}x | ${vsN.padStart(6)}x`,
+    );
   }
 
   console.log("\n📈 Trend Analysis:");
   console.log(`  h2m-parser Performance:        ${formatTrend(h2mParserTrend, true)}`);
-  console.log(`  h2m-parser w/Readability:      ${formatTrend(h2m-parserReadabilityTrend, true)}`);
+  console.log(
+    `  h2m-parser w/Readability:      ${formatTrend(h2m - parserReadabilityTrend, true)}`,
+  );
   console.log(`  vs Turndown Advantage:   ${formatTrend(turndownTrend, false)}`);
   console.log(`  vs NHM Advantage:        ${formatTrend(nodeHtmlMarkdownTrend, false)}`);
 
   // Generate chart (ASCII)
   console.log("\n📉 Performance Chart (h2m-parser no Readability):");
-  generateAsciiChart(recent.map(e => e.metrics.h2mParserNoReadability));
+  generateAsciiChart(recent.map((e) => e.metrics.h2mParserNoReadability));
 
   // Save detailed report
   const reportPath = join(HISTORY_DIR, "trend-report.md");
@@ -139,15 +147,25 @@ async function generateTrendReport(history) {
 
 function formatTrend(trend, lowerIsBetter = true) {
   const symbol = lowerIsBetter
-    ? (trend < -5 ? "🟢" : trend > 5 ? "🔴" : "⚪")
-    : (trend > 5 ? "🟢" : trend < -5 ? "🔴" : "⚪");
+    ? trend < -5
+      ? "🟢"
+      : trend > 5
+        ? "🔴"
+        : "⚪"
+    : trend > 5
+      ? "🟢"
+      : trend < -5
+        ? "🔴"
+        : "⚪";
 
   const direction = trend > 0 ? "↑" : trend < 0 ? "↓" : "→";
   return `${symbol} ${direction} ${Math.abs(trend).toFixed(1)}%`;
 }
 
 function generateAsciiChart(values) {
-  if (values.length === 0) return;
+  if (values.length === 0) {
+    return;
+  }
 
   const max = Math.max(...values);
   const min = Math.min(...values);
@@ -156,9 +174,7 @@ function generateAsciiChart(values) {
   const width = Math.min(values.length, 50);
 
   // Normalize values to 0-height range
-  const normalized = values.slice(-width).map(v =>
-    Math.round((v - min) / range * height)
-  );
+  const normalized = values.slice(-width).map((v) => Math.round(((v - min) / range) * height));
 
   // Generate chart
   for (let row = height; row >= 0; row--) {
@@ -166,8 +182,12 @@ function generateAsciiChart(values) {
     for (let col = 0; col < normalized.length; col++) {
       line += normalized[col] >= row ? "█" : " ";
     }
-    if (row === height) line += ` ${max.toFixed(2)}ms`;
-    if (row === 0) line += ` ${min.toFixed(2)}ms`;
+    if (row === height) {
+      line += ` ${max.toFixed(2)}ms`;
+    }
+    if (row === 0) {
+      line += ` ${min.toFixed(2)}ms`;
+    }
     console.log(line);
   }
 }
@@ -198,10 +218,10 @@ Generated: ${new Date().toISOString()}
   }
 
   // Calculate statistics
-  const h2mParserValues = recent.map(e => e.metrics.h2mParserNoReadability);
+  const h2mParserValues = recent.map((e) => e.metrics.h2mParserNoReadability);
   const mean = h2mParserValues.reduce((a, b) => a + b, 0) / h2mParserValues.length;
   const stdDev = Math.sqrt(
-    h2mParserValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / h2mParserValues.length
+    h2mParserValues.reduce((sum, val) => sum + (val - mean) ** 2, 0) / h2mParserValues.length,
   );
 
   report += `
@@ -209,8 +229,8 @@ Generated: ${new Date().toISOString()}
 
 - **Mean Performance:** ${mean.toFixed(3)}ms
 - **Std Deviation:** ${stdDev.toFixed(3)}ms
-- **Best Performance:** ${Math.min(...h2m-parserValues).toFixed(3)}ms
-- **Worst Performance:** ${Math.max(...h2m-parserValues).toFixed(3)}ms
+- **Best Performance:** ${Math.min(...(h2m - parserValues)).toFixed(3)}ms
+- **Worst Performance:** ${Math.max(...(h2m - parserValues)).toFixed(3)}ms
 - **Total Measurements:** ${history.entries.length}
 
 ## Performance Goals
