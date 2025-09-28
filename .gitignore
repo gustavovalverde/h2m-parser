@@ -2,9 +2,24 @@ node_modules
 .DS_Store
 dist
 coverage
-.bench
 bench/output
-fixtures/
+bench/artifacts/
+bench/datasets/
+# Local benchmark scratch space
+.bench
+# Ignore volatile benchmark outputs (canonical artifacts are tracked via LFS)
+bench/.results/latest.json
+bench/.results/regression-report.md
+bench/.results/fetch-e2e-latest.json
+bench/.results/workflows-latest.json
+bench/.results/memory-latest.json
+bench/.results/token-usage-latest.json
+bench/.results/bundle-size-*.json
+bench/output/
+bench/Users/
+bench/README-benchmarks.md
+# Allow tracked benchmark results and fixtures (managed via Git LFS)
+# (keep optional local fixture packs elsewhere)
 .vscode
 .idea
 *.log

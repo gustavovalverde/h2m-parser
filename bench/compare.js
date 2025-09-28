@@ -5,12 +5,14 @@
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { isAbsolute, join, relative } from "node:path";
 import { batchBenchmark, generateSummary, saveBenchmarkResults } from "./lib/benchmark-runner.js";
+import { describeHtml } from "./utils/fixture-metadata.js";
 
 const DEFAULT_DATASET = join(process.cwd(), "tests", "fixtures");
 const DEFAULT_ITERATIONS = 100;
-const WARMUP_ITERATIONS = 10;
+const DEFAULT_WARMUP_ITERATIONS = 10;
+const DEFAULT_MAX_FILE_SIZE = 512 * 1024; // 512KB limit keeps comparisons snappy by default
 
 // Test configurations
 const TEST_SIZES = {
@@ -19,6 +21,16 @@ const TEST_SIZES = {
   medium: `<article>${"<p>Test paragraph with content.</p>".repeat(10)}</article>`,
 };
 
+function truncate(text, maxLength) {
+  if (!text) {
+    return "";
+  }
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return `${text.slice(0, Math.max(0, maxLength - 1))}…`;
+}
+
 class ComparisonBenchmark {
   constructor(options = {}) {
     this.dataset = options.dataset || DEFAULT_DATASET;
@@ -26,7 +38,12 @@ class ComparisonBenchmark {
     this.outputFormat = options.output || "console";
     this.testReadability = options.readability !== false;
     this.maxFiles = options.maxFiles || Infinity;
-    this.maxFileSize = options.maxFileSize || Infinity;
+    this.maxFileSize =
+      typeof options.maxFileSize === "number" ? options.maxFileSize : DEFAULT_MAX_FILE_SIZE;
+    this.warmupIterations =
+      typeof options.warmupIterations === "number" && options.warmupIterations >= 0
+        ? options.warmupIterations
+        : DEFAULT_WARMUP_ITERATIONS;
   }
 
   async loadTestFiles() {
@@ -39,6 +56,7 @@ class ComparisonBenchmark {
           name,
           html,
           size: Buffer.byteLength(html, "utf8"),
+          metadata: describeHtml(html),
         });
       }
     }
@@ -68,7 +86,9 @@ class ComparisonBenchmark {
             name: `file_${filesLoaded + 1}`,
             html,
             size,
-            filename: entry.name.length > 40 ? `${entry.name.substring(0, 37)}...` : entry.name,
+            filename: entry.name,
+            label: entry.name.length > 40 ? `${entry.name.substring(0, 37)}...` : entry.name,
+            metadata: describeHtml(html),
           });
           filesLoaded++;
         } else {
@@ -110,12 +130,13 @@ class ComparisonBenchmark {
     if (this.testReadability) {
       converterTypes.push("h2m-parser_with_readability");
     }
-    converterTypes.push("turndown", "node_html_markdown");
+    converterTypes.push("turndown", "node_html_markdown", "mdream");
 
     // Run benchmarks using shared runner
     const results = await batchBenchmark(files, converterTypes, {
       iterations: this.iterations,
-      warmupIterations: WARMUP_ITERATIONS,
+      warmupIterations: this.warmupIterations,
+      datasetDir: this.dataset,
       onProgress: (fileResult) => {
         this.printFileResults(fileResult);
       },
@@ -130,7 +151,7 @@ class ComparisonBenchmark {
       timestamp: new Date().toISOString(),
       fileCount: files.length,
       iterations: this.iterations,
-      dataset: this.dataset,
+      dataset: formatPathForDisplay(this.dataset),
       testReadability: this.testReadability,
     };
 
@@ -159,9 +180,16 @@ class ComparisonBenchmark {
   }
 
   printFileResults(result) {
-    console.log(
-      `Testing: ${result.name} (${result.size} bytes)${result.filename ? ` - ${result.filename}` : ""}`,
-    );
+    const label = result.label ?? result.filename ?? result.name;
+    const sizeKb = Math.round(result.size / 102.4) / 10;
+    const meta = result.metadata;
+    const domain = meta?.domain ? ` – ${meta.domain}` : "";
+    const title = meta?.title ? ` – ${truncate(meta.title, 80)}` : "";
+    const structure = meta
+      ? ` [links:${meta.links ?? 0}, scripts:${meta.scripts ?? 0}, tables:${meta.tables ?? 0}]`
+      : "";
+
+    console.log(`Testing: ${label} (${sizeKb} KB)${domain}${title}${structure}`);
 
     const benchmarks = result.benchmarks;
     if (benchmarks["h2m-parser_no_readability"]) {
@@ -180,20 +208,52 @@ class ComparisonBenchmark {
     if (benchmarks.node_html_markdown) {
       console.log(`  node-html-markdown:      ${benchmarks.node_html_markdown.mean.toFixed(3)}ms`);
     }
+    if (benchmarks.mdream) {
+      console.log(`  mdream:                  ${benchmarks.mdream.mean.toFixed(3)}ms`);
+    }
 
     // Calculate ratio
-    const h2mParserTime = benchmarks["h2m-parser_no_readability"]?.mean || Infinity;
-    const turndownTime = benchmarks.turndown?.mean || Infinity;
-    const nhmTime = benchmarks.node_html_markdown?.mean || Infinity;
-    const fastest = Math.min(h2mParserTime, turndownTime, nhmTime);
-    const ratio = h2mParserTime / fastest;
+    const h2mParserTime = benchmarks["h2m-parser_no_readability"]?.mean ?? Infinity;
+    const competitors = [
+      { name: "h2m-parser", mean: h2mParserTime },
+      { name: "Turndown", mean: benchmarks.turndown?.mean ?? Infinity },
+      {
+        name: "node-html-markdown",
+        mean: benchmarks.node_html_markdown?.mean ?? Infinity,
+      },
+      { name: "mdream", mean: benchmarks.mdream?.mean ?? Infinity },
+    ].filter((entry) => Number.isFinite(entry.mean));
 
+    if (!competitors.length || !Number.isFinite(h2mParserTime)) {
+      console.log("  → h2m-parser timing unavailable\n");
+      return;
+    }
+
+    let fastestEntry = competitors[0];
+    for (const entry of competitors) {
+      if (entry.mean < fastestEntry.mean) {
+        fastestEntry = entry;
+      }
+    }
+
+    const ratio = h2mParserTime / fastestEntry.mean;
+    const delta = h2mParserTime - fastestEntry.mean;
+    const deltaText = Number.isFinite(delta)
+      ? `${delta >= 0 ? "+" : "-"}${Math.abs(delta).toFixed(3)}ms`
+      : "n/a";
+
+    let verdict;
+    if (ratio <= 1.1) {
+      verdict = "✅ competitive";
+    } else if (ratio <= 2) {
+      verdict = "⚠️ slower";
+    } else {
+      verdict = "❌ much slower";
+    }
+
+    const fastestLabel = fastestEntry.name === "h2m-parser" ? "itself" : fastestEntry.name;
     console.log(
-      "  → h2m-parser is " +
-        (ratio < 1.5 ? "✅ competitive" : ratio < 3 ? "⚠️ slower" : "❌ much slower") +
-        " (" +
-        ratio.toFixed(2) +
-        "x)\n",
+      `  → h2m-parser is ${verdict} (${ratio.toFixed(2)}x, Δ ${deltaText} vs ${fastestLabel})\n`,
     );
   }
 
@@ -218,6 +278,7 @@ class ComparisonBenchmark {
 
     console.log(`  Turndown:                ${summary.averages.turndown.toFixed(3)}ms`);
     console.log(`  node-html-markdown:      ${summary.averages.nodeHtmlMarkdown.toFixed(3)}ms`);
+    console.log(`  mdream:                  ${summary.averages.mdream.toFixed(3)}ms`);
 
     console.log("\nPerformance comparison (without Readability):");
     console.log(
@@ -232,6 +293,12 @@ class ComparisonBenchmark {
         "x " +
         (summary.comparisons.vsNodeHtmlMarkdown > 1 ? "faster" : "slower"),
     );
+    console.log(
+      "  h2m-parser vs mdream:           " +
+        summary.comparisons.vsMdream.toFixed(2) +
+        "x " +
+        (summary.comparisons.vsMdream > 1 ? "faster" : "slower"),
+    );
 
     if (summary.verdict === "fastest") {
       console.log("\n🏆 h2m-parser is the FASTEST converter!");
@@ -245,25 +312,27 @@ class ComparisonBenchmark {
 
     // Feature comparison
     console.log("\n📊 Feature Comparison:");
-    console.log("                     h2m-parser   Turndown  node-html-markdown");
+    console.log("                     h2m-parser   Turndown  node-html-markdown  mdream");
     const h2mParserAvg = summary.averages.h2mParserNoReadability;
     const turndownAvg = summary.averages.turndown;
     const nhmAvg = summary.averages.nodeHtmlMarkdown;
-    const fastest = Math.min(h2mParserAvg, turndownAvg, nhmAvg);
+    const mdreamAvg = summary.averages.mdream;
+    const fastest = Math.min(h2mParserAvg, turndownAvg, nhmAvg, mdreamAvg);
     console.log(
       "  Performance         " +
         (h2mParserAvg === fastest ? "✅" : h2mParserAvg / fastest < 2 ? "⚠️" : "❌") +
         "      " +
         (turndownAvg === fastest ? "✅" : turndownAvg / fastest < 2 ? "⚠️" : "❌") +
         "        " +
-        (nhmAvg === fastest ? "✅" : nhmAvg / fastest < 2 ? "⚠️" : "❌"),
+        (nhmAvg === fastest ? "✅" : nhmAvg / fastest < 2 ? "⚠️" : "❌") +
+        "        " +
+        (mdreamAvg === fastest ? "✅" : mdreamAvg / fastest < 2 ? "⚠️" : "❌"),
     );
-    console.log("  Readability         ✅      ❌        ❌");
-    console.log("  Link cleanup        ✅      ❌        ❌");
-    console.log("  Front matter        ✅      ❌        ❌");
-    console.log("  Chunking            ✅      ❌        ❌");
-    console.log("  TypeScript          ✅      ❌        ✅");
-    console.log("  Streaming           ✅      ❌        ❌");
+    console.log("  Readability opts    ✅      ❌        ❌        ⚠️");
+    console.log("  Plugin system       ✅      ❌        ❌        ✅");
+    console.log("  Front matter        ✅      ❌        ❌        ✅");
+    console.log("  TypeScript          ✅      ❌        ✅        ✅");
+    console.log("  Streaming           ✅      ❌        ❌        ✅");
   }
 
   async exportMarkdown(results) {
@@ -271,7 +340,7 @@ class ComparisonBenchmark {
     markdown += `Generated: ${new Date().toISOString()}\n\n`;
     markdown += `## Test Configuration\n\n`;
     markdown += `- Iterations: ${this.iterations}\n`;
-    markdown += `- Dataset: ${this.dataset}\n`;
+    markdown += `- Dataset: ${formatPathForDisplay(this.dataset)}\n`;
     markdown += `- Readability tested: ${this.testReadability ? "Yes" : "No"}\n\n`;
 
     markdown += "## Results by File\n\n";
@@ -311,7 +380,7 @@ async function main() {
     output: "console",
     readability: true,
     maxFiles: Infinity,
-    maxFileSize: Infinity,
+    maxFileSize: undefined,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -348,6 +417,11 @@ async function main() {
         }
         break;
       }
+      case "--warmup":
+      case "--warmup-iterations":
+      case "-w":
+        options.warmupIterations = parseInt(args[++i], 10);
+        break;
       case "--help":
       case "-h":
         console.log(`
@@ -359,7 +433,8 @@ Options:
   --output, -o <format>    Output format: console, markdown, json (default: console)
   --no-readability         Skip Readability tests
   --max-files, -mf <n>     Maximum number of files to process (default: unlimited)
-  --max-file-size, -ms <size>  Maximum file size in bytes or with KB/MB suffix (default: unlimited)
+  --max-file-size, -ms <size>  Maximum file size in bytes or with KB/MB suffix (default: 512KB)
+  --warmup, -w <n>         Warmup iterations per benchmark (default: 10)
   --help, -h               Show this help message
 
 Examples:
@@ -375,6 +450,17 @@ Examples:
 
   const benchmark = new ComparisonBenchmark(options);
   await benchmark.run();
+}
+
+function formatPathForDisplay(pathValue) {
+  if (!pathValue) {
+    return pathValue;
+  }
+  try {
+    return isAbsolute(pathValue) ? relative(process.cwd(), pathValue) || "." : pathValue;
+  } catch {
+    return pathValue;
+  }
 }
 
 main().catch(console.error);

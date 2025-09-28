@@ -1,16 +1,19 @@
-import type { AnyNode, Element, Text } from "domhandler";
-import { isTag } from "domhandler";
 /**
  * Streaming HTML → Markdown renderer. Keeps logic linear, easy to inspect, and customisable via
  * tag translators inspired by node-html-markdown while staying TypeScript-friendly.
  */
 
-import { parseDocument } from "htmlparser2";
+import { performance } from "node:perf_hooks";
+import { Parser } from "htmlparser2";
 import type {
+  HtmlElementNode,
+  HtmlNode,
+  HtmlTextNode,
   MarkdownOptions,
   MarkdownResult,
   TagTranslator,
   TagTranslatorContext,
+  Telemetry,
 } from "../types";
 
 const DEFAULT_OPTIONS: Required<MarkdownOptions> = {
@@ -40,6 +43,24 @@ const WORD_SPLIT_RE = /\s+/;
 // Pre-allocated buffer size
 const INITIAL_BUFFER_SIZE = 4096;
 
+const ALWAYS_IGNORED_TAGS = [
+  "script",
+  "style",
+  "noscript",
+  "template",
+  "head",
+  "meta",
+  "link",
+  "iframe",
+  "object",
+  "embed",
+];
+
+type NodeFrame = {
+  element: HtmlElementNode | null;
+  skipped: boolean;
+};
+
 interface RenderState {
   buffer: string[];
   bufferIndex: number;
@@ -51,13 +72,85 @@ interface RenderState {
   blockTags: Set<string>;
   ignoreTags: Set<string>;
   textReplacements: Array<{ pattern: RegExp; replacement: string }>;
-  tagHandlers: Map<string, (element: Element, state: RenderState, context: RenderContext) => void>;
+  tagHandlers: Map<
+    string,
+    (element: HtmlElementNode, state: RenderState, context: RenderContext) => void
+  >;
 }
 
 interface RenderContext {
   inline: boolean;
   listDepth: number;
   blockquoteDepth: number;
+}
+
+function parseHtmlToNodes(html: string, ignoreTags: Set<string>): HtmlNode[] {
+  const root: HtmlElementNode = {
+    type: "tag",
+    name: "#root",
+    attribs: {},
+    children: [],
+    parent: null,
+  };
+
+  const stack: NodeFrame[] = [{ element: root, skipped: false }];
+  let skipDepth = 0;
+
+  const parser = new Parser(
+    {
+      onopentag(name, attribs) {
+        const lower = name.toLowerCase();
+        const shouldSkip = skipDepth > 0 || ignoreTags.has(lower);
+
+        if (shouldSkip) {
+          skipDepth += 1;
+          stack.push({ element: null, skipped: true });
+          return;
+        }
+
+        const frame = stack[stack.length - 1];
+        const parent = frame?.element ?? root;
+        const element: HtmlElementNode = {
+          type: "tag",
+          name: lower,
+          attribs: { ...attribs },
+          children: [],
+          parent: parent.name === "#root" ? null : parent,
+        };
+        parent.children.push(element);
+        stack.push({ element, skipped: false });
+      },
+      ontext(data) {
+        if (!data || skipDepth > 0) {
+          return;
+        }
+        const frame = stack[stack.length - 1];
+        const current = frame?.element ?? root;
+        const last = current.children[current.children.length - 1];
+        if (last && last.type === "text") {
+          last.data += data;
+        } else {
+          current.children.push({ type: "text", data });
+        }
+      },
+      onclosetag() {
+        const frame = stack.pop();
+        if (frame?.skipped) {
+          skipDepth -= 1;
+        }
+      },
+      oncomment() {
+        // ignore comments entirely
+      },
+    },
+    {
+      decodeEntities: true,
+      lowerCaseTags: false,
+    },
+  );
+
+  parser.end(html);
+  return root.children;
 }
 
 /**
@@ -67,8 +160,13 @@ interface RenderContext {
  * - Minimized context object creation
  * - Batched string operations
  */
-export function htmlToMarkdown(html: string, options: MarkdownOptions = {}): MarkdownResult {
+export function htmlToMarkdown(
+  html: string,
+  options: MarkdownOptions = {},
+  telemetry?: Telemetry,
+): MarkdownResult {
   const resolved = resolveOptions(options);
+  const htmlBytes = Buffer.byteLength(html, "utf8");
 
   // Pre-allocate buffer
   const buffer = new Array(INITIAL_BUFFER_SIZE);
@@ -87,19 +185,57 @@ export function htmlToMarkdown(html: string, options: MarkdownOptions = {}): Mar
     tagHandlers: createTagHandlers(),
   };
 
-  const document = parseDocument(html, { decodeEntities: true });
+  const telemetryEnabled = Boolean(telemetry);
+  let parseStart = 0;
+  if (telemetryEnabled) {
+    parseStart = performance.now();
+  }
 
-  // Process nodes
-  const children = document.children;
-  for (let i = 0; i < children.length; i++) {
-    renderNode(children[i], state, { inline: false, listDepth: 0, blockquoteDepth: 0 });
+  const rootNodes = parseHtmlToNodes(html, state.ignoreTags);
+
+  if (telemetryEnabled) {
+    telemetry?.({
+      stage: "convert_parse",
+      durationMs: performance.now() - parseStart,
+      bytesIn: htmlBytes,
+    });
+  }
+
+  let renderStart = 0;
+  if (telemetryEnabled) {
+    renderStart = performance.now();
+  }
+  for (let i = 0; i < rootNodes.length; i++) {
+    renderNode(rootNodes[i], state, { inline: false, listDepth: 0, blockquoteDepth: 0 });
   }
 
   appendFootnotes(state);
   appendReferenceLinks(state);
+  if (telemetryEnabled) {
+    const renderDuration = performance.now() - renderStart;
+    telemetry?.({
+      stage: "convert_render",
+      durationMs: renderDuration,
+      bytesIn: htmlBytes,
+    });
+  }
 
   // Build final markdown from buffer
-  const markdown = postProcess(state.buffer.slice(0, state.bufferIndex).join("").trim(), resolved);
+  let finalizeStart = 0;
+  if (telemetryEnabled) {
+    finalizeStart = performance.now();
+  }
+  const joined = state.buffer.slice(0, state.bufferIndex).join("");
+  const markdown = postProcess(joined.trim(), resolved);
+  if (telemetryEnabled) {
+    const finalizeDuration = performance.now() - finalizeStart;
+    telemetry?.({
+      stage: "convert_postprocess",
+      durationMs: finalizeDuration,
+      bytesIn: Buffer.byteLength(joined, "utf8"),
+      bytesOut: Buffer.byteLength(markdown, "utf8"),
+    });
+  }
   const wordCount = countWords(markdown);
 
   return {
@@ -114,13 +250,16 @@ export function htmlToMarkdown(html: string, options: MarkdownOptions = {}): Mar
 }
 
 function resolveOptions(options: MarkdownOptions): Required<MarkdownOptions> {
+  const ignoreTags = options.ignoreTags ?? DEFAULT_OPTIONS.ignoreTags;
+  const mergedIgnore = Array.from(new Set([...ignoreTags, ...ALWAYS_IGNORED_TAGS]));
+  const blockTags = options.blockTags ?? DEFAULT_OPTIONS.blockTags;
   return {
     ...DEFAULT_OPTIONS,
     ...options,
     textReplacements: options.textReplacements ?? DEFAULT_OPTIONS.textReplacements,
     translators: options.translators ?? DEFAULT_OPTIONS.translators,
-    ignoreTags: options.ignoreTags ?? DEFAULT_OPTIONS.ignoreTags,
-    blockTags: options.blockTags ?? DEFAULT_OPTIONS.blockTags,
+    ignoreTags: mergedIgnore,
+    blockTags,
   } satisfies Required<MarkdownOptions>;
 }
 
@@ -141,15 +280,15 @@ function buildTranslatorMap(record: Record<string, TagTranslator>): Map<string, 
 // Create tag handlers map for O(1) lookup
 function createTagHandlers(): Map<
   string,
-  (element: Element, state: RenderState, context: RenderContext) => void
+  (element: HtmlElementNode, state: RenderState, context: RenderContext) => void
 > {
   const handlers = new Map<
     string,
-    (element: Element, state: RenderState, context: RenderContext) => void
+    (element: HtmlElementNode, state: RenderState, context: RenderContext) => void
   >();
 
   // Block elements
-  const blockHandler = (element: Element, state: RenderState, context: RenderContext) => {
+  const blockHandler = (element: HtmlElementNode, state: RenderState, context: RenderContext) => {
     openBlock(state);
     renderChildren(element, state, { ...context, inline: true });
   };
@@ -160,7 +299,7 @@ function createTagHandlers(): Map<
   handlers.set("article", blockHandler);
 
   // Inline formatting
-  const boldHandler = (element: Element, state: RenderState, context: RenderContext) => {
+  const boldHandler = (element: HtmlElementNode, state: RenderState, context: RenderContext) => {
     write(state, "**");
     renderChildren(element, state, { ...context, inline: true });
     write(state, "**");
@@ -169,7 +308,7 @@ function createTagHandlers(): Map<
   handlers.set("strong", boldHandler);
   handlers.set("b", boldHandler);
 
-  const italicHandler = (element: Element, state: RenderState, context: RenderContext) => {
+  const italicHandler = (element: HtmlElementNode, state: RenderState, context: RenderContext) => {
     write(state, "*");
     renderChildren(element, state, { ...context, inline: true });
     write(state, "*");
@@ -187,7 +326,7 @@ function createTagHandlers(): Map<
 
   handlers.set("code", (element, state, context) => {
     const parent = element.parent;
-    if (parent && isTag(parent) && parent.name === "pre") {
+    if (parent && parent.name === "pre") {
       renderChildren(element, state, { ...context, inline: true });
     } else {
       write(state, "`");
@@ -274,21 +413,21 @@ function write(state: RenderState, text: string): void {
 }
 
 function renderNode(
-  node: AnyNode | null | undefined,
+  node: HtmlNode | null | undefined,
   state: RenderState,
   context: RenderContext,
 ): void {
   if (!node) {
     return;
   }
-  if (isTag(node)) {
+  if (isElementNode(node)) {
     renderElement(node, state, context);
   } else if (isTextNode(node)) {
     renderText(node, state, context);
   }
 }
 
-function renderElement(element: Element, state: RenderState, context: RenderContext): void {
+function renderElement(element: HtmlElementNode, state: RenderState, context: RenderContext): void {
   const tag = element.name.toLowerCase();
 
   if (state.ignoreTags.has(tag)) {
@@ -305,7 +444,11 @@ function renderElement(element: Element, state: RenderState, context: RenderCont
   defaultRenderElement(element, state, context);
 }
 
-function defaultRenderElement(element: Element, state: RenderState, context: RenderContext): void {
+function defaultRenderElement(
+  element: HtmlElementNode,
+  state: RenderState,
+  context: RenderContext,
+): void {
   const tag = element.name.toLowerCase();
 
   if (state.blockTags.has(tag)) {
@@ -321,14 +464,18 @@ function defaultRenderElement(element: Element, state: RenderState, context: Ren
   }
 }
 
-function renderChildren(element: Element, state: RenderState, context: RenderContext): void {
-  const children = (element.children as AnyNode[] | undefined) ?? [];
+function renderChildren(
+  element: HtmlElementNode,
+  state: RenderState,
+  context: RenderContext,
+): void {
+  const children = element.children ?? [];
   for (let i = 0; i < children.length; i++) {
     renderNode(children[i], state, context);
   }
 }
 
-function renderText(node: Text, state: RenderState, context: RenderContext): void {
+function renderText(node: HtmlTextNode, state: RenderState, context: RenderContext): void {
   let value = normalizeWhitespace(node.data, context.inline);
   if (!value) {
     return;
@@ -339,7 +486,11 @@ function renderText(node: Text, state: RenderState, context: RenderContext): voi
   write(state, value);
 }
 
-function renderListItem(element: Element, state: RenderState, context: RenderContext): void {
+function renderListItem(
+  element: HtmlElementNode,
+  state: RenderState,
+  context: RenderContext,
+): void {
   const listInfo = state.listStack[state.listStack.length - 1];
   if (!listInfo) {
     renderChildren(element, state, context);
@@ -373,7 +524,11 @@ function renderListItem(element: Element, state: RenderState, context: RenderCon
   }
 }
 
-function renderBlockQuote(element: Element, state: RenderState, context: RenderContext): void {
+function renderBlockQuote(
+  element: HtmlElementNode,
+  state: RenderState,
+  context: RenderContext,
+): void {
   // Use temporary buffer
   const previousBuffer = state.buffer;
   const previousIndex = state.bufferIndex;
@@ -403,7 +558,7 @@ function renderBlockQuote(element: Element, state: RenderState, context: RenderC
   write(state, "\n");
 }
 
-function renderLink(element: Element, state: RenderState, context: RenderContext): void {
+function renderLink(element: HtmlElementNode, state: RenderState, context: RenderContext): void {
   const href = element.attribs?.href ?? "";
   const title = element.attribs?.title;
   const textContent = collectText(element).trim() || href;
@@ -465,7 +620,7 @@ function renderLink(element: Element, state: RenderState, context: RenderContext
   write(state, `](${href}${titlePart})`);
 }
 
-function renderImage(element: Element, state: RenderState, _context: RenderContext): void {
+function renderImage(element: HtmlElementNode, state: RenderState, _context: RenderContext): void {
   const src = element.attribs?.src;
   if (!src) {
     return;
@@ -476,11 +631,13 @@ function renderImage(element: Element, state: RenderState, _context: RenderConte
   write(state, `![${escapeText(alt)}](${src}${title})\n\n`);
 }
 
-function renderFigure(element: Element, state: RenderState, context: RenderContext): void {
-  const children = (element.children as AnyNode[] | undefined) ?? [];
-  const img = children.find((child): child is Element => isTag(child) && child.name === "img");
+function renderFigure(element: HtmlElementNode, state: RenderState, context: RenderContext): void {
+  const children = element.children ?? [];
+  const img = children.find(
+    (child): child is HtmlElementNode => isElementNode(child) && child.name === "img",
+  );
   const caption = children.find(
-    (child): child is Element => isTag(child) && child.name === "figcaption",
+    (child): child is HtmlElementNode => isElementNode(child) && child.name === "figcaption",
   );
 
   if (img) {
@@ -494,7 +651,7 @@ function renderFigure(element: Element, state: RenderState, context: RenderConte
   }
 }
 
-function renderTable(element: Element, state: RenderState, _context: RenderContext): void {
+function renderTable(element: HtmlElementNode, state: RenderState, _context: RenderContext): void {
   const rows = collectElements(element, "tr");
   if (!rows.length) {
     write(state, "_Table omitted:_ (no rows)\n\n");
@@ -502,27 +659,27 @@ function renderTable(element: Element, state: RenderState, _context: RenderConte
   }
 
   const headerCells = rows.find((row) =>
-    ((row.children as AnyNode[] | undefined) ?? []).some(
-      (cell) => isTag(cell) && cell.name === "th",
-    ),
+    row.children?.some((cell) => isElementNode(cell) && cell.name === "th"),
   );
   const firstRow = rows[0];
   if (!firstRow) {
     return;
   }
   const headerContent = headerCells ?? firstRow;
-  const headers = ((headerContent.children as AnyNode[] | undefined) ?? [])
+  const headers = (headerContent.children ?? [])
     .filter(
-      (child): child is Element => isTag(child) && (child.name === "th" || child.name === "td"),
+      (child): child is HtmlElementNode =>
+        isElementNode(child) && (child.name === "th" || child.name === "td"),
     )
     .map((cell) => collectText(cell).trim() || " ");
 
   const bodyRows = rows
     .filter((row) => row !== headerContent)
     .map((row) =>
-      ((row.children as AnyNode[] | undefined) ?? [])
+      (row.children ?? [])
         .filter(
-          (child): child is Element => isTag(child) && (child.name === "td" || child.name === "th"),
+          (child): child is HtmlElementNode =>
+            isElementNode(child) && (child.name === "td" || child.name === "th"),
         )
         .map((cell) => collectText(cell).trim()),
     );
@@ -539,34 +696,32 @@ function renderTable(element: Element, state: RenderState, _context: RenderConte
   write(state, "\n");
 }
 
-function collectElements(root: Element, tagName: string): Element[] {
-  const matches: Element[] = [];
-  const children = (root.children as AnyNode[] | undefined) ?? [];
+function collectElements(root: HtmlElementNode, tagName: string): HtmlElementNode[] {
+  const matches: HtmlElementNode[] = [];
+  const children = root.children ?? [];
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (!child) {
+    const childNode = children[i];
+    if (!childNode || !isElementNode(childNode)) {
       continue;
     }
-    if (!isTag(child)) {
-      continue;
+    const elementChild = childNode;
+    if (elementChild.name === tagName) {
+      matches.push(elementChild);
     }
-    if (child.name === tagName) {
-      matches.push(child);
-    }
-    matches.push(...collectElements(child, tagName));
+    matches.push(...collectElements(elementChild, tagName));
   }
   return matches;
 }
 
-function collectText(element: Element): string {
+function collectText(element: HtmlElementNode): string {
   let result = "";
-  const children = (element.children as AnyNode[] | undefined) ?? [];
+  const children = element.children ?? [];
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     if (!child) {
       continue;
     }
-    if (isTag(child)) {
+    if (isElementNode(child)) {
       result += collectText(child);
     } else if (isTextNode(child)) {
       result += child.data;
@@ -575,10 +730,10 @@ function collectText(element: Element): string {
   return result;
 }
 
-function detectLanguage(element: Element): string {
-  const children = (element.children as AnyNode[] | undefined) ?? [];
+function detectLanguage(element: HtmlElementNode): string {
+  const children = element.children ?? [];
   const codeNode = children.find(
-    (child): child is Element => isTag(child) && child.name === "code",
+    (child): child is HtmlElementNode => isElementNode(child) && child.name === "code",
   );
   if (!codeNode) {
     return "";
@@ -727,12 +882,16 @@ function countWords(markdown: string): number {
   return tokens.length;
 }
 
-function isTextNode(node: AnyNode): node is Text {
-  return typeof node === "object" && node !== null && (node as Text).type === "text";
+function isElementNode(node: HtmlNode): node is HtmlElementNode {
+  return typeof node === "object" && node !== null && node.type === "tag";
+}
+
+function isTextNode(node: HtmlNode): node is HtmlTextNode {
+  return typeof node === "object" && node !== null && node.type === "text";
 }
 
 function createTranslatorContext(
-  node: Element,
+  node: HtmlElementNode,
   state: RenderState,
   context: RenderContext,
 ): TagTranslatorContext {

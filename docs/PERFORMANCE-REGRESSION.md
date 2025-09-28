@@ -63,14 +63,14 @@ Automatic regression detection on PRs:
 
 ### For Contributors
 
-1. **Before making changes**, capture baseline:
+1. **Before making changes**, capture baseline (100 iterations across the entire `tests/fixtures` set with a 5MB per-file cap):
 
    ```bash
    git checkout main
    pnpm bench:baseline
    ```
 
-2. **After changes**, check for regressions:
+2. **After changes**, check for regressions (runs the identical configuration as the baseline):
 
    ```bash
    pnpm bench:regression
@@ -179,8 +179,10 @@ pnpm bench:compare:full
 
 ```bash
 # Watch mode - rerun on file changes
-pnpm build:watch & pnpm bench:compare:quick --watch
+pnpm build:watch & pnpm bench:compare:quick
 ```
+
+> ℹ️ **Configuration parity:** `pnpm bench:baseline`, `pnpm bench:regression`, and `pnpm bench:readme --fresh` all invoke the same comparison run (100 iterations, 3 warmups, 5MB per-file limit, dataset `tests/fixtures`). This keeps the baseline, regression gate, and published metrics directly comparable.
 
 ### Performance Debugging
 
@@ -192,7 +194,7 @@ pnpm bench:profile:memory
 pnpm bench:analyze
 
 # Component breakdown
-pnpm bench:profile --type components
+pnpm bench:analyze
 ```
 
 ## Best Practices

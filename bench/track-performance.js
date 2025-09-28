@@ -57,6 +57,8 @@ async function trackPerformance() {
       h2mParserWithReadability: results.summary.averages.h2mParserWithReadability,
       vsTurndown: results.summary.comparisons.vsTurndown,
       vsNodeHtmlMarkdown: results.summary.comparisons.vsNodeHtmlMarkdown,
+      vsMdream: results.summary.comparisons.vsMdream,
+      mdream: results.summary.averages.mdream,
       readabilityOverhead: results.summary.averages.readabilityOverhead,
     },
     environment: {
@@ -108,9 +110,12 @@ async function generateTrendReport(history) {
   );
   const turndownTrend = calculateTrend(recent.map((e) => e.metrics.vsTurndown));
   const nodeHtmlMarkdownTrend = calculateTrend(recent.map((e) => e.metrics.vsNodeHtmlMarkdown));
+  const mdreamTrend = calculateTrend(recent.map((e) => e.metrics.vsMdream));
 
   // Display table
-  console.log("Date       | Commit   | h2m-parser (ms) | w/Readability | vs Turndown | vs NHM");
+  console.log(
+    "Date       | Commit   | h2m-parser (ms) | w/Readability | vs Turndown | vs NHM | vs mdream",
+  );
   console.log("-".repeat(80));
 
   for (const entry of recent) {
@@ -120,9 +125,10 @@ async function generateTrendReport(history) {
     const h2mParserR = entry.metrics.h2mParserWithReadability.toFixed(3);
     const vsT = entry.metrics.vsTurndown.toFixed(2);
     const vsN = entry.metrics.vsNodeHtmlMarkdown.toFixed(2);
+    const vsM = entry.metrics.vsMdream.toFixed(2);
 
     console.log(
-      `${date} | ${commit} | ${h2mParser.padStart(9)} | ${h2mParserR.padStart(13)} | ${vsT.padStart(11)}x | ${vsN.padStart(6)}x`,
+      `${date} | ${commit} | ${h2mParser.padStart(9)} | ${h2mParserR.padStart(13)} | ${vsT.padStart(11)}x | ${vsN.padStart(6)}x | ${vsM.padStart(8)}x`,
     );
   }
 
@@ -133,6 +139,7 @@ async function generateTrendReport(history) {
   );
   console.log(`  vs Turndown Advantage:   ${formatTrend(turndownTrend, false)}`);
   console.log(`  vs NHM Advantage:        ${formatTrend(nodeHtmlMarkdownTrend, false)}`);
+  console.log(`  vs mdream Advantage:     ${formatTrend(mdreamTrend, false)}`);
 
   // Generate chart (ASCII)
   console.log("\n📉 Performance Chart (h2m-parser no Readability):");
@@ -201,8 +208,8 @@ Generated: ${new Date().toISOString()}
 
 ## Recent Performance History (Last 30 commits)
 
-| Date | Branch | Commit | h2m-parser | w/Readability | vs Turndown | vs NHM |
-|------|--------|--------|------|---------------|-------------|--------|
+| Date | Branch | Commit | h2m-parser | w/Readability | vs Turndown | vs NHM | vs mdream |
+|------|--------|--------|-----------|---------------|-------------|--------|-----------|
 `;
 
   for (const entry of recent.reverse()) {
@@ -213,8 +220,9 @@ Generated: ${new Date().toISOString()}
     const h2mParserR = entry.metrics.h2mParserWithReadability.toFixed(3);
     const vsT = entry.metrics.vsTurndown.toFixed(2);
     const vsN = entry.metrics.vsNodeHtmlMarkdown.toFixed(2);
+    const vsM = entry.metrics.vsMdream.toFixed(2);
 
-    report += `| ${date} | ${branch} | ${commit} | ${h2mParser}ms | ${h2mParserR}ms | ${vsT}x | ${vsN}x |\n`;
+    report += `| ${date} | ${branch} | ${commit} | ${h2mParser}ms | ${h2mParserR}ms | ${vsT}x | ${vsN}x | ${vsM}x |\n`;
   }
 
   // Calculate statistics

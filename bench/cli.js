@@ -7,6 +7,7 @@
 
 import { execSync } from "node:child_process";
 import readline from "node:readline";
+import { runSuite, SUITES } from "./suites.js";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -16,9 +17,9 @@ const rl = readline.createInterface({
 const COMMANDS = {
   // Day-to-day commands
   1: {
-    name: "Quick benchmark (10 iterations, 10 files)",
-    cmd: "node bench/compare.js --iterations 10 --max-files 10",
-    description: "Fast check for development",
+    name: "Quick benchmark suite",
+    description: SUITES.quick.description,
+    run: () => runSuite("quick"),
   },
   2: {
     name: "Update README with benchmark results",
@@ -33,9 +34,9 @@ const COMMANDS = {
 
   // Comprehensive benchmarks
   4: {
-    name: "Full benchmark comparison",
-    cmd: "node bench/compare.js",
-    description: "Complete benchmark with all files (slower)",
+    name: "Full benchmark suite",
+    description: SUITES.full.description,
+    run: () => runSuite("full"),
   },
   5: {
     name: "Production benchmark (1000 iterations)",
@@ -54,34 +55,48 @@ const COMMANDS = {
     cmd: "node --expose-gc bench/profile.js --memory",
     description: "Memory usage and leak detection",
   },
-  8: {
-    name: "Deep analysis",
-    cmd: "node bench/analyze.js",
-    description: "Algorithmic complexity and bottlenecks",
-  },
-
   // Baseline management
-  9: {
+  8: {
     name: "Capture performance baseline",
     cmd: "node bench/capture-baseline.js",
     description: "Save current metrics as baseline",
   },
-  10: {
+  9: {
     name: "Track performance over time",
     cmd: "node bench/track-performance.js",
     description: "Historical trends and analysis",
   },
 
   // Specialized
-  11: {
+  10: {
     name: "Export markdown results",
     cmd: "node bench/export-markdown.js",
     description: "Generate detailed markdown report",
   },
-  12: {
+  11: {
     name: "Legacy benchmark runner",
     cmd: "node bench/runner.js",
     description: "Original benchmark tool",
+  },
+  12: {
+    name: "Memory microbench",
+    cmd: "node bench/microbench/memory.js --mode h2m-reuse --iterations 5",
+    description: "Profile memory usage across modes",
+  },
+  13: {
+    name: "Workflow comparison (await vs stream)",
+    cmd: "node bench/workflows.js",
+    description: "Compare awaited and streaming strategies",
+  },
+  14: {
+    name: "Token usage estimator",
+    cmd: "node bench/token-usage.js",
+    description: "Estimate LLM token savings",
+  },
+  15: {
+    name: "Fetch end-to-end sample",
+    cmd: "node bench/fetch-e2e.js",
+    description: "Fetch a live page and convert it",
   },
 };
 
@@ -93,30 +108,33 @@ function showMenu() {
   console.log();
 
   console.log("🚀 Quick Actions (Day-to-Day):");
-  console.log("  1) Quick benchmark (fast)");
+  console.log("  1) Quick benchmark suite");
   console.log("  2) Update README");
   console.log("  3) Check regressions");
   console.log();
 
   console.log("📊 Comprehensive Benchmarks:");
-  console.log("  4) Full comparison");
+  console.log("  4) Full benchmark suite");
   console.log("  5) Production benchmark (1000x)");
   console.log();
 
   console.log("🔍 Analysis Tools:");
   console.log("  6) Performance profiling");
   console.log("  7) Memory analysis");
-  console.log("  8) Deep analysis");
   console.log();
 
   console.log("📈 Baseline & Tracking:");
-  console.log("  9) Capture baseline");
-  console.log("  10) Track trends");
+  console.log("  8) Capture baseline");
+  console.log("  9) Track trends");
   console.log();
 
   console.log("📝 Other:");
-  console.log("  11) Export markdown");
-  console.log("  12) Legacy runner");
+  console.log("  10) Export markdown");
+  console.log("  11) Legacy runner");
+  console.log("  12) Memory microbench");
+  console.log("  13) Workflow comparison");
+  console.log("  14) Token usage estimator");
+  console.log("  15) Fetch end-to-end sample");
   console.log();
 
   console.log("  q) Quit");
@@ -138,17 +156,27 @@ async function handleChoice(choice) {
   }
 
   console.log(`\n▶️  Running: ${command.name}`);
-  console.log(`   ${command.description}`);
+  if (command.description) {
+    console.log(`   ${command.description}`);
+  }
   console.log("─".repeat(70));
   console.log();
 
   try {
-    execSync(command.cmd, { stdio: "inherit" });
+    if (command.run) {
+      await command.run();
+    } else if (command.cmd) {
+      execSync(command.cmd, { stdio: "inherit" });
+    } else {
+      throw new Error("Command configuration missing run or cmd");
+    }
     console.log("\n✅ Completed successfully!");
   } catch (error) {
     console.log("\n❌ Command failed!");
     if (error.status === 1 && choice === "3") {
       console.log("   Performance regression detected!");
+    } else {
+      console.log(error.message ?? error);
     }
   }
 
@@ -160,7 +188,7 @@ async function interactiveMode() {
     showMenu();
 
     const choice = await new Promise((resolve) => {
-      rl.question("Enter choice (1-12, or q to quit): ", resolve);
+      rl.question("Enter choice (1-15, or q to quit): ", resolve);
     });
 
     await handleChoice(choice);
@@ -188,9 +216,14 @@ async function main() {
       full: "4",
       profile: "6",
       memory: "7",
-      analyze: "8",
-      baseline: "9",
-      track: "10",
+      baseline: "8",
+      track: "9",
+      export: "10",
+      legacy: "11",
+      microbench: "12",
+      workflows: "13",
+      tokens: "14",
+      fetch: "15",
     };
 
     const choice = shortcuts[subcommand] || subcommand;
@@ -207,15 +240,20 @@ Usage:
   pnpm bench <command>    # Run specific command
 
 Commands:
-  quick       Quick benchmark (10 iterations)
+  quick       Quick benchmark (iterates over 3 fixtures)
   readme      Update README with results
   regression  Check for performance regressions
-  full        Full benchmark comparison
+  full        Full benchmark comparison suite
   profile     Performance profiling
-  memory      Memory analysis
-  analyze     Deep analysis
+  memory      Memory analysis (requires --expose-gc)
   baseline    Capture performance baseline
   track       Track performance over time
+  export      Export markdown outputs
+  legacy      Run legacy runner.js harness
+  microbench  Memory microbenchmark harness
+  workflows   Await vs streaming workflow comparison
+  tokens      Token usage estimator
+  fetch       Fetch live page and convert it
 
 Examples:
   pnpm bench quick        # Run quick benchmark

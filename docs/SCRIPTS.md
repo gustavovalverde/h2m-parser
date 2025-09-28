@@ -30,42 +30,45 @@ This document mirrors the scripts defined in `package.json` so newcomers can dis
 
 ## Benchmarking & Performance Tooling
 
-The benchmarking utilities live under `bench/` and expect a fresh build (`pnpm build`) before running because they import from `dist/index.mjs`.
+The benchmarking utilities live under `bench/` and expect a fresh build (`pnpm build`) before running because they import from the compiled bundles. The `pnpm bench` command opens an interactive menu that wraps the most common flows; every entry has a matching script for CI usage.
 
-### Core runners
-
-| Script | Description |
-|--------|-------------|
-| `pnpm bench` | High-throughput benchmark over `tests/fixtures` (see `bench/runner.js` for flags like `--dataset`, `--repeats`, `--concurrency`). |
-| `pnpm bench:quick` | Shortcut for `bench/runner.js --quick` (caps at 25 files). |
-| `pnpm bench:fresh` | Forces new `H2MParser` instances between documents (`--instance-mode fresh`). |
-
-### Comparator & analysis helpers
+### Everyday commands
 
 | Script | Description |
 |--------|-------------|
-| `pnpm bench:compare` | Compare h2m-parser against competitor libraries with default iterations. |
-| `pnpm bench:compare:quick` | Faster comparison run (10 iterations, 10 files). |
-| `pnpm bench:compare:full` | Extensive comparison (1000 iterations, Markdown report). |
-| `pnpm bench:compare:json` | Emit comparison results as JSON for tooling. |
-| `pnpm bench:analyze` | Aggregate stats for the latest benchmark run. |
-| `pnpm bench:analyze:full` | Deeper analysis with high iteration counts. |
-| `pnpm bench:isolated` | Low-level benchmark harness for individual stages. |
-| `pnpm bench:profile` | CPU profiling wrapper (ideal for flamegraphs). |
-| `pnpm bench:profile:memory` | Memory profiling variant (requires `--expose-gc`). |
-| `pnpm bench:readme` | Refresh README performance tables. |
-| `pnpm bench:readme:fresh` | Same as above but forces a new benchmark run. |
-| `pnpm bench:readme:cached` | Reuse the last JSON results to regenerate Markdown. |
+| `pnpm bench` | Interactive menu for quick benchmarks, README refresh, and regression checks. |
+| `pnpm bench:quick` | Non-interactive quick suite (~1 minute) using a trimmed dataset. |
+| `pnpm bench:quick:full` | Headless quick suite runner (used in CI smoke checks). |
+
+### Comparator & suite helpers
+
+| Script | Description |
+|--------|-------------|
+| `pnpm bench:compare:quick` | 10 iterations across 10 files; prints a console summary. |
+| `pnpm bench:compare` | 100 iterations across the full dataset; emits Markdown. |
+| `pnpm bench:compare:full` | Release-grade run (1000 iterations, Markdown output). |
+| `pnpm bench:compare:json` | Emit comparison results as JSON for downstream tooling. |
+| `pnpm bench:refresh:all` | Full suite pipeline (comparison, microbenches, exports, README update). |
+| `pnpm bench:readme` | Update `README.md`; pass `--fresh` for a 100-iteration run (5MB file cap). |
+| `pnpm bench:readme:fresh` | Force a fresh benchmark run before updating the README. |
+| `pnpm bench:readme:cached` | Re-render README content using existing JSON output. |
+| `pnpm bench:readme:generate` | Build and run the full suite, then refresh the README. |
+
+### Telemetry & regression tooling
+
+| Script | Description |
+|--------|-------------|
+| `pnpm bench:baseline` | Capture a new baseline in `bench/.baseline/performance-baseline.json` (100 iterations, 5MB cap, full fixtures). |
+| `pnpm bench:regression` | Compare current metrics to the stored baseline using the same configuration (fails on regression). |
+| `pnpm bench:track` | Append metrics to the historical log for trend analysis. |
+| `pnpm bench:profile` | Component-level CPU profiling across the benchmark dataset. |
+| `pnpm bench:profile:memory` | Memory profiling variant (runs with `--expose-gc`). |
+| `pnpm bench:analyze` | Comprehensive profile summary integrating telemetry sub-stages. |
 
 ### Export utilities
 
-- `pnpm export:markdown` – Runs `bench/export-markdown.js` to dump Markdown outputs for h2m-parser and comparison libraries into `bench/output/`.
-
-### CI helpers (invoked manually or from workflows)
-
-- `node bench/capture-baseline.js` – Capture baseline metrics for regression tracking.
-- `node bench/check-regression.js --exit-on-regression` – Fail if performance drifts beyond configured thresholds.
-- `node bench/track-performance.js` – Append metrics to the historical log.
+- `pnpm bench:export` – Dump Markdown outputs for each converter into `bench/output/`.
+- `pnpm bench:export:validate` – Export Markdown and run `markdownlint` for quick validation.
 
 ## Quick Reference
 
@@ -73,9 +76,9 @@ The benchmarking utilities live under `bench/` and expect a fresh build (`pnpm b
 pnpm install        # bootstrap
 pnpm verify         # lint + typecheck + tests
 pnpm build          # produce dist/ bundles
-pnpm bench          # run full benchmark harness
-pnpm bench -- --dataset path/to/htmls --repeats 3 --concurrency 8
-pnpm bench:compare  # compare h2m-parser vs. other converters
+pnpm bench          # open interactive benchmark menu
+pnpm bench quick    # run quick benchmark via CLI shortcut
+pnpm bench:compare  # compare h2m-parser vs. other converters (Markdown output)
 ```
 
 If you add a new script, update this document in the same pull request so our onboarding experience stays current.
