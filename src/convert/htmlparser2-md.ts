@@ -108,7 +108,8 @@ function parseHtmlToNodes(html: string, ignoreTags: Set<string>): HtmlNode[] {
           return;
         }
 
-        const parent = stack[stack.length - 1].element ?? root;
+        const frame = stack[stack.length - 1];
+        const parent = frame?.element ?? root;
         const element: HtmlElementNode = {
           type: "tag",
           name: lower,
@@ -123,7 +124,8 @@ function parseHtmlToNodes(html: string, ignoreTags: Set<string>): HtmlNode[] {
         if (!data || skipDepth > 0) {
           return;
         }
-        const current = stack[stack.length - 1].element ?? root;
+        const frame = stack[stack.length - 1];
+        const current = frame?.element ?? root;
         const last = current.children[current.children.length - 1];
         if (last && last.type === "text") {
           last.data += data;
@@ -698,14 +700,15 @@ function collectElements(root: HtmlElementNode, tagName: string): HtmlElementNod
   const matches: HtmlElementNode[] = [];
   const children = root.children ?? [];
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (!isElementNode(child)) {
+    const childNode = children[i];
+    if (!childNode || !isElementNode(childNode)) {
       continue;
     }
-    if (child.name === tagName) {
-      matches.push(child);
+    const elementChild = childNode;
+    if (elementChild.name === tagName) {
+      matches.push(elementChild);
     }
-    matches.push(...collectElements(child, tagName));
+    matches.push(...collectElements(elementChild, tagName));
   }
   return matches;
 }
