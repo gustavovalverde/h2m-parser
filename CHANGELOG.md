@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- 4541105: Refined the htmlparser2 renderer to stream nodes directly, which removes the domhandler dependency and unlocks faster parse times on large fixtures.
+  Expose granular `convert_parse`, `convert_render`, and `convert_postprocess` telemetry events (propagated through `H2MParser` and `htmlToMarkdown`) so downstream tooling can pinpoint hotspots while staying backwards compatible.
+
 ## 0.4.0
 
 ### Minor Changes
