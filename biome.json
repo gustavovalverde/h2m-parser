@@ -65,6 +65,18 @@
       }
     },
     {
+      "includes": ["bench/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noAwaitInLoops": "off",
+            "useTopLevelRegex": "off",
+            "noNamespaceImport": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": [
         "fixtures/**",
         "test-assets/**",

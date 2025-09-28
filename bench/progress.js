@@ -11,7 +11,8 @@ export class ProgressBar {
     this.width = options.width || 40;
     this.complete = options.complete || "█";
     this.incomplete = options.incomplete || "░";
-    this.format = options.format || ":bar :percent (:current/:total) :elapseds elapsed, ~:etas remaining";
+    this.format =
+      options.format || ":bar :percent (:current/:total) :elapseds elapsed, ~:etas remaining";
     this.renderThrottle = options.renderThrottle || 100;
     this.lastRender = 0;
     this.stream = process.stdout;
@@ -32,7 +33,9 @@ export class ProgressBar {
   }
 
   render() {
-    if (!this.isEnabled) return;
+    if (!this.isEnabled) {
+      return;
+    }
 
     const elapsed = Date.now() - this.startTime;
     const percent = Math.min(100, Math.floor((this.current / this.total) * 100));
@@ -49,7 +52,7 @@ export class ProgressBar {
     }
 
     // Format the output
-    let output = this.format
+    const output = this.format
       .replace(":bar", bar)
       .replace(":percent", `${percent}%`)
       .replace(":current", this.current.toString())
@@ -116,7 +119,9 @@ export class Spinner {
 
   stop(message) {
     if (!this.isEnabled) {
-      if (message) console.log(`[bench] ${message}`);
+      if (message) {
+        console.log(`[bench] ${message}`);
+      }
       return;
     }
 

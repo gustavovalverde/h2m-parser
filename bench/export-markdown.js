@@ -27,12 +27,14 @@ for (let i = 0; i < argv.length; i += 1) {
       datasetDir = resolve(argv[++i] ?? DEFAULT_DATASET);
       break;
     case "--help":
-    case "-h":
+    case "-h": {
       console.log(`Usage: node bench/export-markdown.js [--dataset <path>]
 
 Generates Markdown output for each HTML file using multiple converters.
 Results are stored under bench/output/<library>/`);
       process.exit(0);
+      break;
+    }
     default:
       throw new Error(`Unknown flag: ${arg}`);
   }
@@ -42,7 +44,7 @@ async function ensureDistBuilt() {
   const distPath = join(process.cwd(), "dist", "index.mjs");
   try {
     await stat(distPath);
-  } catch (error) {
+  } catch (_error) {
     throw new Error("dist/index.mjs not found. Run `pnpm build` before exporting markdown.");
   }
 }

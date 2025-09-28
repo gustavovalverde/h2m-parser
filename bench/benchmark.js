@@ -35,11 +35,11 @@ async function runBenchmarkInProcess(args) {
  * Run comparison benchmarks for fresh vs reused instances
  */
 async function runComparison() {
-  const baseArgs = process.argv.slice(2).filter(arg => !arg.startsWith("--compare"));
+  const baseArgs = process.argv.slice(2).filter((arg) => !arg.startsWith("--compare"));
 
-  console.log("\n" + "=".repeat(60));
+  console.log(`\n${"=".repeat(60)}`);
   console.log("Running benchmark comparison: REUSED vs FRESH instances");
-  console.log("=".repeat(60) + "\n");
+  console.log(`${"=".repeat(60)}\n`);
 
   console.log("1. Running with REUSED instance mode...");
   console.log("-".repeat(40));
@@ -49,9 +49,9 @@ async function runComparison() {
   console.log("-".repeat(40));
   await runBenchmarkInProcess([...baseArgs, "--instance-mode", "fresh"]);
 
-  console.log("\n" + "=".repeat(60));
+  console.log(`\n${"=".repeat(60)}`);
   console.log("Comparison complete! Check the results above.");
-  console.log("=".repeat(60) + "\n");
+  console.log(`${"=".repeat(60)}\n`);
 }
 
 /**
@@ -73,4 +73,4 @@ async function main() {
   }
 }
 
-main();
+void main();

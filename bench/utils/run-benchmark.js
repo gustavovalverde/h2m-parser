@@ -1,6 +1,6 @@
+import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
 
 const RESULTS_PATH = join(process.cwd(), "bench", ".results", "comparison-latest.json");
 

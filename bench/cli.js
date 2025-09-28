@@ -5,86 +5,84 @@
  * Reduces package.json clutter by consolidating 15+ bench scripts.
  */
 
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { execSync } from "child_process";
-import readline from "readline";
+import { execSync } from "node:child_process";
+import readline from "node:readline";
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 const COMMANDS = {
   // Day-to-day commands
-  "1": {
+  1: {
     name: "Quick benchmark (10 iterations, 10 files)",
     cmd: "node bench/compare.js --iterations 10 --max-files 10",
-    description: "Fast check for development"
+    description: "Fast check for development",
   },
-  "2": {
+  2: {
     name: "Update README with benchmark results",
     cmd: "node bench/update-readme.js",
-    description: "Update README with latest performance data"
+    description: "Update README with latest performance data",
   },
-  "3": {
+  3: {
     name: "Check for regressions",
     cmd: "node bench/check-regression.js",
-    description: "Compare current performance against baseline"
+    description: "Compare current performance against baseline",
   },
 
   // Comprehensive benchmarks
-  "4": {
+  4: {
     name: "Full benchmark comparison",
     cmd: "node bench/compare.js",
-    description: "Complete benchmark with all files (slower)"
+    description: "Complete benchmark with all files (slower)",
   },
-  "5": {
+  5: {
     name: "Production benchmark (1000 iterations)",
     cmd: "node bench/compare.js --iterations 1000 --output markdown",
-    description: "High-precision benchmark for releases"
+    description: "High-precision benchmark for releases",
   },
 
   // Analysis tools
-  "6": {
+  6: {
     name: "Performance profiling",
     cmd: "node bench/profile.js",
-    description: "Detailed component breakdown"
+    description: "Detailed component breakdown",
   },
-  "7": {
+  7: {
     name: "Memory analysis",
     cmd: "node --expose-gc bench/profile.js --memory",
-    description: "Memory usage and leak detection"
+    description: "Memory usage and leak detection",
   },
-  "8": {
+  8: {
     name: "Deep analysis",
     cmd: "node bench/analyze.js",
-    description: "Algorithmic complexity and bottlenecks"
+    description: "Algorithmic complexity and bottlenecks",
   },
 
   // Baseline management
-  "9": {
+  9: {
     name: "Capture performance baseline",
     cmd: "node bench/capture-baseline.js",
-    description: "Save current metrics as baseline"
+    description: "Save current metrics as baseline",
   },
-  "10": {
+  10: {
     name: "Track performance over time",
     cmd: "node bench/track-performance.js",
-    description: "Historical trends and analysis"
+    description: "Historical trends and analysis",
   },
 
   // Specialized
-  "11": {
+  11: {
     name: "Export markdown results",
     cmd: "node bench/export-markdown.js",
-    description: "Generate detailed markdown report"
+    description: "Generate detailed markdown report",
   },
-  "12": {
+  12: {
     name: "Legacy benchmark runner",
     cmd: "node bench/runner.js",
-    description: "Original benchmark tool"
-  }
+    description: "Original benchmark tool",
+  },
 };
 
 function showMenu() {
@@ -128,7 +126,7 @@ function showMenu() {
 async function handleChoice(choice) {
   choice = choice.trim().toLowerCase();
 
-  if (choice === 'q' || choice === 'quit' || choice === 'exit') {
+  if (choice === "q" || choice === "quit" || choice === "exit") {
     console.log("👋 Goodbye!");
     process.exit(0);
   }
@@ -145,7 +143,7 @@ async function handleChoice(choice) {
   console.log();
 
   try {
-    execSync(command.cmd, { stdio: 'inherit' });
+    execSync(command.cmd, { stdio: "inherit" });
     console.log("\n✅ Completed successfully!");
   } catch (error) {
     console.log("\n❌ Command failed!");
@@ -161,14 +159,14 @@ async function interactiveMode() {
   while (true) {
     showMenu();
 
-    const choice = await new Promise(resolve => {
+    const choice = await new Promise((resolve) => {
       rl.question("Enter choice (1-12, or q to quit): ", resolve);
     });
 
     await handleChoice(choice);
 
-    if (choice !== 'q') {
-      await new Promise(resolve => {
+    if (choice !== "q") {
+      await new Promise((resolve) => {
         rl.question("\nPress Enter to continue...", resolve);
       });
     }
@@ -184,15 +182,15 @@ async function main() {
 
     // Map common subcommands to menu items
     const shortcuts = {
-      'quick': '1',
-      'readme': '2',
-      'regression': '3',
-      'full': '4',
-      'profile': '6',
-      'memory': '7',
-      'analyze': '8',
-      'baseline': '9',
-      'track': '10'
+      quick: "1",
+      readme: "2",
+      regression: "3",
+      full: "4",
+      profile: "6",
+      memory: "7",
+      analyze: "8",
+      baseline: "9",
+      track: "10",
     };
 
     const choice = shortcuts[subcommand] || subcommand;
@@ -200,7 +198,7 @@ async function main() {
     if (COMMANDS[choice]) {
       await handleChoice(choice);
       process.exit(0);
-    } else if (subcommand === '--help' || subcommand === '-h') {
+    } else if (subcommand === "--help" || subcommand === "-h") {
       console.log(`
 h2m-parser Benchmark CLI
 
@@ -237,7 +235,7 @@ Examples:
   await interactiveMode();
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error("Error:", error);
   process.exit(1);
 });

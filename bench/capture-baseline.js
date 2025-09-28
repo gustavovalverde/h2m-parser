@@ -5,9 +5,9 @@
  * Run this on main branch to establish baseline metrics.
  */
 
+import { execSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { execSync } from "child_process";
 import { runBenchmark } from "./utils/run-benchmark.js";
 
 const BASELINE_DIR = join(process.cwd(), "bench", ".baseline");
@@ -48,29 +48,30 @@ async function captureBaseline() {
     metrics: {
       h2mParserNoReadability: {
         mean: results.summary.averages.h2mParserNoReadability,
-        files: {}
+        files: {},
       },
       h2mParserWithReadability: {
         mean: results.summary.averages.h2mParserWithReadability,
-        files: {}
+        files: {},
       },
       comparisons: {
         vsTurndown: results.summary.comparisons.vsTurndown,
-        vsNodeHtmlMarkdown: results.summary.comparisons.vsNodeHtmlMarkdown
-      }
+        vsNodeHtmlMarkdown: results.summary.comparisons.vsNodeHtmlMarkdown,
+      },
     },
-    fileResults: []
+    fileResults: [],
   };
 
   // Capture per-file baselines for regression detection
-  for (const fileResult of results.results.slice(0, 10)) { // Top 10 files as representatives
+  for (const fileResult of results.results.slice(0, 10)) {
+    // Top 10 files as representatives
     baseline.fileResults.push({
       name: fileResult.name,
       size: fileResult.size,
-      h2mParserNoReadability: fileResult.benchmarks['h2m-parser_no_readability']?.mean,
-      h2mParserWithReadability: fileResult.benchmarks['h2m-parser_with_readability']?.mean,
+      h2mParserNoReadability: fileResult.benchmarks["h2m-parser_no_readability"]?.mean,
+      h2mParserWithReadability: fileResult.benchmarks["h2m-parser_with_readability"]?.mean,
       turndown: fileResult.benchmarks.turndown?.mean,
-      nodeHtmlMarkdown: fileResult.benchmarks.node_html_markdown?.mean
+      nodeHtmlMarkdown: fileResult.benchmarks.node_html_markdown?.mean,
     });
   }
 
@@ -80,10 +81,16 @@ async function captureBaseline() {
   console.log("\n✅ Baseline captured successfully!");
   console.log(`📁 Saved to: ${BASELINE_FILE}`);
   console.log("\nKey metrics:");
-  console.log(`  h2m-parser (no Readability): ${baseline.metrics.h2mParserNoReadability.mean.toFixed(3)}ms`);
-  console.log(`  h2m-parser (with Readability): ${baseline.metrics.h2mParserWithReadability.mean.toFixed(3)}ms`);
+  console.log(
+    `  h2m-parser (no Readability): ${baseline.metrics.h2mParserNoReadability.mean.toFixed(3)}ms`,
+  );
+  console.log(
+    `  h2m-parser (with Readability): ${baseline.metrics.h2mParserWithReadability.mean.toFixed(3)}ms`,
+  );
   console.log(`  vs Turndown: ${baseline.metrics.comparisons.vsTurndown.toFixed(2)}x`);
-  console.log(`  vs node-html-markdown: ${baseline.metrics.comparisons.vsNodeHtmlMarkdown.toFixed(2)}x`);
+  console.log(
+    `  vs node-html-markdown: ${baseline.metrics.comparisons.vsNodeHtmlMarkdown.toFixed(2)}x`,
+  );
 
   return baseline;
 }
