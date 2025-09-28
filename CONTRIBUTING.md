@@ -11,7 +11,7 @@ Thanks for your interest in improving h2m-parser! Keeping cognitive load low is 
 ## Coding standards
 
 - Write TypeScript in `src/` and keep exports explicit in `src/index.ts`.
-- Favor early returns and descriptive helper functions to keep cognitive load low—see `/Users/gustavovalverde/dev/personal/micro-play/cognitive-load.md` for the philosophy behind our style.
+- Favor early returns and descriptive helper functions to keep cognitive load low—see [`cognitive-load.md`](cognitive-load.md) for the philosophy behind our style.
 - Prefer pure functions; when mutating shared state, encapsulate the mutation and document it.
 - Keep custom translators compact—wrap individual tags with clear helpers instead of adding deep inheritance or cross-cutting state.
 - Use Biome for formatting and linting (`pnpm lint:fix`, `pnpm format:fix`).

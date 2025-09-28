@@ -6,10 +6,18 @@ This folder contains the benchmarking harness described in `performance-implemen
 
 ```bash
 pnpm build
-pnpm bench -- --dataset tests/fixtures --repeats 2 --concurrency 4
+pnpm bench quick
 ```
 
-Options:
+`pnpm bench` launches an interactive menu that wraps the common benchmark flows (quick suite, README refresh, regression checks, etc.). Every entry prints the underlying command so you can copy/paste it for automation.
+
+For ad-hoc runs against a custom dataset you can still drop down to the raw runner:
+
+```bash
+node bench/runner.js --dataset tests/fixtures --repeats 2 --concurrency 4
+```
+
+Key flags accepted by `bench/runner.js`:
 
 - `--dataset <path>` — directory of `*.html` files or a manifest file (one path per line). Defaults to `tests/fixtures`.
 - `--repeats <n>` — number of passes over the dataset (use ≥2 to smooth out warm-up noise). Defaults to `1`.
@@ -59,21 +67,7 @@ Options:
 - `--output <format>` - Output format: console or json
 - `--memory` - Include memory analysis (requires --expose-gc)
 
-### analyze.js - Pipeline Analysis
-
-Detailed analysis of conversion pipeline and algorithmic complexity:
-
-```bash
-node bench/analyze.js --iterations 100
-```
-
-Options:
-
-- `--iterations <n>` - Iterations per test (default: 100)
-- `--output <format>` - Output format: console or json
-- `--verbose` - Show detailed output
-
-Run with garbage collection exposed for memory analysis:
+With garbage collection exposed you can collect heap snapshots:
 
 ```bash
 node --expose-gc bench/profile.js --memory
@@ -89,6 +83,8 @@ node --expose-gc bench/profile.js --memory
 ### Automation Helpers
 
 - `pnpm bench:quick:full` – Run a fast smoke suite (small iteration counts) and aggregate the results into `bench/.results/summary-latest.json`.
+- `pnpm bench:baseline` / `pnpm bench:regression` – 100-iteration comparison over `tests/fixtures` (5MB per-file cap) for baseline capture and regression checks.
+- `pnpm bench:readme --fresh` – Regenerate README metrics with 100 iterations and a 5MB file cap.
 - `pnpm bench:refresh:all` – Regenerate the full comparison assets (JSON + Markdown), export Markdown for every fixture, refresh the aggregated summary, and update the README in one go.
 - `pnpm bench:readme:generate` – Alias for building the library and running `bench:refresh:all`.
 

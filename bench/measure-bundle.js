@@ -2,7 +2,7 @@
 
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { gzipSync } from "node:zlib";
+import { collectBundleFiles, computeBundleSummary } from "./lib/bundle-metrics.js";
 import { loadH2MModule } from "./utils/h2m-loader.js";
 
 const DIST_DIR = join(process.cwd(), "dist");
@@ -30,57 +30,18 @@ async function loadPrevious() {
   return JSON.parse(contents);
 }
 
-function computeDiff(current, previous) {
-  if (!previous) {
-    return {
-      sizeDiff: null,
-      gzipDiff: null,
-      sizeDiffPct: null,
-      gzipDiffPct: null,
-    };
-  }
-  const sizeDiff = current.size - previous.size;
-  const gzipDiff = current.gzipSize - previous.gzipSize;
-  const pct = (delta, base) => (base === 0 ? null : (delta / base) * 100);
-  return {
-    sizeDiff,
-    gzipDiff,
-    sizeDiffPct: pct(sizeDiff, previous.size),
-    gzipDiffPct: pct(gzipDiff, previous.gzipSize),
-  };
-}
-
 async function measureFiles() {
   await loadH2MModule();
 
   const distEntries = await readdir(DIST_DIR, { withFileTypes: true });
-  const files = distEntries
-    .filter((entry) => entry.isFile() && /\.(cjs|mjs)$/i.test(entry.name))
-    .map((entry) => entry.name)
-    .sort();
-
   const previous = await loadPrevious();
+  const filePaths = distEntries
+    .filter((entry) => entry.isFile() && /\.(cjs|mjs)$/i.test(entry.name))
+    .map((entry) => ({ name: entry.name, path: join(DIST_DIR, entry.name) }));
 
-  const results = [];
-  for (const name of files) {
-    const path = join(DIST_DIR, name);
-    const content = await readFile(path);
-    const size = content.length;
-    const gzipSize = gzipSync(content).length;
-    const prevEntry = previous?.files?.find((item) => item.name === name);
-    const diff = computeDiff({ size, gzipSize }, prevEntry ?? null);
-    results.push({
-      name,
-      size,
-      gzipSize,
-      ...diff,
-    });
-  }
+  const files = await collectBundleFiles(filePaths, (path) => readFile(path));
 
-  const summary = {
-    generatedAt: new Date().toISOString(),
-    files: results,
-  };
+  const summary = computeBundleSummary(files, previous);
 
   await mkdir(RESULTS_DIR, { recursive: true });
   await writeFile(OUTPUT_PATH, JSON.stringify(summary, null, 2), "utf8");
@@ -88,7 +49,7 @@ async function measureFiles() {
 
   const fmt = (bytes) => `${(bytes / 1024).toFixed(1)} KB`;
   console.log("Bundle size summary:\n");
-  for (const file of results) {
+  for (const file of summary.files) {
     const diffStr =
       file.sizeDiff == null
         ? "(new baseline)"

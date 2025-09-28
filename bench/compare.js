@@ -5,7 +5,7 @@
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { isAbsolute, join, relative } from "node:path";
 import { batchBenchmark, generateSummary, saveBenchmarkResults } from "./lib/benchmark-runner.js";
 import { describeHtml } from "./utils/fixture-metadata.js";
 
@@ -151,7 +151,7 @@ class ComparisonBenchmark {
       timestamp: new Date().toISOString(),
       fileCount: files.length,
       iterations: this.iterations,
-      dataset: this.dataset,
+      dataset: formatPathForDisplay(this.dataset),
       testReadability: this.testReadability,
     };
 
@@ -340,7 +340,7 @@ class ComparisonBenchmark {
     markdown += `Generated: ${new Date().toISOString()}\n\n`;
     markdown += `## Test Configuration\n\n`;
     markdown += `- Iterations: ${this.iterations}\n`;
-    markdown += `- Dataset: ${this.dataset}\n`;
+    markdown += `- Dataset: ${formatPathForDisplay(this.dataset)}\n`;
     markdown += `- Readability tested: ${this.testReadability ? "Yes" : "No"}\n\n`;
 
     markdown += "## Results by File\n\n";
@@ -450,6 +450,17 @@ Examples:
 
   const benchmark = new ComparisonBenchmark(options);
   await benchmark.run();
+}
+
+function formatPathForDisplay(pathValue) {
+  if (!pathValue) {
+    return pathValue;
+  }
+  try {
+    return isAbsolute(pathValue) ? relative(process.cwd(), pathValue) || "." : pathValue;
+  } catch {
+    return pathValue;
+  }
 }
 
 main().catch(console.error);

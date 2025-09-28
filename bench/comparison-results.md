@@ -1,11 +1,11 @@
 # h2m-parser Benchmark Results
 
-Generated: 2025-09-28T15:53:58.311Z
+Generated: 2025-09-28T17:49:57.465Z
 
 ## Test Configuration
 
 - Iterations: 100
-- Dataset: /Users/gustavovalverde/dev/personal/hgtm/tests/fixtures
+- Dataset: tests/fixtures
 - Readability tested: Yes
 
 ## Results by File
@@ -16,11 +16,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.021 | 0.032 | 0.034 |
-| h2m-parser with readability | 0.264 | 0.416 | 0.456 |
-| turndown | 0.023 | 0.043 | 0.049 |
-| node html markdown | 0.011 | 0.017 | 0.020 |
-| mdream | 0.005 | 0.010 | 0.014 |
+| h2m-parser no readability | 0.013 | 0.026 | 0.029 |
+| h2m-parser with readability | 0.211 | 0.323 | 0.346 |
+| turndown | 0.024 | 0.045 | 0.054 |
+| node html markdown | 0.012 | 0.018 | 0.022 |
+| mdream | 0.005 | 0.008 | 0.011 |
 
 ### small
 
@@ -28,11 +28,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.016 | 0.025 | 0.027 |
-| h2m-parser with readability | 0.195 | 0.279 | 0.295 |
-| turndown | 0.039 | 0.051 | 0.057 |
-| node html markdown | 0.021 | 0.028 | 0.030 |
-| mdream | 0.013 | 0.016 | 0.017 |
+| h2m-parser no readability | 0.016 | 0.023 | 0.024 |
+| h2m-parser with readability | 0.174 | 0.209 | 0.211 |
+| turndown | 0.041 | 0.051 | 0.058 |
+| node html markdown | 0.021 | 0.028 | 0.028 |
+| mdream | 0.014 | 0.020 | 0.021 |
 
 ### medium
 
@@ -40,11 +40,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.013 | 0.016 | 0.017 |
-| h2m-parser with readability | 0.233 | 0.266 | 0.274 |
-| turndown | 0.048 | 0.055 | 0.055 |
-| node html markdown | 0.022 | 0.026 | 0.026 |
-| mdream | 0.022 | 0.041 | 0.041 |
+| h2m-parser no readability | 0.013 | 0.015 | 0.016 |
+| h2m-parser with readability | 0.220 | 0.249 | 0.276 |
+| turndown | 0.046 | 0.053 | 0.054 |
+| node html markdown | 0.018 | 0.019 | 0.020 |
+| mdream | 0.020 | 0.038 | 0.038 |
 
 ### file_1
 
@@ -53,11 +53,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.113 | 1.247 | 1.292 |
-| h2m-parser with readability | 6.413 | 8.190 | 12.025 |
-| turndown | 5.750 | 7.072 | 7.150 |
-| node html markdown | 3.144 | 3.524 | 3.724 |
-| mdream | 1.710 | 1.811 | 1.911 |
+| h2m-parser no readability | 1.124 | 1.247 | 1.280 |
+| h2m-parser with readability | 6.525 | 7.520 | 11.307 |
+| turndown | 6.038 | 7.720 | 7.744 |
+| node html markdown | 3.206 | 3.656 | 3.700 |
+| mdream | 1.728 | 1.878 | 1.923 |
 
 ### file_2
 
@@ -66,11 +66,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.821 | 0.911 | 0.921 |
-| h2m-parser with readability | 5.210 | 6.684 | 7.578 |
-| turndown | 4.144 | 4.475 | 5.525 |
-| node html markdown | 2.033 | 2.265 | 2.276 |
-| mdream | 0.139 | 0.145 | 0.147 |
+| h2m-parser no readability | 0.793 | 0.868 | 0.887 |
+| h2m-parser with readability | 5.181 | 5.528 | 5.816 |
+| turndown | 4.442 | 4.985 | 5.985 |
+| node html markdown | 2.152 | 2.492 | 2.533 |
+| mdream | 0.193 | 0.416 | 0.421 |
 
 ### file_3
 
@@ -79,11 +79,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.568 | 1.691 | 1.714 |
-| h2m-parser with readability | 12.451 | 16.677 | 17.304 |
-| turndown | 9.080 | 11.063 | 11.175 |
-| node html markdown | 3.861 | 4.052 | 4.059 |
-| mdream | 0.255 | 0.266 | 0.269 |
+| h2m-parser no readability | 1.560 | 1.666 | 1.685 |
+| h2m-parser with readability | 12.730 | 17.491 | 17.999 |
+| turndown | 9.288 | 11.522 | 11.644 |
+| node html markdown | 4.085 | 4.227 | 4.244 |
+| mdream | 0.259 | 0.275 | 0.278 |
 
 ### file_4
 
@@ -92,11 +92,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.963 | 1.049 | 1.091 |
-| h2m-parser with readability | 6.092 | 6.426 | 8.835 |
-| turndown | 4.419 | 4.819 | 5.815 |
-| node html markdown | 2.325 | 2.576 | 2.590 |
-| mdream | 1.007 | 1.028 | 1.032 |
+| h2m-parser no readability | 0.982 | 1.091 | 1.099 |
+| h2m-parser with readability | 6.315 | 6.671 | 7.330 |
+| turndown | 4.620 | 5.302 | 5.867 |
+| node html markdown | 2.419 | 2.696 | 2.731 |
+| mdream | 1.038 | 1.105 | 1.147 |
 
 ### file_5
 
@@ -105,11 +105,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.337 | 1.462 | 1.493 |
-| h2m-parser with readability | 7.230 | 9.009 | 12.970 |
-| turndown | 6.131 | 7.446 | 7.582 |
-| node html markdown | 3.239 | 3.483 | 3.567 |
-| mdream | 0.521 | 0.571 | 0.650 |
+| h2m-parser no readability | 1.334 | 1.463 | 1.485 |
+| h2m-parser with readability | 7.886 | 11.046 | 13.794 |
+| turndown | 6.545 | 8.022 | 8.077 |
+| node html markdown | 3.414 | 3.678 | 3.700 |
+| mdream | 0.531 | 0.615 | 0.639 |
 
 ### file_6
 
@@ -118,11 +118,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.382 | 1.486 | 1.523 |
-| h2m-parser with readability | 7.168 | 7.594 | 14.377 |
-| turndown | 7.969 | 9.340 | 9.377 |
-| node html markdown | 4.605 | 4.903 | 4.977 |
-| mdream | 1.180 | 1.244 | 1.321 |
+| h2m-parser no readability | 1.381 | 1.526 | 1.546 |
+| h2m-parser with readability | 7.496 | 7.859 | 13.290 |
+| turndown | 8.250 | 9.653 | 9.749 |
+| node html markdown | 4.675 | 5.015 | 5.055 |
+| mdream | 1.203 | 1.288 | 1.304 |
 
 ### file_7
 
@@ -131,11 +131,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.914 | 1.052 | 1.090 |
-| h2m-parser with readability | 4.959 | 5.318 | 5.574 |
-| turndown | 4.169 | 4.547 | 5.495 |
-| node html markdown | 2.150 | 2.410 | 2.443 |
-| mdream | 0.509 | 0.584 | 0.597 |
+| h2m-parser no readability | 0.893 | 0.983 | 0.998 |
+| h2m-parser with readability | 5.161 | 5.459 | 5.531 |
+| turndown | 4.243 | 4.542 | 5.464 |
+| node html markdown | 2.221 | 2.477 | 2.514 |
+| mdream | 0.520 | 0.600 | 0.609 |
 
 ### file_8
 
@@ -144,11 +144,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.486 | 0.552 | 0.568 |
-| h2m-parser with readability | 3.130 | 3.362 | 3.433 |
-| turndown | 2.170 | 2.406 | 2.454 |
-| node html markdown | 0.611 | 0.689 | 0.706 |
-| mdream | 0.629 | 0.724 | 0.743 |
+| h2m-parser no readability | 0.487 | 0.543 | 0.559 |
+| h2m-parser with readability | 3.295 | 3.531 | 3.568 |
+| turndown | 2.158 | 2.280 | 2.321 |
+| node html markdown | 0.604 | 0.705 | 0.727 |
+| mdream | 0.617 | 0.660 | 0.672 |
 
 ### file_9
 
@@ -157,11 +157,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.765 | 0.841 | 0.870 |
-| h2m-parser with readability | 4.888 | 5.155 | 5.297 |
-| turndown | 3.445 | 3.890 | 3.999 |
-| node html markdown | 1.957 | 2.281 | 2.393 |
-| mdream | 1.056 | 1.156 | 1.177 |
+| h2m-parser no readability | 0.752 | 0.828 | 0.855 |
+| h2m-parser with readability | 4.958 | 5.296 | 5.358 |
+| turndown | 3.395 | 3.849 | 4.059 |
+| node html markdown | 1.986 | 2.192 | 2.244 |
+| mdream | 1.054 | 1.135 | 1.151 |
 
 ### file_10
 
@@ -170,11 +170,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.007 | 1.085 | 1.133 |
-| h2m-parser with readability | 6.721 | 7.194 | 10.310 |
-| turndown | 7.614 | 9.780 | 9.890 |
-| node html markdown | 2.741 | 3.065 | 3.108 |
-| mdream | 0.018 | 0.018 | 0.018 |
+| h2m-parser no readability | 0.999 | 1.084 | 1.098 |
+| h2m-parser with readability | 6.635 | 6.949 | 7.099 |
+| turndown | 7.723 | 9.897 | 10.049 |
+| node html markdown | 2.737 | 3.029 | 3.076 |
+| mdream | 0.018 | 0.018 | 0.019 |
 
 ### file_11
 
@@ -183,11 +183,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.782 | 1.933 | 1.952 |
-| h2m-parser with readability | 21.455 | 27.161 | 27.340 |
-| turndown | 9.340 | 11.042 | 11.237 |
-| node html markdown | 6.660 | 7.024 | 7.075 |
-| mdream | 0.150 | 0.167 | 0.171 |
+| h2m-parser no readability | 1.718 | 1.847 | 1.861 |
+| h2m-parser with readability | 21.486 | 27.662 | 27.941 |
+| turndown | 9.332 | 11.001 | 11.158 |
+| node html markdown | 6.607 | 6.938 | 6.967 |
+| mdream | 0.143 | 0.159 | 0.160 |
 
 ### file_12
 
@@ -196,11 +196,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.567 | 0.641 | 0.652 |
-| h2m-parser with readability | 3.185 | 3.498 | 3.586 |
-| turndown | 2.541 | 2.731 | 2.817 |
-| node html markdown | 1.058 | 1.214 | 1.280 |
-| mdream | 0.687 | 0.707 | 0.716 |
+| h2m-parser no readability | 0.550 | 0.617 | 0.640 |
+| h2m-parser with readability | 3.253 | 3.539 | 3.571 |
+| turndown | 2.546 | 2.875 | 2.897 |
+| node html markdown | 1.077 | 1.183 | 1.291 |
+| mdream | 0.687 | 0.729 | 0.748 |
 
 ### file_13
 
@@ -209,11 +209,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.190 | 1.292 | 1.312 |
-| h2m-parser with readability | 5.223 | 5.590 | 5.687 |
-| turndown | 4.828 | 5.829 | 5.866 |
-| node html markdown | 3.243 | 3.449 | 3.482 |
-| mdream | 1.578 | 1.651 | 1.667 |
+| h2m-parser no readability | 1.179 | 1.271 | 1.312 |
+| h2m-parser with readability | 5.413 | 5.673 | 5.809 |
+| turndown | 4.923 | 5.928 | 6.061 |
+| node html markdown | 3.370 | 3.628 | 3.650 |
+| mdream | 1.592 | 1.705 | 1.727 |
 
 ### file_14
 
@@ -222,11 +222,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.720 | 0.786 | 0.822 |
-| h2m-parser with readability | 4.178 | 4.420 | 4.563 |
-| turndown | 3.468 | 3.715 | 3.987 |
-| node html markdown | 2.177 | 2.411 | 2.436 |
-| mdream | 0.721 | 0.768 | 0.846 |
+| h2m-parser no readability | 0.716 | 0.785 | 0.801 |
+| h2m-parser with readability | 4.340 | 4.653 | 4.667 |
+| turndown | 3.547 | 3.748 | 4.022 |
+| node html markdown | 2.265 | 2.531 | 2.538 |
+| mdream | 0.729 | 0.833 | 0.864 |
 
 ### file_15
 
@@ -235,11 +235,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.880 | 0.989 | 1.013 |
-| h2m-parser with readability | 4.446 | 4.809 | 4.922 |
-| turndown | 3.805 | 4.125 | 5.023 |
-| node html markdown | 2.259 | 2.481 | 2.499 |
-| mdream | 1.002 | 1.021 | 1.048 |
+| h2m-parser no readability | 0.893 | 0.991 | 1.000 |
+| h2m-parser with readability | 4.679 | 4.926 | 5.050 |
+| turndown | 3.831 | 4.053 | 5.060 |
+| node html markdown | 2.378 | 2.690 | 2.701 |
+| mdream | 1.001 | 1.065 | 1.089 |
 
 ### file_16
 
@@ -248,11 +248,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.100 | 1.201 | 1.220 |
-| h2m-parser with readability | 6.648 | 7.109 | 9.993 |
-| turndown | 6.082 | 7.133 | 7.291 |
-| node html markdown | 3.023 | 3.340 | 3.373 |
-| mdream | 2.012 | 2.107 | 2.140 |
+| h2m-parser no readability | 1.089 | 1.188 | 1.204 |
+| h2m-parser with readability | 6.688 | 7.089 | 10.222 |
+| turndown | 6.189 | 7.429 | 7.560 |
+| node html markdown | 3.167 | 3.613 | 3.641 |
+| mdream | 2.002 | 2.118 | 2.121 |
 
 ### file_17
 
@@ -261,11 +261,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.198 | 1.329 | 1.379 |
-| h2m-parser with readability | 6.310 | 6.970 | 8.592 |
-| turndown | 5.395 | 6.491 | 7.044 |
-| node html markdown | 2.875 | 3.141 | 3.164 |
-| mdream | 0.518 | 0.551 | 0.646 |
+| h2m-parser no readability | 1.170 | 1.260 | 1.274 |
+| h2m-parser with readability | 6.517 | 6.850 | 7.272 |
+| turndown | 5.581 | 6.926 | 7.213 |
+| node html markdown | 2.996 | 3.245 | 3.263 |
+| mdream | 0.529 | 0.618 | 0.659 |
 
 ### file_18
 
@@ -274,11 +274,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.838 | 0.920 | 0.952 |
-| h2m-parser with readability | 4.099 | 4.331 | 4.388 |
-| turndown | 3.668 | 4.144 | 4.795 |
-| node html markdown | 1.986 | 2.248 | 2.255 |
-| mdream | 1.436 | 1.482 | 1.485 |
+| h2m-parser no readability | 0.814 | 0.905 | 0.940 |
+| h2m-parser with readability | 4.167 | 4.433 | 4.491 |
+| turndown | 3.699 | 3.981 | 4.777 |
+| node html markdown | 2.066 | 2.421 | 2.435 |
+| mdream | 1.430 | 1.490 | 1.491 |
 
 ### file_19
 
@@ -287,11 +287,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.846 | 1.982 | 1.994 |
-| h2m-parser with readability | 10.914 | 17.181 | 17.425 |
-| turndown | 7.971 | 9.579 | 9.722 |
-| node html markdown | 6.285 | 6.589 | 6.615 |
-| mdream | 1.502 | 1.568 | 1.570 |
+| h2m-parser no readability | 1.771 | 1.922 | 1.935 |
+| h2m-parser with readability | 10.855 | 17.454 | 18.292 |
+| turndown | 8.280 | 9.766 | 9.866 |
+| node html markdown | 6.354 | 6.682 | 6.714 |
+| mdream | 1.464 | 1.529 | 1.560 |
 
 ### file_20
 
@@ -300,11 +300,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.265 | 1.387 | 1.403 |
-| h2m-parser with readability | 7.641 | 8.135 | 11.404 |
-| turndown | 5.298 | 6.377 | 6.670 |
-| node html markdown | 4.523 | 4.679 | 4.703 |
-| mdream | 1.369 | 1.425 | 1.435 |
+| h2m-parser no readability | 1.237 | 1.363 | 1.376 |
+| h2m-parser with readability | 7.852 | 8.375 | 11.693 |
+| turndown | 5.491 | 6.750 | 6.929 |
+| node html markdown | 4.807 | 4.937 | 4.953 |
+| mdream | 1.415 | 1.510 | 1.526 |
 
 ### file_21
 
@@ -313,11 +313,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.009 | 1.136 | 1.159 |
-| h2m-parser with readability | 5.505 | 5.981 | 6.177 |
-| turndown | 5.394 | 6.842 | 6.929 |
-| node html markdown | 3.488 | 3.640 | 3.683 |
-| mdream | 1.140 | 1.254 | 1.267 |
+| h2m-parser no readability | 0.966 | 1.063 | 1.091 |
+| h2m-parser with readability | 5.602 | 5.897 | 6.030 |
+| turndown | 5.672 | 7.343 | 7.643 |
+| node html markdown | 3.685 | 3.876 | 3.905 |
+| mdream | 1.109 | 1.203 | 1.221 |
 
 ### file_22
 
@@ -326,11 +326,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.650 | 0.733 | 0.769 |
-| h2m-parser with readability | 4.236 | 4.548 | 4.601 |
-| turndown | 3.324 | 3.518 | 3.734 |
-| node html markdown | 1.427 | 1.648 | 1.663 |
-| mdream | 0.892 | 0.949 | 0.953 |
+| h2m-parser no readability | 0.646 | 0.713 | 0.724 |
+| h2m-parser with readability | 4.220 | 4.448 | 4.548 |
+| turndown | 3.354 | 3.618 | 3.714 |
+| node html markdown | 1.502 | 1.784 | 1.802 |
+| mdream | 0.894 | 0.960 | 0.971 |
 
 ### file_23
 
@@ -339,11 +339,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.357 | 1.547 | 1.578 |
-| h2m-parser with readability | 9.893 | 15.171 | 15.364 |
-| turndown | 6.937 | 8.864 | 8.996 |
-| node html markdown | 3.385 | 3.614 | 3.654 |
-| mdream | 0.698 | 0.853 | 0.899 |
+| h2m-parser no readability | 1.264 | 1.358 | 1.374 |
+| h2m-parser with readability | 9.703 | 13.034 | 15.485 |
+| turndown | 6.965 | 9.013 | 9.173 |
+| node html markdown | 3.532 | 3.780 | 3.805 |
+| mdream | 0.686 | 0.783 | 0.813 |
 
 ### file_24
 
@@ -352,11 +352,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.912 | 2.043 | 2.089 |
-| h2m-parser with readability | 8.273 | 8.995 | 15.498 |
-| turndown | 7.064 | 8.188 | 8.216 |
-| node html markdown | 5.849 | 6.219 | 6.268 |
-| mdream | 0.191 | 0.223 | 0.228 |
+| h2m-parser no readability | 1.857 | 2.001 | 2.015 |
+| h2m-parser with readability | 8.467 | 8.710 | 17.060 |
+| turndown | 7.335 | 8.622 | 8.696 |
+| node html markdown | 6.134 | 6.549 | 6.560 |
+| mdream | 0.194 | 0.217 | 0.225 |
 
 ### file_25
 
@@ -365,11 +365,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.985 | 1.075 | 1.107 |
-| h2m-parser with readability | 6.936 | 7.313 | 10.191 |
-| turndown | 4.899 | 5.333 | 6.378 |
-| node html markdown | 2.438 | 2.764 | 2.796 |
-| mdream | 1.013 | 1.053 | 1.071 |
+| h2m-parser no readability | 0.989 | 1.088 | 1.091 |
+| h2m-parser with readability | 7.018 | 7.410 | 8.409 |
+| turndown | 4.981 | 5.822 | 6.285 |
+| node html markdown | 2.494 | 2.841 | 2.859 |
+| mdream | 1.031 | 1.133 | 1.151 |
 
 ### file_26
 
@@ -378,11 +378,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.189 | 1.277 | 1.311 |
-| h2m-parser with readability | 6.200 | 6.745 | 6.842 |
-| turndown | 5.341 | 6.679 | 6.772 |
-| node html markdown | 5.760 | 5.984 | 6.002 |
-| mdream | 1.760 | 1.819 | 1.854 |
+| h2m-parser no readability | 1.183 | 1.267 | 1.285 |
+| h2m-parser with readability | 6.253 | 6.551 | 9.889 |
+| turndown | 5.524 | 6.844 | 6.995 |
+| node html markdown | 5.972 | 6.144 | 6.152 |
+| mdream | 1.780 | 1.907 | 1.920 |
 
 ### file_27
 
@@ -391,11 +391,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.070 | 1.179 | 1.193 |
-| h2m-parser with readability | 4.773 | 5.107 | 5.156 |
-| turndown | 4.424 | 5.629 | 6.113 |
-| node html markdown | 4.375 | 4.657 | 4.718 |
-| mdream | 1.439 | 1.503 | 1.511 |
+| h2m-parser no readability | 1.038 | 1.146 | 1.164 |
+| h2m-parser with readability | 5.039 | 5.412 | 5.544 |
+| turndown | 4.533 | 5.165 | 6.134 |
+| node html markdown | 4.696 | 5.114 | 5.134 |
+| mdream | 1.441 | 1.540 | 1.542 |
 
 ### file_28
 
@@ -404,11 +404,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.677 | 0.774 | 0.793 |
-| h2m-parser with readability | 3.601 | 3.842 | 3.944 |
-| turndown | 3.103 | 3.294 | 3.357 |
-| node html markdown | 1.580 | 1.828 | 1.885 |
-| mdream | 1.002 | 1.084 | 1.186 |
+| h2m-parser no readability | 0.672 | 0.749 | 0.762 |
+| h2m-parser with readability | 3.753 | 4.026 | 4.077 |
+| turndown | 3.198 | 3.520 | 3.761 |
+| node html markdown | 1.613 | 1.874 | 1.910 |
+| mdream | 1.028 | 1.100 | 1.117 |
 
 ### file_29
 
@@ -417,11 +417,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.011 | 1.111 | 1.126 |
-| h2m-parser with readability | 11.175 | 14.940 | 15.242 |
-| turndown | 4.943 | 5.954 | 6.250 |
-| node html markdown | 3.038 | 3.295 | 3.329 |
-| mdream | 0.337 | 0.367 | 0.371 |
+| h2m-parser no readability | 0.975 | 1.078 | 1.093 |
+| h2m-parser with readability | 11.344 | 15.553 | 15.790 |
+| turndown | 4.804 | 6.064 | 6.105 |
+| node html markdown | 3.025 | 3.348 | 3.380 |
+| mdream | 0.345 | 0.375 | 0.382 |
 
 ### file_30
 
@@ -430,11 +430,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.673 | 0.758 | 0.770 |
-| h2m-parser with readability | 3.492 | 3.771 | 3.858 |
-| turndown | 2.938 | 3.235 | 3.355 |
-| node html markdown | 2.031 | 2.282 | 2.289 |
-| mdream | 0.856 | 0.928 | 1.006 |
+| h2m-parser no readability | 0.645 | 0.739 | 0.750 |
+| h2m-parser with readability | 3.694 | 3.939 | 4.021 |
+| turndown | 2.953 | 3.116 | 3.143 |
+| node html markdown | 2.055 | 2.334 | 2.351 |
+| mdream | 0.880 | 0.961 | 1.005 |
 
 ### file_31
 
@@ -443,11 +443,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.321 | 1.444 | 1.448 |
-| h2m-parser with readability | 8.670 | 11.671 | 14.470 |
-| turndown | 7.066 | 9.012 | 9.317 |
-| node html markdown | 3.321 | 3.583 | 3.611 |
-| mdream | 0.677 | 0.729 | 0.749 |
+| h2m-parser no readability | 1.296 | 1.400 | 1.401 |
+| h2m-parser with readability | 8.780 | 9.219 | 15.633 |
+| turndown | 7.336 | 9.440 | 9.553 |
+| node html markdown | 3.514 | 3.806 | 3.835 |
+| mdream | 0.693 | 0.769 | 0.812 |
 
 ### file_32
 
@@ -456,11 +456,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.144 | 1.239 | 1.311 |
-| h2m-parser with readability | 7.052 | 7.514 | 11.529 |
-| turndown | 6.227 | 7.391 | 7.519 |
-| node html markdown | 3.394 | 3.696 | 3.762 |
-| mdream | 2.038 | 2.145 | 2.184 |
+| h2m-parser no readability | 1.131 | 1.266 | 1.297 |
+| h2m-parser with readability | 7.274 | 7.728 | 11.054 |
+| turndown | 6.386 | 7.635 | 7.718 |
+| node html markdown | 3.561 | 3.867 | 3.889 |
+| mdream | 2.074 | 2.166 | 2.186 |
 
 ### file_33
 
@@ -469,11 +469,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.042 | 1.155 | 1.168 |
-| h2m-parser with readability | 5.941 | 6.381 | 8.880 |
-| turndown | 5.847 | 7.082 | 7.125 |
-| node html markdown | 3.068 | 3.367 | 3.436 |
-| mdream | 1.904 | 1.973 | 2.011 |
+| h2m-parser no readability | 1.012 | 1.118 | 1.142 |
+| h2m-parser with readability | 6.122 | 6.449 | 9.356 |
+| turndown | 5.964 | 7.175 | 7.260 |
+| node html markdown | 3.161 | 3.507 | 3.677 |
+| mdream | 1.946 | 2.035 | 2.090 |
 
 ### file_34
 
@@ -482,11 +482,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.779 | 1.906 | 1.932 |
-| h2m-parser with readability | 7.672 | 8.023 | 14.017 |
-| turndown | 6.800 | 8.122 | 8.167 |
-| node html markdown | 5.552 | 5.872 | 5.896 |
-| mdream | 0.180 | 0.198 | 0.199 |
+| h2m-parser no readability | 1.740 | 1.888 | 1.910 |
+| h2m-parser with readability | 7.923 | 8.230 | 13.698 |
+| turndown | 7.092 | 8.511 | 8.680 |
+| node html markdown | 5.913 | 6.303 | 6.383 |
+| mdream | 0.183 | 0.209 | 0.212 |
 
 ### file_35
 
@@ -495,11 +495,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.637 | 0.714 | 0.756 |
-| h2m-parser with readability | 3.352 | 3.643 | 3.683 |
-| turndown | 3.360 | 3.977 | 4.492 |
-| node html markdown | 1.470 | 1.759 | 1.782 |
-| mdream | 0.926 | 1.011 | 1.048 |
+| h2m-parser no readability | 0.616 | 0.685 | 0.689 |
+| h2m-parser with readability | 3.491 | 3.651 | 3.694 |
+| turndown | 3.434 | 3.661 | 4.630 |
+| node html markdown | 1.517 | 1.809 | 1.846 |
+| mdream | 0.939 | 1.037 | 1.067 |
 
 ### file_36
 
@@ -508,11 +508,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.392 | 2.586 | 2.643 |
-| h2m-parser with readability | 16.100 | 21.574 | 21.891 |
-| turndown | 10.183 | 11.838 | 11.882 |
-| node html markdown | 9.427 | 9.856 | 10.010 |
-| mdream | 0.398 | 0.423 | 0.431 |
+| h2m-parser no readability | 2.205 | 2.322 | 2.356 |
+| h2m-parser with readability | 16.200 | 22.407 | 22.782 |
+| turndown | 10.624 | 12.315 | 12.474 |
+| node html markdown | 9.639 | 9.863 | 9.884 |
+| mdream | 0.400 | 0.444 | 0.452 |
 
 ### file_37
 
@@ -521,11 +521,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.349 | 1.510 | 1.539 |
-| h2m-parser with readability | 6.831 | 7.220 | 10.459 |
-| turndown | 6.044 | 7.261 | 7.372 |
-| node html markdown | 6.622 | 6.932 | 6.965 |
-| mdream | 1.703 | 1.852 | 1.893 |
+| h2m-parser no readability | 1.304 | 1.422 | 1.442 |
+| h2m-parser with readability | 6.943 | 7.383 | 8.179 |
+| turndown | 6.303 | 7.434 | 7.554 |
+| node html markdown | 6.570 | 6.792 | 6.829 |
+| mdream | 1.698 | 1.823 | 1.856 |
 
 ### file_38
 
@@ -534,11 +534,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.892 | 1.022 | 1.046 |
-| h2m-parser with readability | 8.163 | 11.356 | 13.037 |
-| turndown | 5.005 | 6.101 | 6.419 |
-| node html markdown | 2.437 | 2.714 | 2.754 |
-| mdream | 1.320 | 1.403 | 1.430 |
+| h2m-parser no readability | 0.879 | 0.967 | 0.979 |
+| h2m-parser with readability | 8.238 | 10.565 | 13.269 |
+| turndown | 4.983 | 6.242 | 6.546 |
+| node html markdown | 2.502 | 2.786 | 2.805 |
+| mdream | 1.322 | 1.433 | 1.445 |
 
 ### file_39
 
@@ -547,11 +547,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.330 | 2.611 | 3.163 |
-| h2m-parser with readability | 5.469 | 5.839 | 5.961 |
-| turndown | 4.515 | 5.753 | 5.873 |
-| node html markdown | 2.968 | 3.235 | 3.241 |
-| mdream | 1.304 | 1.380 | 1.397 |
+| h2m-parser no readability | 0.977 | 1.101 | 1.111 |
+| h2m-parser with readability | 5.392 | 5.587 | 5.709 |
+| turndown | 4.409 | 5.198 | 5.854 |
+| node html markdown | 2.986 | 3.205 | 3.229 |
+| mdream | 1.316 | 1.414 | 1.417 |
 
 ### file_40
 
@@ -560,11 +560,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.725 | 0.790 | 0.808 |
-| h2m-parser with readability | 9.370 | 11.906 | 13.530 |
-| turndown | 4.060 | 4.492 | 5.286 |
-| node html markdown | 2.028 | 2.295 | 2.335 |
-| mdream | 0.342 | 0.371 | 0.380 |
+| h2m-parser no readability | 0.724 | 0.808 | 0.819 |
+| h2m-parser with readability | 9.428 | 10.690 | 14.045 |
+| turndown | 4.021 | 4.276 | 5.243 |
+| node html markdown | 2.048 | 2.308 | 2.336 |
+| mdream | 0.327 | 0.369 | 0.375 |
 
 ### file_41
 
@@ -573,11 +573,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.647 | 1.740 | 1.765 |
-| h2m-parser with readability | 8.996 | 9.603 | 14.877 |
-| turndown | 7.892 | 9.537 | 9.615 |
-| node html markdown | 5.546 | 5.913 | 5.956 |
-| mdream | 1.053 | 1.127 | 1.177 |
+| h2m-parser no readability | 1.615 | 1.733 | 1.760 |
+| h2m-parser with readability | 9.272 | 9.543 | 16.567 |
+| turndown | 8.054 | 9.687 | 9.766 |
+| node html markdown | 5.590 | 5.945 | 5.949 |
+| mdream | 1.071 | 1.156 | 1.169 |
 
 ### file_42
 
@@ -586,11 +586,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.271 | 0.298 | 0.313 |
-| h2m-parser with readability | 1.802 | 1.928 | 1.972 |
-| turndown | 1.391 | 1.494 | 1.545 |
-| node html markdown | 0.405 | 0.431 | 0.444 |
-| mdream | 0.350 | 0.411 | 0.413 |
+| h2m-parser no readability | 0.255 | 0.288 | 0.300 |
+| h2m-parser with readability | 1.848 | 2.020 | 2.041 |
+| turndown | 1.404 | 1.574 | 1.587 |
+| node html markdown | 0.416 | 0.474 | 0.486 |
+| mdream | 0.359 | 0.419 | 0.422 |
 
 ### file_43
 
@@ -599,11 +599,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.194 | 1.320 | 1.331 |
-| h2m-parser with readability | 6.944 | 7.435 | 12.079 |
-| turndown | 5.768 | 7.350 | 7.442 |
-| node html markdown | 3.872 | 4.108 | 4.118 |
-| mdream | 1.243 | 1.290 | 1.298 |
+| h2m-parser no readability | 1.202 | 1.285 | 1.297 |
+| h2m-parser with readability | 7.271 | 7.883 | 11.233 |
+| turndown | 5.603 | 7.134 | 7.297 |
+| node html markdown | 3.979 | 4.186 | 4.196 |
+| mdream | 1.239 | 1.305 | 1.316 |
 
 ### file_44
 
@@ -612,11 +612,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.211 | 1.306 | 1.318 |
-| h2m-parser with readability | 6.809 | 7.268 | 7.984 |
-| turndown | 5.108 | 6.202 | 6.399 |
-| node html markdown | 4.090 | 4.308 | 4.317 |
-| mdream | 0.526 | 0.616 | 0.619 |
+| h2m-parser no readability | 1.181 | 1.281 | 1.293 |
+| h2m-parser with readability | 7.147 | 10.345 | 12.036 |
+| turndown | 5.088 | 6.354 | 6.518 |
+| node html markdown | 4.271 | 4.492 | 4.511 |
+| mdream | 0.531 | 0.596 | 0.603 |
 
 ### file_45
 
@@ -625,11 +625,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.740 | 1.869 | 1.886 |
-| h2m-parser with readability | 10.950 | 16.321 | 17.992 |
-| turndown | 8.592 | 10.386 | 10.418 |
-| node html markdown | 5.884 | 6.222 | 6.273 |
-| mdream | 0.388 | 0.418 | 0.426 |
+| h2m-parser no readability | 1.698 | 1.817 | 1.852 |
+| h2m-parser with readability | 11.101 | 16.413 | 19.298 |
+| turndown | 8.681 | 10.593 | 10.728 |
+| node html markdown | 6.142 | 6.476 | 6.539 |
+| mdream | 0.384 | 0.422 | 0.431 |
 
 ### file_46
 
@@ -638,11 +638,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.428 | 2.580 | 2.667 |
-| h2m-parser with readability | 13.392 | 19.035 | 19.243 |
-| turndown | 13.864 | 15.063 | 15.125 |
-| node html markdown | 7.420 | 8.180 | 8.230 |
-| mdream | 3.029 | 3.129 | 3.145 |
+| h2m-parser no readability | 2.418 | 2.572 | 2.598 |
+| h2m-parser with readability | 13.235 | 19.844 | 20.113 |
+| turndown | 14.024 | 15.189 | 15.196 |
+| node html markdown | 7.509 | 7.710 | 7.748 |
+| mdream | 3.067 | 3.192 | 3.233 |
 
 ### file_47
 
@@ -651,11 +651,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.487 | 0.508 | 0.510 |
-| h2m-parser with readability | 3.303 | 3.630 | 3.657 |
-| turndown | 2.410 | 2.675 | 2.787 |
-| node html markdown | 0.675 | 0.772 | 0.784 |
-| mdream | 0.639 | 0.707 | 0.755 |
+| h2m-parser no readability | 0.492 | 0.541 | 0.552 |
+| h2m-parser with readability | 3.309 | 3.498 | 3.503 |
+| turndown | 2.263 | 2.427 | 2.482 |
+| node html markdown | 0.652 | 0.737 | 0.789 |
+| mdream | 0.646 | 0.682 | 0.695 |
 
 ### file_48
 
@@ -664,11 +664,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.012 | 1.073 | 1.079 |
-| h2m-parser with readability | 10.044 | 18.380 | 19.322 |
-| turndown | 5.822 | 7.379 | 7.469 |
-| node html markdown | 3.244 | 3.530 | 3.556 |
-| mdream | 1.437 | 1.502 | 1.509 |
+| h2m-parser no readability | 1.017 | 1.102 | 1.125 |
+| h2m-parser with readability | 9.983 | 17.485 | 18.075 |
+| turndown | 5.998 | 7.741 | 7.842 |
+| node html markdown | 3.325 | 3.652 | 3.657 |
+| mdream | 1.469 | 1.581 | 1.618 |
 
 ### file_49
 
@@ -677,11 +677,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.102 | 1.191 | 1.259 |
-| h2m-parser with readability | 7.223 | 7.632 | 11.825 |
-| turndown | 4.772 | 6.001 | 6.054 |
-| node html markdown | 3.961 | 4.246 | 4.287 |
-| mdream | 0.522 | 0.603 | 0.612 |
+| h2m-parser no readability | 1.135 | 1.234 | 1.267 |
+| h2m-parser with readability | 7.349 | 7.845 | 11.485 |
+| turndown | 4.852 | 6.004 | 6.205 |
+| node html markdown | 3.944 | 4.142 | 4.158 |
+| mdream | 0.520 | 0.601 | 0.617 |
 
 ### file_50
 
@@ -690,11 +690,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.807 | 0.916 | 0.925 |
-| h2m-parser with readability | 4.752 | 6.407 | 7.659 |
-| turndown | 3.967 | 4.483 | 5.141 |
-| node html markdown | 1.681 | 1.947 | 1.968 |
-| mdream | 0.659 | 0.669 | 0.670 |
+| h2m-parser no readability | 0.765 | 0.856 | 0.879 |
+| h2m-parser with readability | 4.603 | 4.843 | 4.961 |
+| turndown | 4.004 | 4.516 | 5.322 |
+| node html markdown | 1.750 | 2.086 | 2.111 |
+| mdream | 0.693 | 0.778 | 0.783 |
 
 ### file_51
 
@@ -703,11 +703,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.867 | 0.906 | 0.933 |
-| h2m-parser with readability | 4.559 | 4.835 | 4.867 |
-| turndown | 4.796 | 5.376 | 6.127 |
-| node html markdown | 2.361 | 2.588 | 2.620 |
-| mdream | 0.759 | 0.777 | 0.841 |
+| h2m-parser no readability | 0.878 | 0.957 | 0.997 |
+| h2m-parser with readability | 4.582 | 4.831 | 4.902 |
+| turndown | 4.738 | 5.177 | 6.061 |
+| node html markdown | 2.445 | 2.698 | 2.732 |
+| mdream | 0.762 | 0.869 | 0.881 |
 
 ### file_52
 
@@ -716,11 +716,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.558 | 0.580 | 0.585 |
-| h2m-parser with readability | 3.707 | 3.976 | 4.051 |
-| turndown | 2.705 | 2.947 | 3.025 |
-| node html markdown | 1.739 | 1.991 | 2.035 |
-| mdream | 0.802 | 0.903 | 0.958 |
+| h2m-parser no readability | 0.572 | 0.635 | 0.646 |
+| h2m-parser with readability | 3.844 | 4.101 | 4.178 |
+| turndown | 2.683 | 2.853 | 2.915 |
+| node html markdown | 1.782 | 2.081 | 2.107 |
+| mdream | 0.797 | 0.848 | 0.869 |
 
 ### file_53
 
@@ -729,11 +729,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.598 | 0.633 | 0.673 |
-| h2m-parser with readability | 4.471 | 4.733 | 4.756 |
-| turndown | 2.776 | 2.967 | 3.794 |
-| node html markdown | 1.219 | 1.454 | 1.468 |
-| mdream | 0.235 | 0.242 | 0.243 |
+| h2m-parser no readability | 0.608 | 0.659 | 0.671 |
+| h2m-parser with readability | 4.482 | 4.692 | 4.751 |
+| turndown | 2.771 | 3.097 | 3.870 |
+| node html markdown | 1.235 | 1.459 | 1.503 |
+| mdream | 0.252 | 0.297 | 0.303 |
 
 ### file_54
 
@@ -742,11 +742,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.354 | 1.468 | 1.476 |
-| h2m-parser with readability | 9.374 | 14.160 | 17.012 |
-| turndown | 8.365 | 11.394 | 11.674 |
-| node html markdown | 3.523 | 3.938 | 3.986 |
-| mdream | 0.707 | 0.768 | 0.803 |
+| h2m-parser no readability | 1.296 | 1.394 | 1.449 |
+| h2m-parser with readability | 9.518 | 11.562 | 16.647 |
+| turndown | 8.412 | 11.317 | 11.638 |
+| node html markdown | 3.530 | 3.909 | 3.945 |
+| mdream | 0.709 | 0.775 | 0.825 |
 
 ### file_55
 
@@ -755,11 +755,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.888 | 0.998 | 1.016 |
-| h2m-parser with readability | 2.787 | 3.053 | 3.101 |
-| turndown | 3.730 | 4.829 | 4.982 |
-| node html markdown | 3.428 | 3.653 | 3.669 |
-| mdream | 1.399 | 1.465 | 1.510 |
+| h2m-parser no readability | 0.864 | 0.942 | 0.979 |
+| h2m-parser with readability | 2.662 | 2.857 | 2.926 |
+| turndown | 3.712 | 4.657 | 4.910 |
+| node html markdown | 3.501 | 3.701 | 3.719 |
+| mdream | 1.419 | 1.502 | 1.517 |
 
 ### file_56
 
@@ -768,11 +768,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.538 | 1.662 | 1.700 |
-| h2m-parser with readability | 8.764 | 13.617 | 15.359 |
-| turndown | 6.707 | 8.013 | 8.166 |
-| node html markdown | 5.367 | 5.728 | 5.753 |
-| mdream | 1.263 | 1.354 | 1.394 |
+| h2m-parser no readability | 1.519 | 1.639 | 1.667 |
+| h2m-parser with readability | 8.679 | 12.209 | 14.636 |
+| turndown | 6.594 | 7.963 | 8.124 |
+| node html markdown | 5.367 | 5.688 | 5.761 |
+| mdream | 1.251 | 1.341 | 1.366 |
 
 ### file_57
 
@@ -781,11 +781,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.858 | 1.001 | 1.020 |
-| h2m-parser with readability | 5.788 | 6.081 | 6.248 |
-| turndown | 4.133 | 5.137 | 5.266 |
-| node html markdown | 2.122 | 2.337 | 2.372 |
-| mdream | 1.078 | 1.100 | 1.113 |
+| h2m-parser no readability | 0.829 | 0.917 | 0.954 |
+| h2m-parser with readability | 5.842 | 6.191 | 7.527 |
+| turndown | 4.204 | 5.106 | 5.245 |
+| node html markdown | 2.187 | 2.464 | 2.484 |
+| mdream | 1.078 | 1.148 | 1.154 |
 
 ### file_58
 
@@ -794,11 +794,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.117 | 2.287 | 2.336 |
-| h2m-parser with readability | 9.850 | 15.003 | 18.717 |
-| turndown | 6.283 | 8.239 | 8.368 |
-| node html markdown | 11.116 | 11.907 | 12.157 |
-| mdream | 1.255 | 1.319 | 1.350 |
+| h2m-parser no readability | 2.112 | 2.268 | 2.273 |
+| h2m-parser with readability | 9.809 | 13.916 | 17.146 |
+| turndown | 6.361 | 8.409 | 8.569 |
+| node html markdown | 11.420 | 11.736 | 11.773 |
+| mdream | 1.283 | 1.397 | 1.423 |
 
 ### file_59
 
@@ -807,11 +807,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.486 | 1.582 | 1.620 |
-| h2m-parser with readability | 14.791 | 21.016 | 21.516 |
-| turndown | 8.080 | 9.007 | 9.099 |
-| node html markdown | 6.591 | 6.898 | 6.916 |
-| mdream | 0.188 | 0.194 | 0.198 |
+| h2m-parser no readability | 1.440 | 1.547 | 1.560 |
+| h2m-parser with readability | 14.585 | 19.916 | 20.115 |
+| turndown | 8.322 | 9.319 | 9.388 |
+| node html markdown | 6.818 | 7.074 | 7.081 |
+| mdream | 0.192 | 0.204 | 0.207 |
 
 ### file_60
 
@@ -820,11 +820,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.088 | 1.162 | 1.194 |
-| h2m-parser with readability | 13.121 | 16.728 | 16.940 |
-| turndown | 4.417 | 5.242 | 6.004 |
-| node html markdown | 2.546 | 2.915 | 2.944 |
-| mdream | 1.398 | 1.434 | 1.447 |
+| h2m-parser no readability | 1.075 | 1.165 | 1.190 |
+| h2m-parser with readability | 13.224 | 16.646 | 16.987 |
+| turndown | 4.417 | 5.823 | 6.011 |
+| node html markdown | 2.570 | 2.921 | 2.948 |
+| mdream | 1.412 | 1.513 | 1.534 |
 
 ### file_61
 
@@ -833,11 +833,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 4.701 | 4.943 | 5.136 |
-| h2m-parser with readability | 25.850 | 33.382 | 34.064 |
-| turndown | 30.367 | 31.658 | 32.156 |
-| node html markdown | 15.399 | 15.705 | 15.823 |
-| mdream | 6.477 | 6.610 | 6.774 |
+| h2m-parser no readability | 4.582 | 4.728 | 4.748 |
+| h2m-parser with readability | 25.839 | 33.049 | 33.140 |
+| turndown | 30.956 | 32.133 | 32.765 |
+| node html markdown | 16.086 | 16.415 | 16.454 |
+| mdream | 6.829 | 7.024 | 7.084 |
 
 ### file_62
 
@@ -846,11 +846,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.455 | 0.481 | 0.491 |
-| h2m-parser with readability | 4.051 | 4.400 | 4.414 |
-| turndown | 2.790 | 3.033 | 3.092 |
-| node html markdown | 0.824 | 0.982 | 1.095 |
-| mdream | 0.068 | 0.070 | 0.070 |
+| h2m-parser no readability | 0.453 | 0.499 | 0.521 |
+| h2m-parser with readability | 4.297 | 4.606 | 4.739 |
+| turndown | 2.899 | 3.259 | 3.324 |
+| node html markdown | 0.832 | 0.990 | 1.139 |
+| mdream | 0.066 | 0.068 | 0.070 |
 
 ### file_63
 
@@ -859,11 +859,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.453 | 2.639 | 2.683 |
-| h2m-parser with readability | 11.225 | 20.561 | 21.217 |
-| turndown | 11.217 | 13.210 | 13.325 |
-| node html markdown | 11.753 | 12.181 | 12.243 |
-| mdream | 0.045 | 0.049 | 0.050 |
+| h2m-parser no readability | 2.327 | 2.462 | 2.504 |
+| h2m-parser with readability | 10.629 | 19.984 | 20.324 |
+| turndown | 11.137 | 13.029 | 13.063 |
+| node html markdown | 11.533 | 11.777 | 11.798 |
+| mdream | 0.045 | 0.049 | 0.049 |
 
 ### file_64
 
@@ -872,11 +872,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.990 | 1.121 | 1.160 |
-| h2m-parser with readability | 5.822 | 6.131 | 6.532 |
-| turndown | 5.924 | 7.344 | 7.379 |
-| node html markdown | 2.930 | 3.259 | 3.292 |
-| mdream | 1.818 | 1.925 | 1.930 |
+| h2m-parser no readability | 0.954 | 1.033 | 1.058 |
+| h2m-parser with readability | 5.996 | 6.308 | 6.488 |
+| turndown | 5.906 | 7.294 | 7.390 |
+| node html markdown | 2.914 | 3.249 | 3.305 |
+| mdream | 1.874 | 1.989 | 1.999 |
 
 ### file_65
 
@@ -885,11 +885,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.584 | 1.717 | 1.749 |
-| h2m-parser with readability | 15.219 | 20.907 | 21.355 |
-| turndown | 8.372 | 9.293 | 9.443 |
-| node html markdown | 6.796 | 7.128 | 7.163 |
-| mdream | 2.196 | 2.304 | 2.337 |
+| h2m-parser no readability | 1.495 | 1.617 | 1.630 |
+| h2m-parser with readability | 14.881 | 20.482 | 20.743 |
+| turndown | 8.411 | 9.219 | 9.349 |
+| node html markdown | 7.076 | 7.284 | 7.312 |
+| mdream | 2.256 | 2.370 | 2.396 |
 
 ### file_66
 
@@ -898,11 +898,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.819 | 0.896 | 0.948 |
-| h2m-parser with readability | 9.685 | 12.231 | 15.523 |
-| turndown | 4.334 | 5.367 | 5.656 |
-| node html markdown | 2.418 | 2.783 | 2.838 |
-| mdream | 0.331 | 0.359 | 0.362 |
+| h2m-parser no readability | 0.799 | 0.884 | 0.914 |
+| h2m-parser with readability | 9.538 | 11.867 | 14.941 |
+| turndown | 4.365 | 5.512 | 5.631 |
+| node html markdown | 2.402 | 2.696 | 2.756 |
+| mdream | 0.334 | 0.357 | 0.359 |
 
 ### file_67
 
@@ -911,11 +911,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.746 | 0.808 | 0.860 |
-| h2m-parser with readability | 5.457 | 9.008 | 11.160 |
-| turndown | 3.580 | 4.190 | 4.866 |
-| node html markdown | 2.213 | 2.490 | 2.542 |
-| mdream | 1.032 | 1.095 | 1.167 |
+| h2m-parser no readability | 0.746 | 0.815 | 0.823 |
+| h2m-parser with readability | 4.905 | 5.186 | 5.255 |
+| turndown | 3.416 | 3.798 | 4.692 |
+| node html markdown | 2.191 | 2.454 | 2.482 |
+| mdream | 1.042 | 1.116 | 1.131 |
 
 ### file_68
 
@@ -924,11 +924,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.039 | 1.178 | 1.203 |
-| h2m-parser with readability | 5.287 | 5.711 | 5.849 |
-| turndown | 7.703 | 9.161 | 9.328 |
-| node html markdown | 3.666 | 3.958 | 3.988 |
-| mdream | 1.397 | 1.451 | 1.520 |
+| h2m-parser no readability | 1.016 | 1.091 | 1.095 |
+| h2m-parser with readability | 5.285 | 5.602 | 5.802 |
+| turndown | 7.725 | 9.140 | 9.219 |
+| node html markdown | 3.685 | 3.982 | 4.010 |
+| mdream | 1.416 | 1.507 | 1.556 |
 
 ### file_69
 
@@ -937,11 +937,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.878 | 0.979 | 1.007 |
-| h2m-parser with readability | 5.636 | 6.132 | 6.438 |
-| turndown | 3.847 | 4.176 | 5.169 |
-| node html markdown | 2.452 | 2.662 | 2.708 |
-| mdream | 1.085 | 1.174 | 1.210 |
+| h2m-parser no readability | 0.820 | 0.895 | 0.908 |
+| h2m-parser with readability | 5.540 | 5.803 | 6.102 |
+| turndown | 3.901 | 4.358 | 4.513 |
+| node html markdown | 2.588 | 2.878 | 2.908 |
+| mdream | 1.123 | 1.229 | 1.236 |
 
 ### file_70
 
@@ -950,11 +950,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.482 | 0.536 | 0.558 |
-| h2m-parser with readability | 3.122 | 3.328 | 3.368 |
-| turndown | 2.205 | 2.455 | 2.521 |
-| node html markdown | 0.634 | 0.684 | 0.705 |
-| mdream | 0.660 | 0.741 | 0.796 |
+| h2m-parser no readability | 0.474 | 0.533 | 0.548 |
+| h2m-parser with readability | 3.227 | 3.472 | 3.495 |
+| turndown | 2.165 | 2.352 | 2.374 |
+| node html markdown | 0.660 | 0.757 | 0.777 |
+| mdream | 0.676 | 0.768 | 0.786 |
 
 ### file_71
 
@@ -963,11 +963,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.466 | 1.582 | 1.596 |
-| h2m-parser with readability | 14.776 | 19.717 | 19.993 |
-| turndown | 6.534 | 8.076 | 8.144 |
-| node html markdown | 3.437 | 3.761 | 3.802 |
-| mdream | 1.345 | 1.483 | 1.506 |
+| h2m-parser no readability | 1.430 | 1.535 | 1.555 |
+| h2m-parser with readability | 15.028 | 20.052 | 20.150 |
+| turndown | 6.562 | 8.106 | 8.217 |
+| node html markdown | 3.377 | 3.665 | 3.697 |
+| mdream | 1.348 | 1.467 | 1.494 |
 
 ### file_72
 
@@ -976,11 +976,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.143 | 1.264 | 1.307 |
-| h2m-parser with readability | 7.111 | 7.540 | 13.233 |
-| turndown | 6.239 | 7.693 | 7.769 |
-| node html markdown | 3.468 | 3.701 | 3.742 |
-| mdream | 1.979 | 2.085 | 2.109 |
+| h2m-parser no readability | 1.084 | 1.187 | 1.200 |
+| h2m-parser with readability | 7.137 | 7.425 | 14.930 |
+| turndown | 6.390 | 7.761 | 7.896 |
+| node html markdown | 3.470 | 3.719 | 3.731 |
+| mdream | 1.996 | 2.117 | 2.125 |
 
 ### file_73
 
@@ -989,11 +989,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.750 | 0.801 | 0.828 |
-| h2m-parser with readability | 7.337 | 7.764 | 11.507 |
-| turndown | 3.272 | 3.547 | 4.121 |
-| node html markdown | 1.458 | 1.625 | 1.674 |
-| mdream | 1.073 | 1.131 | 1.174 |
+| h2m-parser no readability | 0.747 | 0.808 | 0.829 |
+| h2m-parser with readability | 7.532 | 7.805 | 10.075 |
+| turndown | 3.181 | 3.441 | 3.548 |
+| node html markdown | 1.424 | 1.572 | 1.757 |
+| mdream | 1.054 | 1.117 | 1.130 |
 
 ### file_74
 
@@ -1002,11 +1002,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.205 | 2.415 | 2.454 |
-| h2m-parser with readability | 13.386 | 20.495 | 20.904 |
-| turndown | 10.537 | 12.655 | 12.904 |
-| node html markdown | 10.084 | 10.314 | 10.356 |
-| mdream | 0.047 | 0.049 | 0.050 |
+| h2m-parser no readability | 2.116 | 2.244 | 2.256 |
+| h2m-parser with readability | 12.953 | 20.709 | 21.084 |
+| turndown | 10.224 | 12.168 | 12.246 |
+| node html markdown | 10.519 | 10.729 | 10.759 |
+| mdream | 0.047 | 0.051 | 0.053 |
 
 ### file_75
 
@@ -1015,11 +1015,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.827 | 0.932 | 0.948 |
-| h2m-parser with readability | 3.293 | 3.530 | 3.639 |
-| turndown | 3.195 | 3.564 | 3.610 |
-| node html markdown | 1.817 | 2.107 | 2.117 |
-| mdream | 1.257 | 1.276 | 1.285 |
+| h2m-parser no readability | 0.803 | 0.871 | 0.881 |
+| h2m-parser with readability | 3.417 | 3.688 | 3.723 |
+| turndown | 3.244 | 3.650 | 3.732 |
+| node html markdown | 1.864 | 2.194 | 2.212 |
+| mdream | 1.368 | 1.448 | 1.476 |
 
 ### file_76
 
@@ -1028,11 +1028,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.292 | 0.300 | 0.307 |
-| h2m-parser with readability | 2.162 | 2.305 | 2.396 |
-| turndown | 1.632 | 1.730 | 1.774 |
-| node html markdown | 0.409 | 0.425 | 0.433 |
-| mdream | 0.447 | 0.537 | 0.537 |
+| h2m-parser no readability | 0.297 | 0.339 | 0.349 |
+| h2m-parser with readability | 2.297 | 2.477 | 2.534 |
+| turndown | 1.685 | 1.854 | 1.867 |
+| node html markdown | 0.415 | 0.460 | 0.477 |
+| mdream | 0.456 | 0.507 | 0.525 |
 
 ### file_77
 
@@ -1041,11 +1041,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.798 | 0.822 | 0.827 |
-| h2m-parser with readability | 7.071 | 7.310 | 10.724 |
-| turndown | 4.126 | 5.409 | 5.483 |
-| node html markdown | 2.301 | 2.584 | 2.603 |
-| mdream | 0.316 | 0.333 | 0.334 |
+| h2m-parser no readability | 0.797 | 0.864 | 0.883 |
+| h2m-parser with readability | 7.576 | 7.992 | 10.904 |
+| turndown | 4.352 | 4.880 | 5.639 |
+| node html markdown | 2.389 | 2.738 | 2.754 |
+| mdream | 0.317 | 0.336 | 0.342 |
 
 ### file_78
 
@@ -1054,11 +1054,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.180 | 2.291 | 2.345 |
-| h2m-parser with readability | 9.463 | 15.076 | 19.082 |
-| turndown | 9.912 | 11.749 | 11.808 |
-| node html markdown | 10.141 | 10.426 | 10.464 |
-| mdream | 0.047 | 0.048 | 0.048 |
+| h2m-parser no readability | 2.157 | 2.302 | 2.335 |
+| h2m-parser with readability | 9.791 | 14.730 | 19.683 |
+| turndown | 10.267 | 12.210 | 12.423 |
+| node html markdown | 10.748 | 11.013 | 11.022 |
+| mdream | 0.047 | 0.051 | 0.052 |
 
 ### file_79
 
@@ -1067,11 +1067,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.572 | 1.674 | 1.738 |
-| h2m-parser with readability | 6.821 | 7.299 | 10.435 |
-| turndown | 6.064 | 7.083 | 7.120 |
-| node html markdown | 4.941 | 5.216 | 5.263 |
-| mdream | 2.403 | 2.463 | 2.515 |
+| h2m-parser no readability | 1.580 | 1.734 | 1.759 |
+| h2m-parser with readability | 7.228 | 7.725 | 11.027 |
+| turndown | 6.270 | 7.344 | 7.421 |
+| node html markdown | 5.156 | 5.562 | 5.578 |
+| mdream | 2.430 | 2.554 | 2.575 |
 
 ### file_80
 
@@ -1080,11 +1080,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.620 | 0.657 | 0.666 |
-| h2m-parser with readability | 3.349 | 3.519 | 3.551 |
-| turndown | 3.369 | 3.793 | 4.557 |
-| node html markdown | 1.546 | 1.846 | 1.907 |
-| mdream | 0.900 | 0.947 | 0.963 |
+| h2m-parser no readability | 0.623 | 0.716 | 0.727 |
+| h2m-parser with readability | 3.533 | 3.779 | 3.830 |
+| turndown | 3.595 | 4.297 | 4.605 |
+| node html markdown | 1.548 | 1.944 | 1.965 |
+| mdream | 0.921 | 0.979 | 0.999 |
 
 ### file_81
 
@@ -1093,11 +1093,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.553 | 1.722 | 1.740 |
-| h2m-parser with readability | 14.384 | 20.166 | 20.401 |
-| turndown | 8.495 | 9.551 | 9.613 |
-| node html markdown | 7.189 | 7.969 | 8.287 |
-| mdream | 2.228 | 2.340 | 2.355 |
+| h2m-parser no readability | 1.451 | 1.560 | 1.575 |
+| h2m-parser with readability | 14.788 | 20.809 | 21.242 |
+| turndown | 8.354 | 9.267 | 9.299 |
+| node html markdown | 6.896 | 7.208 | 7.245 |
+| mdream | 2.234 | 2.358 | 2.364 |
 
 ### file_82
 
@@ -1106,11 +1106,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.652 | 1.818 | 1.858 |
-| h2m-parser with readability | 7.583 | 8.148 | 15.622 |
-| turndown | 6.600 | 7.466 | 7.552 |
-| node html markdown | 4.945 | 5.138 | 5.187 |
-| mdream | 2.480 | 2.547 | 2.555 |
+| h2m-parser no readability | 1.632 | 1.764 | 1.796 |
+| h2m-parser with readability | 7.816 | 10.981 | 15.405 |
+| turndown | 6.647 | 7.594 | 7.624 |
+| node html markdown | 5.241 | 5.499 | 5.554 |
+| mdream | 2.579 | 2.705 | 2.750 |
 
 ### file_83
 
@@ -1119,11 +1119,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.576 | 0.602 | 0.610 |
-| h2m-parser with readability | 3.207 | 3.414 | 3.448 |
-| turndown | 2.155 | 2.314 | 2.392 |
-| node html markdown | 1.955 | 2.178 | 2.267 |
-| mdream | 0.676 | 0.789 | 0.814 |
+| h2m-parser no readability | 0.587 | 0.661 | 0.683 |
+| h2m-parser with readability | 3.447 | 3.763 | 3.880 |
+| turndown | 2.226 | 2.349 | 2.370 |
+| node html markdown | 1.995 | 2.233 | 2.242 |
+| mdream | 0.683 | 0.787 | 0.798 |
 
 ### file_84
 
@@ -1132,11 +1132,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.885 | 1.024 | 1.039 |
-| h2m-parser with readability | 9.993 | 14.978 | 15.711 |
-| turndown | 4.426 | 5.683 | 5.785 |
-| node html markdown | 2.533 | 2.877 | 2.922 |
-| mdream | 0.334 | 0.358 | 0.361 |
+| h2m-parser no readability | 0.836 | 0.938 | 0.949 |
+| h2m-parser with readability | 9.861 | 13.048 | 15.480 |
+| turndown | 4.361 | 5.255 | 5.650 |
+| node html markdown | 2.571 | 2.875 | 2.928 |
+| mdream | 0.322 | 0.341 | 0.345 |
 
 ### file_85
 
@@ -1145,11 +1145,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.899 | 0.990 | 1.005 |
-| h2m-parser with readability | 7.001 | 7.373 | 10.898 |
-| turndown | 4.620 | 5.776 | 5.969 |
-| node html markdown | 2.578 | 2.883 | 2.913 |
-| mdream | 0.333 | 0.352 | 0.355 |
+| h2m-parser no readability | 0.873 | 0.950 | 0.967 |
+| h2m-parser with readability | 6.885 | 7.373 | 8.116 |
+| turndown | 4.430 | 5.656 | 5.699 |
+| node html markdown | 2.607 | 2.871 | 2.895 |
+| mdream | 0.338 | 0.373 | 0.374 |
 
 ### file_86
 
@@ -1158,11 +1158,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 1.698 | 2.577 | 2.740 |
-| h2m-parser with readability | 6.279 | 6.728 | 11.245 |
-| turndown | 5.774 | 7.125 | 7.457 |
-| node html markdown | 4.278 | 4.548 | 4.617 |
-| mdream | 0.183 | 0.209 | 0.211 |
+| h2m-parser no readability | 1.395 | 1.497 | 1.511 |
+| h2m-parser with readability | 6.333 | 6.743 | 9.785 |
+| turndown | 5.784 | 7.264 | 7.307 |
+| node html markdown | 4.142 | 4.361 | 4.378 |
+| mdream | 0.178 | 0.202 | 0.207 |
 
 ### file_87
 
@@ -1171,11 +1171,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.827 | 0.907 | 0.910 |
-| h2m-parser with readability | 7.519 | 8.091 | 11.866 |
-| turndown | 4.372 | 5.491 | 5.646 |
-| node html markdown | 2.285 | 2.640 | 2.673 |
-| mdream | 0.293 | 0.307 | 0.312 |
+| h2m-parser no readability | 0.805 | 0.897 | 0.915 |
+| h2m-parser with readability | 7.679 | 8.196 | 12.054 |
+| turndown | 4.381 | 5.267 | 5.842 |
+| node html markdown | 2.370 | 2.719 | 2.746 |
+| mdream | 0.304 | 0.329 | 0.338 |
 
 ### file_88
 
@@ -1184,11 +1184,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 0.018 | 0.019 | 0.019 |
-| h2m-parser with readability | 0.609 | 0.653 | 0.667 |
-| turndown | 0.072 | 0.084 | 0.085 |
-| node html markdown | 0.035 | 0.040 | 0.042 |
-| mdream | 0.032 | 0.049 | 0.051 |
+| h2m-parser no readability | 0.017 | 0.018 | 0.018 |
+| h2m-parser with readability | 0.626 | 0.731 | 0.802 |
+| turndown | 0.076 | 0.092 | 0.105 |
+| node html markdown | 0.033 | 0.038 | 0.039 |
+| mdream | 0.031 | 0.047 | 0.048 |
 
 ### file_89
 
@@ -1197,11 +1197,11 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 33.908 | 37.195 | 38.000 |
-| h2m-parser with readability | 645.631 | 916.483 | 938.031 |
-| turndown | 192.002 | 198.932 | 199.174 |
-| node html markdown | 14049.153 | 14410.806 | 14431.159 |
-| mdream | 49.764 | 50.351 | 50.357 |
+| h2m-parser no readability | 31.259 | 32.395 | 32.627 |
+| h2m-parser with readability | 773.690 | 1022.269 | 1025.088 |
+| turndown | 194.083 | 200.565 | 201.472 |
+| node html markdown | 13272.156 | 13570.330 | 13586.638 |
+| mdream | 49.983 | 50.678 | 50.773 |
 
 ### file_90
 
@@ -1210,9 +1210,9 @@ Generated: 2025-09-28T15:53:58.311Z
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser no readability | 2.182 | 2.329 | 2.338 |
-| h2m-parser with readability | 18.984 | 25.264 | 25.878 |
-| turndown | 9.786 | 11.381 | 11.589 |
-| node html markdown | 9.053 | 9.373 | 9.401 |
-| mdream | 2.894 | 2.989 | 3.018 |
+| h2m-parser no readability | 2.130 | 2.269 | 2.325 |
+| h2m-parser with readability | 19.027 | 24.829 | 25.086 |
+| turndown | 9.232 | 10.559 | 10.639 |
+| node html markdown | 8.798 | 9.058 | 9.074 |
+| mdream | 2.880 | 3.012 | 3.020 |
 

@@ -37,7 +37,7 @@ async function captureBaseline() {
 
   // Run benchmark with consistent settings
   console.log("Running benchmark (this may take a minute)...\n");
-  const results = await runBenchmark({ iterations: 50, maxFiles: 20 });
+  const results = await runBenchmark();
   let aggregatedSummary = null;
   try {
     const { summary } = await aggregateResults();

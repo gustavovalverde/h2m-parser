@@ -19,13 +19,13 @@ async function readJsonIfExists(path) {
   }
 }
 
-async function aggregateResults() {
-  const comparison = await readJsonIfExists(join(RESULTS_DIR, "comparison-latest.json"));
-  const workflows = await readJsonIfExists(join(RESULTS_DIR, "workflows-latest.json"));
-  const memory = await readJsonIfExists(join(RESULTS_DIR, "memory-latest.json"));
-  const tokenUsage = await readJsonIfExists(join(RESULTS_DIR, "token-usage-latest.json"));
-  const fetchE2E = await readJsonIfExists(join(RESULTS_DIR, "fetch-e2e-latest.json"));
-  const bundleSize = await readJsonIfExists(join(RESULTS_DIR, "bundle-size-latest.json"));
+async function aggregateResults({ resultsDir = RESULTS_DIR } = {}) {
+  const comparison = await readJsonIfExists(join(resultsDir, "comparison-latest.json"));
+  const workflows = await readJsonIfExists(join(resultsDir, "workflows-latest.json"));
+  const memory = await readJsonIfExists(join(resultsDir, "memory-latest.json"));
+  const tokenUsage = await readJsonIfExists(join(resultsDir, "token-usage-latest.json"));
+  const fetchE2E = await readJsonIfExists(join(resultsDir, "fetch-e2e-latest.json"));
+  const bundleSize = await readJsonIfExists(join(resultsDir, "bundle-size-latest.json"));
 
   const summary = {
     generatedAt: new Date().toISOString(),
@@ -44,8 +44,8 @@ async function aggregateResults() {
     bundleSize,
   };
 
-  await mkdir(RESULTS_DIR, { recursive: true });
-  const outputPath = join(RESULTS_DIR, "summary-latest.json");
+  await mkdir(resultsDir, { recursive: true });
+  const outputPath = join(resultsDir, "summary-latest.json");
   await writeFile(outputPath, JSON.stringify(summary, null, 2), "utf8");
 
   return { summary, outputPath };

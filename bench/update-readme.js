@@ -23,11 +23,32 @@ async function fileExists(path) {
   }
 }
 
+const DEFAULT_ITERATIONS = 100;
+const DEFAULT_MAX_FILE_SIZE = "5MB";
+const DEFAULT_WARMUP = 3;
+
 async function runFreshBenchmark() {
-  console.log("Running fresh benchmark comparison...");
+  console.log(
+    `Running fresh benchmark comparison (${DEFAULT_ITERATIONS} iterations, max ${DEFAULT_MAX_FILE_SIZE})...`,
+  );
 
   try {
-    execSync("node bench/compare.js --dataset tests/fixtures --iterations 30", {
+    const command = [
+      "node",
+      "bench/compare.js",
+      "--dataset",
+      "tests/fixtures",
+      "--iterations",
+      String(DEFAULT_ITERATIONS),
+      "--output",
+      "markdown",
+      "--max-file-size",
+      DEFAULT_MAX_FILE_SIZE,
+      "--warmup",
+      String(DEFAULT_WARMUP),
+    ].join(" ");
+
+    execSync(command, {
       encoding: "utf8",
       cwd: process.cwd(),
       stdio: "inherit",

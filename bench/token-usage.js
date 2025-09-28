@@ -6,7 +6,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { tokenizeAndEstimateCost } from "llm-cost";
+import { estimateTokenSavings } from "./lib/token-usage.js";
 import { loadH2MParser } from "./utils/h2m-loader.js";
 
 const DEFAULT_FIXTURE = resolve(
@@ -31,22 +31,19 @@ async function main() {
   const parser = new H2MParser();
   const result = await parser.process(html, `file://${fixture}`);
 
-  const [htmlTokens, markdownTokens] = await Promise.all([
-    tokenizeAndEstimateCost({ model, input: html, output: "" }),
-    tokenizeAndEstimateCost({ model, input: result.markdown, output: "" }),
-  ]);
-
-  const savings = htmlTokens.inputTokens - markdownTokens.inputTokens;
-  const savingsPct = (savings / htmlTokens.inputTokens) * 100;
+  const usage = await estimateTokenSavings({
+    html,
+    markdown: result.markdown,
+    model,
+  });
 
   console.log("Token usage summary:");
-  console.log(`  HTML tokens:     ${htmlTokens.inputTokens}`);
-  console.log(`  Markdown tokens: ${markdownTokens.inputTokens}`);
-  console.log(`  Savings:         ${savings} (${savingsPct.toFixed(2)}%)`);
+  console.log(`  HTML tokens:     ${usage.htmlTokens.inputTokens}`);
+  console.log(`  Markdown tokens: ${usage.markdownTokens.inputTokens}`);
+  console.log(`  Savings:         ${usage.savings} (${usage.savingsPct.toFixed(2)}%)`);
 
-  if (typeof htmlTokens.cost === "number" && typeof markdownTokens.cost === "number") {
-    const costDelta = htmlTokens.cost - markdownTokens.cost;
-    console.log(`  Estimated cost delta: $${costDelta.toFixed(6)}`);
+  if (typeof usage.costDelta === "number") {
+    console.log(`  Estimated cost delta: $${usage.costDelta.toFixed(6)}`);
   }
 
   console.log("\nSet TOKEN_MODEL env var to experiment with different pricing schedules.");
@@ -57,11 +54,12 @@ async function main() {
     generatedAt: new Date().toISOString(),
     fixture,
     model,
-    htmlTokens,
-    markdownTokens,
-    savings,
-    savingsPct,
+    htmlTokens: usage.htmlTokens,
+    markdownTokens: usage.markdownTokens,
+    savings: usage.savings,
+    savingsPct: usage.savingsPct,
     markdownLength: result.markdown.length,
+    costDelta: usage.costDelta,
   };
 
   await writeFile(

@@ -38,7 +38,7 @@ async function checkRegression(options = {}) {
 
   // Run current benchmark
   console.log("Running benchmark on current code...\n");
-  const current = await runBenchmark({ iterations: 50, maxFiles: 20 });
+  const current = await runBenchmark();
   let aggregatedSummary = null;
   try {
     const { summary } = await aggregateResults();
@@ -56,43 +56,61 @@ async function checkRegression(options = {}) {
     fetchE2E: aggregatedSummary?.fetchE2E ?? null,
   };
 
+  const makeTimeMetric = (baselineValue, currentValue) => {
+    if (
+      baselineValue == null ||
+      typeof baselineValue !== "number" ||
+      currentValue == null ||
+      typeof currentValue !== "number"
+    ) {
+      return null;
+    }
+    return {
+      baseline: baselineValue,
+      current: currentValue,
+      ratio: currentValue / baselineValue,
+      status: "unchanged",
+    };
+  };
+
+  const makeComparisonMetric = (baselineValue, currentValue) => {
+    if (
+      baselineValue == null ||
+      typeof baselineValue !== "number" ||
+      currentValue == null ||
+      typeof currentValue !== "number"
+    ) {
+      return null;
+    }
+    return {
+      baseline: baselineValue,
+      current: currentValue,
+      ratio: currentValue / baselineValue,
+      status: "unchanged",
+    };
+  };
+
   const comparison = {
-    h2mParserNoReadability: {
-      baseline: baseline.metrics.h2mParserNoReadability.mean,
-      current: current.summary.averages.h2mParserNoReadability,
-      ratio:
-        current.summary.averages.h2mParserNoReadability /
-        baseline.metrics.h2mParserNoReadability.mean,
-      status: "unchanged",
-    },
-    h2mParserWithReadability: {
-      baseline: baseline.metrics.h2mParserWithReadability.mean,
-      current: current.summary.averages.h2mParserWithReadability,
-      ratio:
-        current.summary.averages.h2mParserWithReadability /
-        baseline.metrics.h2mParserWithReadability.mean,
-      status: "unchanged",
-    },
-    vsTurndown: {
-      baseline: baseline.metrics.comparisons.vsTurndown,
-      current: current.summary.comparisons.vsTurndown,
-      ratio: current.summary.comparisons.vsTurndown / baseline.metrics.comparisons.vsTurndown,
-      status: "unchanged",
-    },
-    vsNodeHtmlMarkdown: {
-      baseline: baseline.metrics.comparisons.vsNodeHtmlMarkdown,
-      current: current.summary.comparisons.vsNodeHtmlMarkdown,
-      ratio:
-        current.summary.comparisons.vsNodeHtmlMarkdown /
-        baseline.metrics.comparisons.vsNodeHtmlMarkdown,
-      status: "unchanged",
-    },
-    vsMdream: {
-      baseline: baseline.metrics.comparisons.vsMdream,
-      current: current.summary.comparisons.vsMdream,
-      ratio: current.summary.comparisons.vsMdream / baseline.metrics.comparisons.vsMdream,
-      status: "unchanged",
-    },
+    h2mParserNoReadability: makeTimeMetric(
+      baseline.metrics.h2mParserNoReadability?.mean,
+      current.summary.averages.h2mParserNoReadability,
+    ),
+    h2mParserWithReadability: makeTimeMetric(
+      baseline.metrics.h2mParserWithReadability?.mean,
+      current.summary.averages.h2mParserWithReadability,
+    ),
+    vsTurndown: makeComparisonMetric(
+      baseline.metrics.comparisons?.vsTurndown,
+      current.summary.comparisons.vsTurndown,
+    ),
+    vsNodeHtmlMarkdown: makeComparisonMetric(
+      baseline.metrics.comparisons?.vsNodeHtmlMarkdown,
+      current.summary.comparisons.vsNodeHtmlMarkdown,
+    ),
+    vsMdream: makeComparisonMetric(
+      baseline.metrics.comparisons?.vsMdream,
+      current.summary.comparisons.vsMdream,
+    ),
     extras: {
       baseline: baselineExtras,
       current: currentExtras,
@@ -105,6 +123,9 @@ async function checkRegression(options = {}) {
   let hasImprovement = false;
 
   for (const [key, metric] of Object.entries(comparison)) {
+    if (!metric || key === "extras") {
+      continue;
+    }
     if (key.startsWith("vs")) {
       // For comparison metrics, higher is better
       if (metric.ratio < 1 / threshold) {
@@ -152,30 +173,34 @@ async function checkRegression(options = {}) {
   };
 
   console.log("📊 Performance Metrics:\n");
-  console.log(`  h2m-parser (no Readability):`);
-  console.log(`    Baseline: ${comparison.h2mParserNoReadability.baseline.toFixed(3)}ms`);
-  console.log(`    Current:  ${comparison.h2mParserNoReadability.current.toFixed(3)}ms`);
-  console.log(`    Change:   ${formatChange(comparison.h2mParserNoReadability.ratio)}\n`);
 
-  console.log(`  h2m-parser (with Readability):`);
-  console.log(`    Baseline: ${comparison.h2mParserWithReadability.baseline.toFixed(3)}ms`);
-  console.log(`    Current:  ${comparison.h2mParserWithReadability.current.toFixed(3)}ms`);
-  console.log(`    Change:   ${formatChange(comparison.h2mParserWithReadability.ratio)}\n`);
+  const printTimeMetric = (label, metric) => {
+    if (!metric) {
+      console.log(`  ${label}: (baseline/current unavailable)\n`);
+      return;
+    }
+    console.log(`  ${label}:`);
+    console.log(`    Baseline: ${metric.baseline.toFixed(3)}ms`);
+    console.log(`    Current:  ${metric.current.toFixed(3)}ms`);
+    console.log(`    Change:   ${formatChange(metric.ratio)}\n`);
+  };
 
-  console.log(`  vs Turndown:`);
-  console.log(`    Baseline: ${comparison.vsTurndown.baseline.toFixed(2)}x`);
-  console.log(`    Current:  ${comparison.vsTurndown.current.toFixed(2)}x`);
-  console.log(`    Change:   ${formatChange(comparison.vsTurndown.ratio, false)}\n`);
+  const printComparisonMetric = (label, metric) => {
+    if (!metric) {
+      console.log(`  ${label}: (baseline/current unavailable)\n`);
+      return;
+    }
+    console.log(`  ${label}:`);
+    console.log(`    Baseline: ${metric.baseline.toFixed(2)}x`);
+    console.log(`    Current:  ${metric.current.toFixed(2)}x`);
+    console.log(`    Change:   ${formatChange(metric.ratio, false)}\n`);
+  };
 
-  console.log(`  vs node-html-markdown:`);
-  console.log(`    Baseline: ${comparison.vsNodeHtmlMarkdown.baseline.toFixed(2)}x`);
-  console.log(`    Current:  ${comparison.vsNodeHtmlMarkdown.current.toFixed(2)}x`);
-  console.log(`    Change:   ${formatChange(comparison.vsNodeHtmlMarkdown.ratio, false)}\n`);
-
-  console.log(`  vs mdream:`);
-  console.log(`    Baseline: ${comparison.vsMdream.baseline.toFixed(2)}x`);
-  console.log(`    Current:  ${comparison.vsMdream.current.toFixed(2)}x`);
-  console.log(`    Change:   ${formatChange(comparison.vsMdream.ratio, false)}\n`);
+  printTimeMetric("h2m-parser (no Readability)", comparison.h2mParserNoReadability);
+  printTimeMetric("h2m-parser (with Readability)", comparison.h2mParserWithReadability);
+  printComparisonMetric("vs Turndown", comparison.vsTurndown);
+  printComparisonMetric("vs node-html-markdown", comparison.vsNodeHtmlMarkdown);
+  printComparisonMetric("vs mdream", comparison.vsMdream);
 
   // Overall status
   console.log("=".repeat(80));
@@ -254,24 +279,46 @@ function generateMarkdownReport(
     return "⚪ No significant change";
   };
 
+  const summaryRows = [];
+  const pushTimeRow = (label, metric) => {
+    if (!metric) {
+      summaryRows.push(`| ${label} | N/A | N/A | N/A |`);
+      return;
+    }
+    summaryRows.push(
+      `| ${label} | ${metric.baseline.toFixed(3)}ms | ${metric.current.toFixed(3)}ms | ${formatChange(metric.ratio)} |`,
+    );
+  };
+  const pushRatioRow = (label, metric) => {
+    if (!metric) {
+      summaryRows.push(`| ${label} | N/A | N/A | N/A |`);
+      return;
+    }
+    summaryRows.push(
+      `| ${label} | ${metric.baseline.toFixed(2)}x | ${metric.current.toFixed(2)}x | ${formatChange(metric.ratio, false)} |`,
+    );
+  };
+
+  pushTimeRow("h2m-parser (no Readability)", comparison.h2mParserNoReadability);
+  pushTimeRow("h2m-parser (with Readability)", comparison.h2mParserWithReadability);
+  pushRatioRow("vs Turndown", comparison.vsTurndown);
+  pushRatioRow("vs node-html-markdown", comparison.vsNodeHtmlMarkdown);
+  pushRatioRow("vs mdream", comparison.vsMdream);
+
   let report = `## 📊 Performance Regression Report
 
 ### Summary
 
 | Metric | Baseline | Current | Change |
 |--------|----------|---------|--------|
-| h2m-parser (no Readability) | ${comparison.h2mParserNoReadability.baseline.toFixed(3)}ms | ${comparison.h2mParserNoReadability.current.toFixed(3)}ms | ${formatChange(comparison.h2mParserNoReadability.ratio)} |
-| h2m-parser (with Readability) | ${comparison.h2mParserWithReadability.baseline.toFixed(3)}ms | ${comparison.h2mParserWithReadability.current.toFixed(3)}ms | ${formatChange(comparison.h2mParserWithReadability.ratio)} |
-| vs Turndown | ${comparison.vsTurndown.baseline.toFixed(2)}x | ${comparison.vsTurndown.current.toFixed(2)}x | ${formatChange(comparison.vsTurndown.ratio, false)} |
-| vs node-html-markdown | ${comparison.vsNodeHtmlMarkdown.baseline.toFixed(2)}x | ${comparison.vsNodeHtmlMarkdown.current.toFixed(2)}x | ${formatChange(comparison.vsNodeHtmlMarkdown.ratio, false)} |
-| vs mdream | ${comparison.vsMdream.baseline.toFixed(2)}x | ${comparison.vsMdream.current.toFixed(2)}x | ${formatChange(comparison.vsMdream.ratio, false)} |
+${summaryRows.join("\n")}
 
 ### Details
 
 - **Baseline captured:** ${baseline.capturedAt}
 - **Baseline commit:** ${baseline.commit.substring(0, 8)}
-- **Test files:** ${current.meta.fileCount}
-- **Iterations:** ${current.meta.iterations}
+- **Test files:** ${current.meta?.fileCount ?? "N/A"}
+- **Iterations:** ${current.meta?.iterations ?? "N/A"}
 `;
 
   if (comparison.extras?.baseline || comparison.extras?.current) {
