@@ -56,7 +56,15 @@ export interface LlmOptions {
   chunk?: ChunkConfig | false;
 }
 
-export type TelemetryStage = "extract" | "convert" | "post" | "chunk" | "total";
+export type TelemetryStage =
+  | "extract"
+  | "convert"
+  | "convert_parse"
+  | "convert_render"
+  | "convert_postprocess"
+  | "post"
+  | "chunk"
+  | "total";
 
 export interface TelemetryEvent {
   stage: TelemetryStage;
@@ -77,8 +85,23 @@ export interface TranslatorMeta {
  * Context provided to tag translators. Translators are free to call `next` (within the handler) to
  * fallback to the default behaviour, or skip it to fully override rendering.
  */
+export interface HtmlTextNode {
+  type: "text";
+  data: string;
+}
+
+export interface HtmlElementNode {
+  type: "tag";
+  name: string;
+  attribs: Record<string, string>;
+  children: HtmlNode[];
+  parent?: HtmlElementNode | null;
+}
+
+export type HtmlNode = HtmlElementNode | HtmlTextNode;
+
 export interface TagTranslatorContext {
-  node: import("domhandler").Element;
+  node: HtmlElementNode;
   options: Required<MarkdownOptions>;
   meta: TranslatorMeta;
   renderChildren: (options?: { inline?: boolean }) => void;

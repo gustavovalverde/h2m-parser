@@ -251,7 +251,12 @@ class ConversionAnalyzer {
       { name: "Mixed", html: "<article><h1>Title</h1><p>Text</p><ul><li>Item</li></ul></article>" },
     ];
 
-    const converterTypes = ["h2m-parser_no_readability", "turndown", "node_html_markdown"];
+    const converterTypes = [
+      "h2m-parser_no_readability",
+      "turndown",
+      "node_html_markdown",
+      "mdream",
+    ];
 
     for (const testCase of testCases) {
       console.log(`  ${testCase.name}:`);
@@ -268,7 +273,7 @@ class ConversionAnalyzer {
             ? "h2m-parser"
             : type === "node_html_markdown"
               ? "node-html-markdown"
-              : type.charAt(0).toUpperCase() + type.slice(1);
+              : type;
         console.log(`    ${displayName.padEnd(20)} ${result.mean.toFixed(3)}ms`);
       }
       console.log();

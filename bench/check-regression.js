@@ -8,6 +8,7 @@
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { aggregateResults } from "./aggregate-results.js";
 import { runBenchmark } from "./utils/run-benchmark.js";
 
 const BASELINE_FILE = join(process.cwd(), "bench", ".baseline", "performance-baseline.json");
@@ -38,8 +39,23 @@ async function checkRegression(options = {}) {
   // Run current benchmark
   console.log("Running benchmark on current code...\n");
   const current = await runBenchmark({ iterations: 50, maxFiles: 20 });
+  let aggregatedSummary = null;
+  try {
+    const { summary } = await aggregateResults();
+    aggregatedSummary = summary;
+  } catch (error) {
+    console.warn("Warning: unable to aggregate extended benchmark data:", error.message);
+  }
 
   // Compare metrics
+  const baselineExtras = baseline.extras ?? {};
+  const currentExtras = {
+    workflows: aggregatedSummary?.workflows ?? null,
+    tokenUsage: aggregatedSummary?.tokenUsage ?? null,
+    memory: aggregatedSummary?.memory ?? null,
+    fetchE2E: aggregatedSummary?.fetchE2E ?? null,
+  };
+
   const comparison = {
     h2mParserNoReadability: {
       baseline: baseline.metrics.h2mParserNoReadability.mean,
@@ -70,6 +86,16 @@ async function checkRegression(options = {}) {
         current.summary.comparisons.vsNodeHtmlMarkdown /
         baseline.metrics.comparisons.vsNodeHtmlMarkdown,
       status: "unchanged",
+    },
+    vsMdream: {
+      baseline: baseline.metrics.comparisons.vsMdream,
+      current: current.summary.comparisons.vsMdream,
+      ratio: current.summary.comparisons.vsMdream / baseline.metrics.comparisons.vsMdream,
+      status: "unchanged",
+    },
+    extras: {
+      baseline: baselineExtras,
+      current: currentExtras,
     },
   };
 
@@ -146,6 +172,11 @@ async function checkRegression(options = {}) {
   console.log(`    Current:  ${comparison.vsNodeHtmlMarkdown.current.toFixed(2)}x`);
   console.log(`    Change:   ${formatChange(comparison.vsNodeHtmlMarkdown.ratio, false)}\n`);
 
+  console.log(`  vs mdream:`);
+  console.log(`    Baseline: ${comparison.vsMdream.baseline.toFixed(2)}x`);
+  console.log(`    Current:  ${comparison.vsMdream.current.toFixed(2)}x`);
+  console.log(`    Change:   ${formatChange(comparison.vsMdream.ratio, false)}\n`);
+
   // Overall status
   console.log("=".repeat(80));
   if (hasRegressionH2M) {
@@ -193,6 +224,7 @@ async function checkRegression(options = {}) {
     comparison,
     baseline,
     current,
+    extras: currentExtras,
   };
 }
 
@@ -232,6 +264,7 @@ function generateMarkdownReport(
 | h2m-parser (with Readability) | ${comparison.h2mParserWithReadability.baseline.toFixed(3)}ms | ${comparison.h2mParserWithReadability.current.toFixed(3)}ms | ${formatChange(comparison.h2mParserWithReadability.ratio)} |
 | vs Turndown | ${comparison.vsTurndown.baseline.toFixed(2)}x | ${comparison.vsTurndown.current.toFixed(2)}x | ${formatChange(comparison.vsTurndown.ratio, false)} |
 | vs node-html-markdown | ${comparison.vsNodeHtmlMarkdown.baseline.toFixed(2)}x | ${comparison.vsNodeHtmlMarkdown.current.toFixed(2)}x | ${formatChange(comparison.vsNodeHtmlMarkdown.ratio, false)} |
+| vs mdream | ${comparison.vsMdream.baseline.toFixed(2)}x | ${comparison.vsMdream.current.toFixed(2)}x | ${formatChange(comparison.vsMdream.ratio, false)} |
 
 ### Details
 
@@ -240,6 +273,34 @@ function generateMarkdownReport(
 - **Test files:** ${current.meta.fileCount}
 - **Iterations:** ${current.meta.iterations}
 `;
+
+  if (comparison.extras?.baseline || comparison.extras?.current) {
+    const workflowMean = (extras) =>
+      extras?.workflows?.modes?.find((mode) => /h2m/i.test(mode.name))?.mean ?? null;
+    const baselineWorkflow = workflowMean(comparison.extras.baseline);
+    const currentWorkflow = workflowMean(comparison.extras.current);
+    const tokenSavings = (extras) => extras?.tokenUsage?.savings ?? null;
+    const baselineTokens = tokenSavings(comparison.extras.baseline);
+    const currentTokens = tokenSavings(comparison.extras.current);
+
+    report += `
+### Additional Metrics (Informational)
+
+- **Workflow h2m mean (ms):** ${baselineWorkflow ? baselineWorkflow.toFixed(2) : "N/A"} → ${currentWorkflow ? currentWorkflow.toFixed(2) : "N/A"}
+- **Token savings (tokens):** ${baselineTokens ?? "N/A"} → ${currentTokens ?? "N/A"}`;
+
+    const memorySamples = comparison.extras.current?.memory?.memorySamples;
+    if (memorySamples?.length) {
+      const first = memorySamples[0];
+      const last = memorySamples[memorySamples.length - 1];
+      const toMB = (bytes) => bytes / 1024 / 1024;
+      const rssDelta = first && last ? toMB(last.rss - first.rss).toFixed(2) : "N/A";
+      report += `
+- **Memory RSS change (current run):** ${rssDelta} MB`;
+    }
+
+    report += "\n";
+  }
 
   // Determine overall status
   if (hasRegressionH2M) {

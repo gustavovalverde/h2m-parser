@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2025-09-28T15:53:59.056Z",
+  "files": [
+    {
+      "name": "cli.cjs",
+      "size": 22660,
+      "gzipSize": 8168,
+      "sizeDiff": 0,
+      "gzipDiff": 0,
+      "sizeDiffPct": 0,
+      "gzipDiffPct": 0
+    },
+    {
+      "name": "cli.mjs",
+      "size": 22210,
+      "gzipSize": 8071,
+      "sizeDiff": 0,
+      "gzipDiff": 0,
+      "sizeDiffPct": 0,
+      "gzipDiffPct": 0
+    },
+    {
+      "name": "index.cjs",
+      "size": 19540,
+      "gzipSize": 6969,
+      "sizeDiff": 0,
+      "gzipDiff": 0,
+      "sizeDiffPct": 0,
+      "gzipDiffPct": 0
+    },
+    {
+      "name": "index.mjs",
+      "size": 19314,
+      "gzipSize": 6942,
+      "sizeDiff": 0,
+      "gzipDiff": 0,
+      "sizeDiffPct": 0,
+      "gzipDiffPct": 0
+    }
+  ]
+}

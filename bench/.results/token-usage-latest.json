@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2025-09-28T15:54:01.162Z",
+  "fixture": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+  "model": "gpt-4o-mini",
+  "htmlTokens": {
+    "inputTokens": 25151,
+    "outputTokens": 0,
+    "cost": 0.00377265
+  },
+  "markdownTokens": {
+    "inputTokens": 1100,
+    "outputTokens": 0,
+    "cost": 0.000165
+  },
+  "savings": 24051,
+  "savingsPct": 95.62641644467416,
+  "markdownLength": 4869
+}

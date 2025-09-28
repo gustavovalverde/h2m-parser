@@ -1,0 +1,387 @@
+{
+  "generatedAt": "2025-09-28T15:54:18.276Z",
+  "comparison": {
+    "verdict": "fastest",
+    "averages": {
+      "h2mParserNoReadability": 1.488020817368577,
+      "h2mParserWithReadability": 14.198847803146405,
+      "turndown": 7.526559170071718,
+      "nodeHtmlMarkdown": 154.66614620052286,
+      "mdream": 1.5186221278824301,
+      "readabilityOverhead": 12.710826985777828
+    },
+    "comparisons": {
+      "vsTurndown": 5.058100721589178,
+      "vsNodeHtmlMarkdown": 103.94084840428188,
+      "vsMdream": 1.0205651091413954
+    },
+    "meta": {
+      "timestamp": "2025-09-28T15:53:58.306Z",
+      "fileCount": 93,
+      "iterations": 100,
+      "dataset": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures",
+      "testReadability": true
+    }
+  },
+  "workflows": {
+    "generatedAt": "2025-09-28T15:53:58.663Z",
+    "iterations": 10,
+    "fixture": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+    "origin": "file:///Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+    "modes": [
+      {
+        "name": "h2m-parser (await)",
+        "iterations": 10,
+        "mean": 14.7404335,
+        "p95": 66.096416,
+        "min": 7.1074999999999875,
+        "max": 66.096416,
+        "samples": [
+          66.096416,
+          11.503292000000016,
+          9.450249999999983,
+          7.529459000000003,
+          8.446708999999998,
+          8.980083000000008,
+          7.246459000000016,
+          11.266458,
+          7.1074999999999875,
+          9.777708999999987
+        ]
+      },
+      {
+        "name": "mdream (await)",
+        "iterations": 10,
+        "mean": 4.197712600000003,
+        "p95": 13.953917000000004,
+        "min": 1.8685000000000116,
+        "max": 13.953917000000004,
+        "samples": [
+          13.953917000000004,
+          5.057249999999996,
+          2.9078340000000082,
+          2.8263749999999987,
+          2.478166999999999,
+          2.3723750000000052,
+          2.3492080000000044,
+          5.9766249999999985,
+          2.1868750000000006,
+          1.8685000000000116
+        ]
+      },
+      {
+        "name": "mdream (stream)",
+        "iterations": 10,
+        "mean": 14.891512799999997,
+        "p95": 118.69437500000001,
+        "min": 2.1537500000000023,
+        "max": 118.69437500000001,
+        "samples": [
+          118.69437500000001,
+          2.948291999999981,
+          2.466667000000001,
+          2.1537500000000023,
+          2.398291999999998,
+          2.179541999999998,
+          2.4088339999999846,
+          3.1409170000000017,
+          10.316958999999997,
+          2.2075000000000102
+        ]
+      }
+    ]
+  },
+  "memory": {
+    "generatedAt": "2025-09-28T15:53:58.918Z",
+    "mode": "h2m-reuse",
+    "iterations": 10,
+    "fixture": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+    "durations": [
+      24.63275,
+      11.453417000000002,
+      10.807333,
+      11.625208,
+      7.782250000000005,
+      9.915166999999997,
+      7.156499999999994,
+      7.685666999999995,
+      9.436500000000024,
+      7.123333000000002
+    ],
+    "stats": {
+      "mean": 10.761812500000001,
+      "min": 7.123333000000002,
+      "max": 24.63275,
+      "p95": 24.63275
+    },
+    "memorySamples": [
+      {
+        "label": "before iteration 1",
+        "rss": 71680000,
+        "heapTotal": 19644416,
+        "heapUsed": 11471280,
+        "external": 2529080,
+        "arrayBuffers": 408305
+      },
+      {
+        "label": "after iteration 1",
+        "rss": 81690624,
+        "heapTotal": 30539776,
+        "heapUsed": 18100400,
+        "external": 2529120,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "before iteration 2",
+        "rss": 81723392,
+        "heapTotal": 30539776,
+        "heapUsed": 18118280,
+        "external": 2529120,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "after iteration 2",
+        "rss": 88227840,
+        "heapTotal": 32915456,
+        "heapUsed": 19522504,
+        "external": 2438799,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "before iteration 3",
+        "rss": 88260608,
+        "heapTotal": 32915456,
+        "heapUsed": 19126288,
+        "external": 2438799,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "after iteration 3",
+        "rss": 94257152,
+        "heapTotal": 35274752,
+        "heapUsed": 25317304,
+        "external": 2438799,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "before iteration 4",
+        "rss": 94273536,
+        "heapTotal": 35274752,
+        "heapUsed": 25325408,
+        "external": 2438799,
+        "arrayBuffers": 317984
+      },
+      {
+        "label": "after iteration 4",
+        "rss": 99794944,
+        "heapTotal": 56377344,
+        "heapUsed": 24841840,
+        "external": 2438799,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 5",
+        "rss": 99794944,
+        "heapTotal": 56377344,
+        "heapUsed": 24849944,
+        "external": 2438799,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 5",
+        "rss": 102318080,
+        "heapTotal": 56377344,
+        "heapUsed": 30980056,
+        "external": 2438799,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 6",
+        "rss": 102318080,
+        "heapTotal": 56377344,
+        "heapUsed": 30990744,
+        "external": 2438799,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 6",
+        "rss": 109068288,
+        "heapTotal": 57442304,
+        "heapUsed": 25066760,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 7",
+        "rss": 109068288,
+        "heapTotal": 57442304,
+        "heapUsed": 25076696,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 7",
+        "rss": 111181824,
+        "heapTotal": 57442304,
+        "heapUsed": 31210888,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 8",
+        "rss": 111198208,
+        "heapTotal": 57442304,
+        "heapUsed": 31219032,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 8",
+        "rss": 116867072,
+        "heapTotal": 57442304,
+        "heapUsed": 37363112,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 9",
+        "rss": 116867072,
+        "heapTotal": 57442304,
+        "heapUsed": 37371256,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 9",
+        "rss": 120815616,
+        "heapTotal": 59949056,
+        "heapUsed": 33903728,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "before iteration 10",
+        "rss": 120832000,
+        "heapTotal": 59949056,
+        "heapUsed": 34100464,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      },
+      {
+        "label": "after iteration 10",
+        "rss": 121044992,
+        "heapTotal": 59949056,
+        "heapUsed": 39580664,
+        "external": 2198406,
+        "arrayBuffers": 77591
+      }
+    ]
+  },
+  "tokenUsage": {
+    "generatedAt": "2025-09-28T15:54:01.162Z",
+    "fixture": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+    "model": "gpt-4o-mini",
+    "htmlTokens": {
+      "inputTokens": 25151,
+      "outputTokens": 0,
+      "cost": 0.00377265
+    },
+    "markdownTokens": {
+      "inputTokens": 1100,
+      "outputTokens": 0,
+      "cost": 0.000165
+    },
+    "savings": 24051,
+    "savingsPct": 95.62641644467416,
+    "markdownLength": 4869
+  },
+  "fetchE2E": {
+    "generatedAt": "2025-09-28T15:54:01.828Z",
+    "url": "https://en.wikipedia.org/wiki/Markdown",
+    "iterations": 3,
+    "h2m": {
+      "stats": {
+        "mean": 51.737180999999985,
+        "min": 44.38183399999997,
+        "max": 65.76308399999999,
+        "samples": [
+          65.76308399999999,
+          45.06662499999999,
+          44.38183399999997
+        ]
+      },
+      "markdownLength": 41539
+    },
+    "mdreamAwait": {
+      "stats": {
+        "mean": 6.479513666666681,
+        "min": 3.994666000000052,
+        "max": 10.846165999999982,
+        "samples": [
+          10.846165999999982,
+          4.597709000000009,
+          3.994666000000052
+        ]
+      },
+      "markdownLength": 71607
+    },
+    "mdreamStream": {
+      "stats": {
+        "mean": 13.038166666666692,
+        "min": 11.511792000000014,
+        "max": 15.984708000000012,
+        "samples": [
+          15.984708000000012,
+          11.511792000000014,
+          11.618000000000052
+        ]
+      },
+      "emittedChars": [
+        71609,
+        71609,
+        71609
+      ]
+    }
+  },
+  "bundleSize": {
+    "generatedAt": "2025-09-28T15:53:59.056Z",
+    "files": [
+      {
+        "name": "cli.cjs",
+        "size": 22660,
+        "gzipSize": 8168,
+        "sizeDiff": 0,
+        "gzipDiff": 0,
+        "sizeDiffPct": 0,
+        "gzipDiffPct": 0
+      },
+      {
+        "name": "cli.mjs",
+        "size": 22210,
+        "gzipSize": 8071,
+        "sizeDiff": 0,
+        "gzipDiff": 0,
+        "sizeDiffPct": 0,
+        "gzipDiffPct": 0
+      },
+      {
+        "name": "index.cjs",
+        "size": 19540,
+        "gzipSize": 6969,
+        "sizeDiff": 0,
+        "gzipDiff": 0,
+        "sizeDiffPct": 0,
+        "gzipDiffPct": 0
+      },
+      {
+        "name": "index.mjs",
+        "size": 19314,
+        "gzipSize": 6942,
+        "sizeDiff": 0,
+        "gzipDiff": 0,
+        "sizeDiffPct": 0,
+        "gzipDiffPct": 0
+      }
+    ]
+  }
+}

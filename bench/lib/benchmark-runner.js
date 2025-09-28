@@ -4,9 +4,13 @@
  */
 
 import { performance } from "node:perf_hooks";
+import { htmlToMarkdown } from "mdream";
 import { NodeHtmlMarkdown } from "node-html-markdown";
 import TurndownService from "turndown";
-import { H2MParser } from "../../dist/index.mjs";
+import { describeFixtureFromBenchmark } from "../utils/fixture-metadata.js";
+import { loadH2MParser } from "../utils/h2m-loader.js";
+
+const H2MParser = await loadH2MParser();
 
 /**
  * Singleton converter manager to ensure we reuse instances
@@ -18,7 +22,7 @@ class ConverterManager {
 
   /**
    * Get or create a converter instance
-   * @param {string} type - 'h2m-parser', 'h2m-parser_no_readability', 'h2m-parser_with_readability', 'turndown', 'node_html_markdown'
+   * @param {string} type - 'h2m-parser', 'h2m-parser_no_readability', 'h2m-parser_with_readability', 'turndown', 'node_html_markdown', 'mdream'
    * @param {Object} options - Options for the converter
    */
   getConverter(type, options = {}) {
@@ -55,6 +59,10 @@ class ConverterManager {
 
         case "node_html_markdown":
           converter = new NodeHtmlMarkdown(options);
+          break;
+
+        case "mdream":
+          converter = { options };
           break;
 
         default:
@@ -136,14 +144,34 @@ export async function runComparison(html, converterTypes, options = {}) {
  * @returns {Promise<Array>} Results for all files
  */
 export async function batchBenchmark(files, converterTypes, options = {}) {
+  const { datasetDir, ...restOptions } = options;
   const results = [];
 
   for (const file of files) {
+    const { iterations, warmupIterations } = normalizeIterations(
+      file.size,
+      restOptions.iterations,
+      restOptions.warmupIterations,
+    );
+
+    const comparisonOptions = {
+      ...restOptions,
+      iterations,
+      warmupIterations,
+    };
+    const metadata =
+      file.metadata ??
+      (datasetDir && file.filename
+        ? await describeFixtureFromBenchmark({ filename: file.filename }, datasetDir)
+        : undefined);
+
     const fileResults = {
       name: file.name,
       size: file.size,
       filename: file.filename,
-      benchmarks: await runComparison(file.html, converterTypes, options),
+      label: file.label,
+      metadata,
+      benchmarks: await runComparison(file.html, converterTypes, comparisonOptions),
     };
 
     results.push(fileResults);
@@ -173,6 +201,14 @@ async function convertHtml(converter, converterType, html, url) {
 
     case "node_html_markdown":
       return converter.translate(html);
+
+    case "mdream": {
+      const mdreamOptions = { ...converter.options };
+      if (!mdreamOptions.origin && url) {
+        mdreamOptions.origin = url;
+      }
+      return htmlToMarkdown(html, mdreamOptions);
+    }
 
     default:
       throw new Error(`Unknown converter type: ${converterType}`);
@@ -208,6 +244,26 @@ function calculateStats(times) {
   };
 }
 
+function normalizeIterations(size, baseIterations = 100, baseWarmup = 10) {
+  const THRESHOLD_BYTES = 500 * 1024; // 500KB
+
+  if (size <= THRESHOLD_BYTES) {
+    return {
+      iterations: baseIterations,
+      warmupIterations: baseWarmup,
+    };
+  }
+
+  const scaledIterations =
+    baseIterations > 20 ? Math.max(20, Math.round(baseIterations / 3)) : baseIterations;
+  const scaledWarmup = baseWarmup > 5 ? Math.max(5, Math.round(baseWarmup / 2)) : baseWarmup;
+
+  return {
+    iterations: scaledIterations,
+    warmupIterations: scaledWarmup,
+  };
+}
+
 /**
  * Generate summary statistics from benchmark results
  */
@@ -220,6 +276,7 @@ export function generateSummary(results, options = {}) {
     "h2m-parser_with_readability": 0,
     turndown: 0,
     node_html_markdown: 0,
+    mdream: 0,
   };
 
   let count = 0;
@@ -237,6 +294,9 @@ export function generateSummary(results, options = {}) {
     if (result.benchmarks.node_html_markdown) {
       avgTimes.node_html_markdown += result.benchmarks.node_html_markdown.mean;
     }
+    if (result.benchmarks.mdream) {
+      avgTimes.mdream += result.benchmarks.mdream.mean;
+    }
     count++;
   }
 
@@ -244,8 +304,9 @@ export function generateSummary(results, options = {}) {
   const h2mParserWithReadabilityAvg = avgTimes["h2m-parser_with_readability"] / count;
   const turndownAvg = avgTimes.turndown / count;
   const nhmAvg = avgTimes.node_html_markdown / count;
+  const mdreamAvg = avgTimes.mdream / count;
   const readabilityOverhead = h2mParserWithReadabilityAvg - h2mParserAvg;
-  const fastest = Math.min(h2mParserAvg, turndownAvg, nhmAvg);
+  const fastest = Math.min(h2mParserAvg, turndownAvg, nhmAvg, mdreamAvg);
 
   return {
     averages: {
@@ -253,11 +314,13 @@ export function generateSummary(results, options = {}) {
       h2mParserWithReadability: testReadability ? h2mParserWithReadabilityAvg : null,
       turndown: turndownAvg,
       nodeHtmlMarkdown: nhmAvg,
+      mdream: mdreamAvg,
       readabilityOverhead: testReadability ? readabilityOverhead : null,
     },
     comparisons: {
       vsTurndown: turndownAvg / h2mParserAvg,
       vsNodeHtmlMarkdown: nhmAvg / h2mParserAvg,
+      vsMdream: mdreamAvg / h2mParserAvg,
     },
     verdict:
       h2mParserAvg === fastest

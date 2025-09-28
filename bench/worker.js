@@ -1,7 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 import { parentPort } from "node:worker_threads";
-import { H2MParser } from "../dist/index.mjs";
+import { loadH2MParser } from "./utils/h2m-loader.js";
+
+const H2MParser = await loadH2MParser();
 
 let h2mParserInstance = null;
 let optionsKey = "";

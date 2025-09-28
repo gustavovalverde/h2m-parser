@@ -115,7 +115,7 @@ export class H2MParser {
 
   /** Convert a cleaned HTML fragment to Markdown using the configured renderer options. */
   toMarkdown(contentHtml: string): MarkdownResult {
-    return htmlToMarkdown(contentHtml, this.options.markdown);
+    return htmlToMarkdown(contentHtml, this.options.markdown, this.options.telemetry);
   }
 
   /**
@@ -128,27 +128,42 @@ export class H2MParser {
     meta: Partial<ConvertMeta> = {},
   ): Promise<ConvertResult> {
     const htmlBytes = Buffer.byteLength(html, "utf8");
-    const totalStart = performance.now();
+    const telemetryEnabled = Boolean(this.options.telemetry);
 
-    const extractStart = performance.now();
+    let totalStart = 0;
+    if (telemetryEnabled) {
+      totalStart = performance.now();
+    }
+
+    let extractStart = 0;
+    if (telemetryEnabled) {
+      extractStart = performance.now();
+    }
     const extracted = this.extract(html, baseUrl);
-    const extractDuration = performance.now() - extractStart;
-    this.emitTelemetry({
-      stage: "extract",
-      durationMs: extractDuration,
-      bytesIn: htmlBytes,
-      bytesOut: Buffer.byteLength(extracted.contentHtml, "utf8"),
-    });
+    if (telemetryEnabled) {
+      const extractDuration = performance.now() - extractStart;
+      this.emitTelemetry({
+        stage: "extract",
+        durationMs: extractDuration,
+        bytesIn: htmlBytes,
+        bytesOut: Buffer.byteLength(extracted.contentHtml, "utf8"),
+      });
+    }
 
-    const convertStart = performance.now();
+    let convertStart = 0;
+    if (telemetryEnabled) {
+      convertStart = performance.now();
+    }
     const markdownResult = this.toMarkdown(extracted.contentHtml);
-    const convertDuration = performance.now() - convertStart;
-    this.emitTelemetry({
-      stage: "convert",
-      durationMs: convertDuration,
-      bytesIn: Buffer.byteLength(extracted.contentHtml, "utf8"),
-      bytesOut: Buffer.byteLength(markdownResult.markdown, "utf8"),
-    });
+    if (telemetryEnabled) {
+      const convertDuration = performance.now() - convertStart;
+      this.emitTelemetry({
+        stage: "convert",
+        durationMs: convertDuration,
+        bytesIn: Buffer.byteLength(extracted.contentHtml, "utf8"),
+        bytesOut: Buffer.byteLength(markdownResult.markdown, "utf8"),
+      });
+    }
 
     const combinedMeta: ConvertMeta = {
       ...extracted.meta,
@@ -164,7 +179,10 @@ export class H2MParser {
       combinedMeta.hashAlgorithm = "sha256";
     }
 
-    const postStart = performance.now();
+    let postStart = 0;
+    if (telemetryEnabled) {
+      postStart = performance.now();
+    }
     let markdown = markdownResult.markdown.trim();
 
     if (this.options.llm.frontMatter) {
@@ -177,32 +195,39 @@ export class H2MParser {
     let chunks: string[] | undefined;
     if (this.options.llm.chunk) {
       const baseContent = this.options.llm.frontMatter ? markdown : markdownResult.markdown;
-      const chunkStart = performance.now();
+      let chunkStart = 0;
+      if (telemetryEnabled) {
+        chunkStart = performance.now();
+      }
       chunks = await chunkMarkdown(baseContent, this.options.llm.chunk);
-      const chunkDuration = performance.now() - chunkStart;
-      this.emitTelemetry({
-        stage: "chunk",
-        durationMs: chunkDuration,
-        bytesIn: Buffer.byteLength(baseContent, "utf8"),
-        bytesOut: chunks.length ? Buffer.byteLength(chunks.join(""), "utf8") : undefined,
-      });
+      if (telemetryEnabled) {
+        const chunkDuration = performance.now() - chunkStart;
+        this.emitTelemetry({
+          stage: "chunk",
+          durationMs: chunkDuration,
+          bytesIn: Buffer.byteLength(baseContent, "utf8"),
+          bytesOut: chunks.length ? Buffer.byteLength(chunks.join(""), "utf8") : undefined,
+        });
+      }
     }
 
-    const postDuration = performance.now() - postStart;
-    this.emitTelemetry({
-      stage: "post",
-      durationMs: postDuration,
-      bytesIn: Buffer.byteLength(markdownResult.markdown, "utf8"),
-      bytesOut: Buffer.byteLength(markdown, "utf8"),
-    });
+    if (telemetryEnabled) {
+      const postDuration = performance.now() - postStart;
+      this.emitTelemetry({
+        stage: "post",
+        durationMs: postDuration,
+        bytesIn: Buffer.byteLength(markdownResult.markdown, "utf8"),
+        bytesOut: Buffer.byteLength(markdown, "utf8"),
+      });
 
-    const totalDuration = performance.now() - totalStart;
-    this.emitTelemetry({
-      stage: "total",
-      durationMs: totalDuration,
-      bytesIn: htmlBytes,
-      bytesOut: Buffer.byteLength(markdown, "utf8"),
-    });
+      const totalDuration = performance.now() - totalStart;
+      this.emitTelemetry({
+        stage: "total",
+        durationMs: totalDuration,
+        bytesIn: htmlBytes,
+        bytesOut: Buffer.byteLength(markdown, "utf8"),
+      });
+    }
 
     return {
       markdown,

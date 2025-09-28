@@ -1,0 +1,4 @@
+tests/fixtures/** filter=lfs diff=lfs merge=lfs -text
+bench/datasets/** filter=lfs diff=lfs merge=lfs -text
+bench/.results/** filter=lfs diff=lfs merge=lfs -text
+fixtures/** filter=lfs diff=lfs merge=lfs -text

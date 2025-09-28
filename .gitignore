@@ -2,9 +2,13 @@ node_modules
 .DS_Store
 dist
 coverage
-.bench
 bench/output
-fixtures/
+bench/artifacts/
+bench/datasets/
+# Local benchmark scratch space
+.bench
+# Allow tracked benchmark results and fixtures (managed via Git LFS)
+# (keep optional local fixture packs elsewhere)
 .vscode
 .idea
 *.log

@@ -8,6 +8,7 @@
 import { execSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { aggregateResults } from "./aggregate-results.js";
 import { runBenchmark } from "./utils/run-benchmark.js";
 
 const BASELINE_DIR = join(process.cwd(), "bench", ".baseline");
@@ -37,6 +38,13 @@ async function captureBaseline() {
   // Run benchmark with consistent settings
   console.log("Running benchmark (this may take a minute)...\n");
   const results = await runBenchmark({ iterations: 50, maxFiles: 20 });
+  let aggregatedSummary = null;
+  try {
+    const { summary } = await aggregateResults();
+    aggregatedSummary = summary;
+  } catch (error) {
+    console.warn("Warning: unable to aggregate extended benchmark data:", error.message);
+  }
 
   // Extract key metrics for baseline
   const baseline = {
@@ -57,9 +65,20 @@ async function captureBaseline() {
       comparisons: {
         vsTurndown: results.summary.comparisons.vsTurndown,
         vsNodeHtmlMarkdown: results.summary.comparisons.vsNodeHtmlMarkdown,
+        vsMdream: results.summary.comparisons.vsMdream,
+      },
+      mdream: {
+        mean: results.summary.averages.mdream,
+        files: {},
       },
     },
     fileResults: [],
+    extras: {
+      workflows: aggregatedSummary?.workflows ?? null,
+      tokenUsage: aggregatedSummary?.tokenUsage ?? null,
+      memory: aggregatedSummary?.memory ?? null,
+      fetchE2E: aggregatedSummary?.fetchE2E ?? null,
+    },
   };
 
   // Capture per-file baselines for regression detection
@@ -72,6 +91,7 @@ async function captureBaseline() {
       h2mParserWithReadability: fileResult.benchmarks["h2m-parser_with_readability"]?.mean,
       turndown: fileResult.benchmarks.turndown?.mean,
       nodeHtmlMarkdown: fileResult.benchmarks.node_html_markdown?.mean,
+      mdream: fileResult.benchmarks.mdream?.mean,
     });
   }
 
@@ -91,6 +111,7 @@ async function captureBaseline() {
   console.log(
     `  vs node-html-markdown: ${baseline.metrics.comparisons.vsNodeHtmlMarkdown.toFixed(2)}x`,
   );
+  console.log(`  vs mdream: ${baseline.metrics.comparisons.vsMdream.toFixed(2)}x`);
 
   return baseline;
 }

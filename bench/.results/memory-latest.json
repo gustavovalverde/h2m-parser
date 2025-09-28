@@ -1,0 +1,186 @@
+{
+  "generatedAt": "2025-09-28T15:53:58.918Z",
+  "mode": "h2m-reuse",
+  "iterations": 10,
+  "fixture": "/Users/gustavovalverde/dev/personal/hgtm/tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html",
+  "durations": [
+    24.63275,
+    11.453417000000002,
+    10.807333,
+    11.625208,
+    7.782250000000005,
+    9.915166999999997,
+    7.156499999999994,
+    7.685666999999995,
+    9.436500000000024,
+    7.123333000000002
+  ],
+  "stats": {
+    "mean": 10.761812500000001,
+    "min": 7.123333000000002,
+    "max": 24.63275,
+    "p95": 24.63275
+  },
+  "memorySamples": [
+    {
+      "label": "before iteration 1",
+      "rss": 71680000,
+      "heapTotal": 19644416,
+      "heapUsed": 11471280,
+      "external": 2529080,
+      "arrayBuffers": 408305
+    },
+    {
+      "label": "after iteration 1",
+      "rss": 81690624,
+      "heapTotal": 30539776,
+      "heapUsed": 18100400,
+      "external": 2529120,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "before iteration 2",
+      "rss": 81723392,
+      "heapTotal": 30539776,
+      "heapUsed": 18118280,
+      "external": 2529120,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "after iteration 2",
+      "rss": 88227840,
+      "heapTotal": 32915456,
+      "heapUsed": 19522504,
+      "external": 2438799,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "before iteration 3",
+      "rss": 88260608,
+      "heapTotal": 32915456,
+      "heapUsed": 19126288,
+      "external": 2438799,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "after iteration 3",
+      "rss": 94257152,
+      "heapTotal": 35274752,
+      "heapUsed": 25317304,
+      "external": 2438799,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "before iteration 4",
+      "rss": 94273536,
+      "heapTotal": 35274752,
+      "heapUsed": 25325408,
+      "external": 2438799,
+      "arrayBuffers": 317984
+    },
+    {
+      "label": "after iteration 4",
+      "rss": 99794944,
+      "heapTotal": 56377344,
+      "heapUsed": 24841840,
+      "external": 2438799,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 5",
+      "rss": 99794944,
+      "heapTotal": 56377344,
+      "heapUsed": 24849944,
+      "external": 2438799,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 5",
+      "rss": 102318080,
+      "heapTotal": 56377344,
+      "heapUsed": 30980056,
+      "external": 2438799,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 6",
+      "rss": 102318080,
+      "heapTotal": 56377344,
+      "heapUsed": 30990744,
+      "external": 2438799,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 6",
+      "rss": 109068288,
+      "heapTotal": 57442304,
+      "heapUsed": 25066760,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 7",
+      "rss": 109068288,
+      "heapTotal": 57442304,
+      "heapUsed": 25076696,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 7",
+      "rss": 111181824,
+      "heapTotal": 57442304,
+      "heapUsed": 31210888,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 8",
+      "rss": 111198208,
+      "heapTotal": 57442304,
+      "heapUsed": 31219032,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 8",
+      "rss": 116867072,
+      "heapTotal": 57442304,
+      "heapUsed": 37363112,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 9",
+      "rss": 116867072,
+      "heapTotal": 57442304,
+      "heapUsed": 37371256,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 9",
+      "rss": 120815616,
+      "heapTotal": 59949056,
+      "heapUsed": 33903728,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "before iteration 10",
+      "rss": 120832000,
+      "heapTotal": 59949056,
+      "heapUsed": 34100464,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    },
+    {
+      "label": "after iteration 10",
+      "rss": 121044992,
+      "heapTotal": 59949056,
+      "heapUsed": 39580664,
+      "external": 2198406,
+      "arrayBuffers": 77591
+    }
+  ]
+}

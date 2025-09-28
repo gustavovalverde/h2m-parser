@@ -5,6 +5,7 @@ import { join, resolve } from "node:path";
 import { monitorEventLoopDelay, performance } from "node:perf_hooks";
 import { Worker } from "node:worker_threads";
 import { ProgressBar } from "./progress.js";
+import { loadH2MModule } from "./utils/h2m-loader.js";
 
 const DEFAULT_DATASET = join(process.cwd(), "tests", "fixtures");
 const DEFAULT_CONCURRENCY = Math.max(1, os.cpus().length);
@@ -26,6 +27,7 @@ function parseArgs(argv) {
     maxFiles: 0,
     instanceMode: "reuse", // "reuse" or "fresh"
     showProgress: true,
+    readability: true,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -81,6 +83,12 @@ function parseArgs(argv) {
         break;
       case "--no-progress":
         opts.showProgress = false;
+        break;
+      case "--no-readability":
+        opts.readability = false;
+        break;
+      case "--readability":
+        opts.readability = true;
         break;
       default:
         throw new Error(`Unknown flag: ${arg}`);
@@ -155,12 +163,7 @@ function stdDev(values) {
 
 async function run() {
   const opts = parseArgs(process.argv.slice(2));
-  const distPath = resolve("dist", "index.mjs");
-  try {
-    await stat(distPath);
-  } catch (_error) {
-    throw new Error("dist/index.mjs not found. Run `pnpm build` before executing the benchmark.");
-  }
+  await loadH2MModule();
 
   let files = await collectHtmlFiles(opts.dataset);
   if (files.length === 0) {
@@ -174,6 +177,7 @@ async function run() {
 
   const h2mParserOptions = opts.chunk
     ? {
+        extract: { readability: opts.readability },
         llm: {
           frontMatter: true,
           addHash: false,
@@ -181,6 +185,7 @@ async function run() {
         },
       }
     : {
+        extract: { readability: opts.readability },
         llm: { frontMatter: true, addHash: false, chunk: false },
       };
 

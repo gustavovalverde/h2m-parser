@@ -5,9 +5,10 @@
  */
 import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { join, parse, relative, resolve } from "node:path";
+import { htmlToMarkdown } from "mdream";
 import { NodeHtmlMarkdown } from "node-html-markdown";
 import TurndownService from "turndown";
-import { H2MParser } from "../dist/index.mjs";
+import { loadH2MParser } from "./utils/h2m-loader.js";
 
 const DEFAULT_DATASET = join(process.cwd(), "tests", "fixtures");
 const OUTPUT_ROOT = join(process.cwd(), "bench", "output");
@@ -40,15 +41,6 @@ Results are stored under bench/output/<library>/`);
   }
 }
 
-async function ensureDistBuilt() {
-  const distPath = join(process.cwd(), "dist", "index.mjs");
-  try {
-    await stat(distPath);
-  } catch (_error) {
-    throw new Error("dist/index.mjs not found. Run `pnpm build` before exporting markdown.");
-  }
-}
-
 async function collectHtmlFiles(root) {
   const resolved = resolve(root);
   const info = await stat(resolved);
@@ -77,12 +69,13 @@ async function collectHtmlFiles(root) {
   return files.sort();
 }
 
+const H2MParser = await loadH2MParser();
+
 function createH2MParserInstance(options) {
   return new H2MParser(options);
 }
 
 async function main() {
-  await ensureDistBuilt();
   const files = await collectHtmlFiles(datasetDir);
   if (!files.length) {
     console.log(`No HTML files found under ${datasetDir}`);
@@ -117,6 +110,11 @@ async function main() {
       name: "node-html-markdown",
       description: "node-html-markdown",
       convert: async (html) => nodeHtmlMarkdown.translate(html),
+    },
+    {
+      name: "mdream",
+      description: "mdream",
+      convert: async (html, baseUrl) => htmlToMarkdown(html, { origin: baseUrl }),
     },
   ];
 
