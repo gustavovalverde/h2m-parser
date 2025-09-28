@@ -154,7 +154,6 @@ Estimated processing times for different file sizes (without Readability):
 
 Sample results showing performance across different file types and sizes:
 
-
 #### tiny (18 bytes)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
@@ -248,19 +247,6 @@ pnpm bench:readme
 
 <!-- BENCHMARK:END -->
 
-## Tooling & scripts
-
-| Command | Description |
-|---------|-------------|
-| `pnpm verify` | Run lint → typecheck → tests in one go. |
-| `pnpm bench` | Interactive benchmark runner (profiles, comparisons, regression tools). |
-| `node bench/capture-baseline.js` | Snapshot current performance metrics for future comparisons. |
-| `node bench/check-regression.js --exit-on-regression` | Compare against the stored baseline and fail on regressions. |
-| `pnpm export:markdown` | Dump Markdown outputs for h2m-parser, Turndown, and node-html-markdown. |
-| `pnpm changeset` / `pnpm release` | Prepare and publish releases. |
-
-More detail lives in [`docs/SCRIPTS.md`](docs/SCRIPTS.md).
-
 ## Development
 
 ```bash
@@ -268,17 +254,14 @@ pnpm install
 pnpm verify
 ```
 
-- `pnpm build` – tsup bundles (CJS+ESM+types).
-- `pnpm test` / `pnpm test:watch` – Vitest suites.
-- `pnpm lint` / `pnpm lint:fix` – Biome checks.
-- `pnpm typecheck` – `tsc --noEmit`.
-- `pnpm bench:quick` – sanity benchmark (25 files max).
-
-See [`docs/PERFORMANCE-REGRESSION.md`](docs/PERFORMANCE-REGRESSION.md) for the baseline/CI story, and [`docs/API.md`](docs/API.md) for generated API notes.
-
 ## Contributing
 
-We welcome improvements! Start with [CONTRIBUTING.md](CONTRIBUTING.md) for coding standards, commit conventions, and release flow.
+We welcome improvements! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- Development setup and coding standards
+- Commit conventions and release workflow
+- Maintainer scripts and workflows
+- Performance baselines and troubleshooting
 
 ## License
 
