@@ -1,18 +1,21 @@
-import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { H2MParser } from "../src";
+import { SAMPLE_ARTICLE_HTML } from "./helpers/sample-article";
 
 describe("H2MParser", () => {
   it("runs the full pipeline with front matter and chunking", async () => {
-    const html = await readFile("tests/fixtures/simple.html", "utf8");
     const converter = new H2MParser({
       markdown: { linkStyle: "inline" },
       llm: { frontMatter: true, addHash: true, chunk: { targetTokens: 120, overlapTokens: 20 } },
     });
 
-    const result = await converter.process(html, "https://example.org/articles/test", {
-      retrievedAt: "2025-09-26T00:00:00.000Z",
-    });
+    const result = await converter.process(
+      SAMPLE_ARTICLE_HTML,
+      "https://example.org/articles/test",
+      {
+        retrievedAt: "2025-09-26T00:00:00.000Z",
+      },
+    );
 
     expect(result.markdown).toContain("sourceUrl: https://example.org/articles/test");
     expect(result.markdown).toContain("Example Heading");
