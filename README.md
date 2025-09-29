@@ -101,49 +101,49 @@ const options: Options = {
 ## Benchmarks
 
 <!-- BENCHMARK:START -->
-<!-- Last updated: 2025-09-28T17:49:57.461Z -->
+<!-- Last updated: 2025-09-29T07:21:48.642Z -->
 
 ## Performance
 
 **Runtime ranking (lower is better):**
-1. h2m-parser — 1.429ms
-2. mdream — 1.535ms
-3. Turndown — 7.618ms
-4. node-html-markdown — 146.396ms
+1. mdream — 1.054ms
+2. h2m-parser — 1.074ms
+3. node-html-markdown — 3.694ms
+4. Turndown — 5.581ms
 
 <details>
 <summary>📊 Benchmark Results (click to expand)</summary>
 
 ### Benchmark Methodology
 
-- **Dataset:** 93 files (4 synthetic + 89 real HTML documents)
+- **Dataset:** 94 files (5 synthetic + 89 real HTML documents)
 - **Dataset path:** tests/fixtures
-- **File sizes:** 21KB to 1771KB (mean: ~119KB)
-- **Iterations:** 100 per file for statistical significance
-- **Total runtime:** 710.6 seconds
+- **File sizes:** 21KB to 420KB (mean: ~104KB)
+- **Iterations:** 1000 per file for statistical significance
+- **Total runtime:** 2024.7 seconds
 - **Environment:** Node.js with standard V8 optimizations
 
 ### Average Processing Time
 
-Tested across 93 files in tests/fixtures (up to 1771KB):
+Tested across 94 files in tests/fixtures (up to 420KB):
 
 | Library | Without Readability | With Readability | Relative |
 |---------|---------------------|------------------|----------|
-| **h2m-parser** ✅ | **1.429ms** | 15.656ms | **Fastest** |
-| mdream | 1.535ms | ❌ Not supported | 1.07x slower |
-| Turndown | 7.618ms | ❌ Not supported | 5.33x slower |
-| node-html-markdown | 146.396ms | ❌ Not supported | 102.48x slower |
+| mdream | 1.054ms | ❌ Not supported | Fastest |
+| **h2m-parser** ✅ | **1.074ms** | 7.639ms | **Fastest** |
+| node-html-markdown | 3.694ms | ❌ Not supported | 3.50x slower |
+| Turndown | 5.581ms | ❌ Not supported | 5.29x slower |
 
-**Readability overhead (h2m-parser):** +14.228ms (enables article extraction + content cleaning)
+**Readability overhead (h2m-parser):** +6.565ms (enables article extraction + content cleaning)
 
 ### Performance Analysis
 
-- **Fastest baseline:** h2m-parser averages 1.429ms per document without Readability.
-- **h2m-parser vs Turndown:** 5.33x faster (7.618ms → 1.429ms)
-- **h2m-parser vs node-html-markdown:** 102.48x faster (146.396ms → 1.429ms)
-- **h2m-parser vs mdream:** 1.07x faster (1.535ms → 1.429ms)
-- **Readability impact:** 11.0x slower when enabled (1.429ms → 15.656ms)
-- **Token savings vs raw HTML:** 24051 tokens saved (95.63%) on tests/fixtures/039c4b966d1f2a0c589ac0aad211fe65500ad1cb58c7f45b34251db7056803ec.html.
+- **Fastest baseline:** mdream averages 1.054ms per document without Readability.
+- **h2m-parser gap to mdream:** 1.02× slower ( mdream: 1.054ms → h2m-parser: 1.074ms ).
+- **h2m-parser vs Turndown:** 5.20x faster (5.581ms → 1.074ms)
+- **h2m-parser vs node-html-markdown:** 3.44x faster (3.694ms → 1.074ms)
+- **h2m-parser vs mdream:** 0.98x slower (1.054ms → 1.074ms)
+- **Readability impact:** 7.1x slower when enabled (1.074ms → 7.639ms)
 - **Algorithmic complexity:** O(n) linear scaling confirmed across file sizes
 
 ### Performance Projections
@@ -152,12 +152,12 @@ Estimated processing times for different file sizes (without Readability):
 
 ```
   100KB  1ms
-  1MB    12ms
-  10MB   123ms
-  100MB  1.2s
+  1MB    11ms
+  10MB   106ms
+  100MB  1.1s
 ```
 
-*Based on linear scaling from 119KB average file size at 1.429ms*
+*Based on linear scaling from 104KB average file size at 1.074ms*
 
 ### Detailed Results by File Size
 
@@ -165,113 +165,69 @@ Estimated processing times for different file sizes (without Readability):
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 0.013 | 0.026 | 0.029 |
-| h2m-parser (with Readability) | 0.211 | 0.323 | 0.346 |
-| Turndown | 0.024 | 0.045 | 0.054 |
-| node-html-markdown | 0.012 | 0.018 | 0.022 |
-| Mdream | 0.005 | 0.008 | 0.011 |
+| h2m-parser (no Readability) | 0.008 | 0.011 | 0.012 |
+| h2m-parser (with Readability) | 0.105 | 0.141 | 0.151 |
+| Turndown | 0.011 | 0.016 | 0.018 |
+| node-html-markdown | 0.006 | 0.008 | 0.009 |
+| Mdream | 0.002 | 0.004 | 0.004 |
 
 #### small (84 bytes)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 0.016 | 0.023 | 0.024 |
-| h2m-parser (with Readability) | 0.174 | 0.209 | 0.211 |
-| Turndown | 0.041 | 0.051 | 0.058 |
-| node-html-markdown | 0.021 | 0.028 | 0.028 |
-| Mdream | 0.014 | 0.020 | 0.021 |
+| h2m-parser (no Readability) | 0.009 | 0.012 | 0.012 |
+| h2m-parser (with Readability) | 0.121 | 0.142 | 0.146 |
+| Turndown | 0.023 | 0.028 | 0.030 |
+| node-html-markdown | 0.012 | 0.015 | 0.016 |
+| Mdream | 0.005 | 0.009 | 0.009 |
 
 #### medium (369 bytes)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 0.013 | 0.015 | 0.016 |
-| h2m-parser (with Readability) | 0.220 | 0.249 | 0.276 |
-| Turndown | 0.046 | 0.053 | 0.054 |
-| node-html-markdown | 0.018 | 0.019 | 0.020 |
-| Mdream | 0.020 | 0.038 | 0.038 |
+| h2m-parser (no Readability) | 0.011 | 0.012 | 0.012 |
+| h2m-parser (with Readability) | 0.169 | 0.177 | 0.179 |
+| Turndown | 0.032 | 0.034 | 0.035 |
+| node-html-markdown | 0.017 | 0.020 | 0.025 |
+| Mdream | 0.009 | 0.010 | 0.011 |
 
 #### file_42 (21KB)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 0.255 | 0.288 | 0.300 |
-| h2m-parser (with Readability) | 1.848 | 2.020 | 2.041 |
-| Turndown | 1.404 | 1.574 | 1.587 |
-| node-html-markdown | 0.416 | 0.474 | 0.486 |
-| Mdream | 0.359 | 0.419 | 0.422 |
+| h2m-parser (no Readability) | 0.246 | 0.259 | 0.264 |
+| h2m-parser (with Readability) | 1.798 | 1.907 | 1.935 |
+| Turndown | 1.362 | 1.444 | 1.475 |
+| node-html-markdown | 0.396 | 0.414 | 0.422 |
+| Mdream | 0.345 | 0.361 | 0.365 |
 
 #### file_33 (88KB)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 1.012 | 1.118 | 1.142 |
-| h2m-parser (with Readability) | 6.122 | 6.449 | 9.356 |
-| Turndown | 5.964 | 7.175 | 7.260 |
-| node-html-markdown | 3.161 | 3.507 | 3.677 |
-| Mdream | 1.946 | 2.035 | 2.090 |
+| h2m-parser (no Readability) | 0.983 | 1.059 | 1.081 |
+| h2m-parser (with Readability) | 6.108 | 6.673 | 8.701 |
+| Turndown | 5.762 | 6.988 | 7.064 |
+| node-html-markdown | 2.975 | 3.206 | 3.241 |
+| Mdream | 1.877 | 1.965 | 1.985 |
 
-#### file_89 (1771KB)
+#### file_88 (420KB)
 
 | Library | Mean (ms) | P95 (ms) | P99 (ms) |
 |---------|-----------|----------|----------|
-| h2m-parser (no Readability) | 31.259 | 32.395 | 32.627 |
-| h2m-parser (with Readability) | 773.690 | 1022.269 | 1025.088 |
-| Turndown | 194.083 | 200.565 | 201.472 |
-| node-html-markdown | 13272.156 | 13570.330 | 13586.638 |
-| Mdream | 49.983 | 50.678 | 50.773 |
+| h2m-parser (no Readability) | 3.002 | 3.292 | 3.375 |
+| h2m-parser (with Readability) | 30.321 | 34.749 | 35.263 |
+| Turndown | 13.106 | 14.789 | 14.968 |
+| node-html-markdown | 7.384 | 7.854 | 7.921 |
+| Mdream | 8.668 | 9.064 | 9.142 |
 
-*See [`bench/comparison-results.md`](bench/comparison-results.md) for complete results across all 93 files*
-
-### Workflow Comparison (Await vs Stream)
-
-| Mode | Iterations | Mean (ms) | p95 (ms) | Min (ms) | Max (ms) |
-|------|------------|-----------|----------|----------|----------|
-| h2m-parser (await) | 10 | 13.71 | 60.63 | 6.99 | 60.63 |
-| mdream (await) | 10 | 3.38 | 15.12 | 1.59 | 15.12 |
-| mdream (stream) | 10 | 13.63 | 105.06 | 2.00 | 105.06 |
-
-### Token Savings
-
-- Model: gpt-4o-mini
-- HTML tokens: 25151
-- Markdown tokens: 1100
-- Savings: 24051 tokens (95.63%)
-- Estimated cost delta per document: $0.003608
-- Markdown length: 4869 characters
-
-### Memory Snapshot
-
-- Mode: h2m-reuse
-- Iterations: 10
-- RSS change: 47.72 MB
-
-### Bundle Size Snapshot
-
-Generated: 2025-09-28T17:49:58.314Z
-
-| File | Size | Gzipped | Δ Size | Δ Gzipped |
-|------|------|---------|--------|-----------|
-| cli.cjs | 22KB | 8KB | +0 B (+0.00%) | +0 B (+0.00%) |
-| cli.mjs | 22KB | 8KB | +0 B (+0.00%) | +0 B (+0.00%) |
-| index.cjs | 19KB | 7KB | +0 B (+0.00%) | +0 B (+0.00%) |
-| index.mjs | 19KB | 7KB | +0 B (+0.00%) | +0 B (+0.00%) |
-
-### Live Fetch Results
-
-Fetched: https://en.wikipedia.org/wiki/Markdown
-
-| Tool | Mean | Min | Max |
-|------|------|-----|-----|
-| h2m-parser | 51.89ms | 44.27ms | 66.55ms |
-| mdream (await) | 6.54ms | 3.98ms | 11.20ms |
-| mdream (stream) | 12.89ms | 11.85ms | 14.91ms |
+*See [`bench/comparison-results.md`](bench/comparison-results.md) for complete results across all 94 files*
 
 ### Feature Comparison
 
 | Feature | h2m-parser | Turndown | node-html-markdown | mdream |
 |---------|------------|----------|--------------------|--------|
-| **Performance** | ✅ Fastest | ❌ +433% slower | ❌ +10148% slower | ⚠️ +7% slower |
+| **Performance** | ✅ Fastest | ❌ +429% slower | ❌ +250% slower | ✅ Fastest |
 | **Readability** | ✅ | ❌ | ❌ | ⚠️ |
 | **Link cleanup** | ✅ | ❌ | ❌ | ⚠️ |
 | **Front matter** | ✅ | ❌ | ❌ | ✅ |
@@ -292,17 +248,14 @@ Fetched: https://en.wikipedia.org/wiki/Markdown
 Run benchmarks yourself:
 
 ```bash
-# Interactive menu with the common tasks
-pnpm bench
-
-# Quick comparison (10 iterations, 10 files)
+# Quick comparison (10 iterations)
 pnpm bench:compare:quick
 
 # Full comparison (1000 iterations)
 pnpm bench:compare:full
 
-# Refresh README from cached results (use --fresh for a 100-iteration rebuild)
-pnpm bench:readme --cached
+# Update README with fresh results
+pnpm bench:readme
 ```
 
 <!-- BENCHMARK:END -->
