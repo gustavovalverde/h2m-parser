@@ -58,12 +58,23 @@ export function extractArticle(
   }
 
   // Use linkedom instead of JSDOM for better performance
-  const { document } = parseHTML(html);
+  let { document } = parseHTML(html);
 
-  // Set the base URL for relative link resolution
-  const hasBodyContent = document.body && document.body.childNodes.length > 0;
+  if (!document.documentElement) {
+    // Some fixtures are fragments (no <html>) which leaves documentElement null.
+    ({ document } = parseHTML(`<!doctype html><html><body>${html}</body></html>`));
+  }
 
-  if (baseUrl && document.head) {
+  const documentHasRoot = Boolean(document.documentElement);
+  const bodyNode = documentHasRoot ? document.body : null;
+  const hasBodyContent = Boolean(bodyNode && bodyNode.childNodes.length > 0);
+
+  // Capture document metadata before Readability modifies the document
+  const documentLang = document.documentElement?.lang ?? undefined;
+  const documentTitle = document.title ?? undefined;
+
+  // Set the base URL for relative link resolution. Guard against missing <head> on fragments.
+  if (baseUrl && documentHasRoot && document.head) {
     const base = document.createElement("base");
     base.href = baseUrl;
     document.head.appendChild(base);
@@ -85,9 +96,9 @@ export function extractArticle(
   return {
     contentHtml: cleanedHtml,
     meta: {
-      title: article?.title ?? document.title ?? undefined,
+      title: article?.title ?? documentTitle,
       byline: article?.byline ?? undefined,
-      lang: article?.lang ?? document.documentElement.lang ?? undefined,
+      lang: article?.lang ?? documentLang,
       length: cleanedHtml.length,
     },
   };

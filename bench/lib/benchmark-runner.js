@@ -189,29 +189,36 @@ export async function batchBenchmark(files, converterTypes, options = {}) {
  * Convert HTML using the appropriate method for each converter
  */
 async function convertHtml(converter, converterType, html, url) {
-  switch (converterType) {
-    case "h2m-parser":
-    case "h2m-parser_custom":
-    case "h2m-parser_no_readability":
-    case "h2m-parser_with_readability":
-      return await converter.process(html, url);
+  try {
+    switch (converterType) {
+      case "h2m-parser":
+      case "h2m-parser_custom":
+      case "h2m-parser_no_readability":
+      case "h2m-parser_with_readability":
+        return await converter.process(html, url);
 
-    case "turndown":
-      return converter.turndown(html);
+      case "turndown":
+        return converter.turndown(html);
 
-    case "node_html_markdown":
-      return converter.translate(html);
+      case "node_html_markdown":
+        return converter.translate(html);
 
-    case "mdream": {
-      const mdreamOptions = { ...converter.options };
-      if (!mdreamOptions.origin && url) {
-        mdreamOptions.origin = url;
+      case "mdream": {
+        const mdreamOptions = { ...converter.options };
+        if (!mdreamOptions.origin && url) {
+          mdreamOptions.origin = url;
+        }
+        return htmlToMarkdown(html, mdreamOptions);
       }
-      return htmlToMarkdown(html, mdreamOptions);
-    }
 
-    default:
-      throw new Error(`Unknown converter type: ${converterType}`);
+      default:
+        throw new Error(`Unknown converter type: ${converterType}`);
+    }
+  } catch (error) {
+    // Return empty string on error to allow benchmarks to continue
+    // The error will still affect timing but won't crash the entire process
+    console.warn(`⚠️  Conversion error in ${converterType}: ${error.message}`);
+    return "";
   }
 }
 

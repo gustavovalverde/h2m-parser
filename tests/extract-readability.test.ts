@@ -1,11 +1,10 @@
-import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { extractArticle } from "../src/extract/readability";
+import { SAMPLE_ARTICLE_HTML } from "./helpers/sample-article";
 
 describe("extractArticle", () => {
   it("extracts main content and resolves relative URLs", async () => {
-    const html = await readFile("tests/fixtures/simple.html", "utf8");
-    const result = extractArticle(html, "https://example.org/base");
+    const result = extractArticle(SAMPLE_ARTICLE_HTML, "https://example.org/base");
     expect(result.meta.title).toBe("Example Article");
     expect(result.contentHtml).toContain("Intro paragraph");
     expect(result.contentHtml).toContain("https://example.org/link");
