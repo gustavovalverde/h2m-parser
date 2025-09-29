@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.1
+
+### Patch Changes
+
+- 5cf4806: - Guard Readability extraction against fragment HTML by reparsing missing `<html>` wrappers, fixing `documentElement` access errors.
+  - Inline sample article fixtures in tests to avoid Git LFS pointers and keep CI checks working out of the box.
+
 ## 0.5.0
 
 ### Minor Changes
