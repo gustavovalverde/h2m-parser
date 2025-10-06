@@ -1,25 +1,25 @@
 {
-  "capturedAt": "2025-09-29T10:04:59.813Z",
+  "capturedAt": "2025-10-06T21:07:57.268Z",
   "branch": "main",
-  "commit": "d606649486fee3082cf9a74bfef0dc13e6f50e7b",
-  "nodeVersion": "v24.9.0",
+  "commit": "1b6cf0188e42bdbf1802341d34d6d9acfddcaa14",
+  "nodeVersion": "v20.19.5",
   "platform": "linux",
   "metrics": {
     "h2mParserNoReadability": {
-      "mean": 3.398785205677829,
+      "mean": 3.8113829472666727,
       "files": {}
     },
     "h2mParserWithReadability": {
-      "mean": 33.354535328615846,
+      "mean": 21.698819257836032,
       "files": {}
     },
     "comparisons": {
-      "vsTurndown": 5.6223446322518935,
-      "vsNodeHtmlMarkdown": 213.7892323184257,
-      "vsMdream": 1.1603015016933114
+      "vsTurndown": 5.772562028001877,
+      "vsNodeHtmlMarkdown": 9.711275409521772,
+      "vsMdream": 0.7660317197328147
     },
     "mdream": {
-      "mean": 3.9436155780809954,
+      "mean": 2.919640233655013,
       "files": {}
     }
   },
@@ -27,92 +27,92 @@
     {
       "name": "tiny",
       "size": 18,
-      "h2mParserNoReadability": 0.04045790000000053,
-      "h2mParserWithReadability": 0.9137479249999991,
-      "turndown": 0.10147862499999576,
-      "nodeHtmlMarkdown": 0.041500187499995886,
-      "mdream": 0.014804900000000032
+      "h2mParserNoReadability": 0.075122537499999,
+      "h2mParserWithReadability": 0.8882151625000034,
+      "turndown": 0.10349012500000185,
+      "nodeHtmlMarkdown": 0.05344319999999527,
+      "mdream": 0.016441462499999913
     },
     {
       "name": "small",
       "size": 84,
-      "h2mParserNoReadability": 0.06676283749999498,
-      "h2mParserWithReadability": 0.8400533999999965,
-      "turndown": 0.1640845000000013,
-      "nodeHtmlMarkdown": 0.09190691249999502,
-      "mdream": 0.053587374999997904
+      "h2mParserNoReadability": 0.04557346250000336,
+      "h2mParserWithReadability": 0.6974915499999966,
+      "turndown": 0.1705206875000016,
+      "nodeHtmlMarkdown": 0.09599355000000145,
+      "mdream": 0.04766183749999442
     },
     {
       "name": "medium",
       "size": 369,
-      "h2mParserNoReadability": 0.04533763749999622,
-      "h2mParserWithReadability": 0.6401872624999996,
-      "turndown": 0.15316240000000506,
-      "nodeHtmlMarkdown": 0.05826178749998832,
-      "mdream": 0.06883914999999519
+      "h2mParserNoReadability": 0.07017867499998828,
+      "h2mParserWithReadability": 0.5956594750000036,
+      "turndown": 0.1292136624999955,
+      "nodeHtmlMarkdown": 0.09577956250000028,
+      "mdream": 0.07702631250000139
     },
     {
       "name": "file_1",
-      "size": 89721,
-      "h2mParserNoReadability": 2.6687303499999957,
-      "h2mParserWithReadability": 14.615784537499977,
-      "turndown": 15.024391587500025,
-      "nodeHtmlMarkdown": 9.481274125000017,
-      "mdream": 4.426115262499991
+      "size": 79924,
+      "h2mParserNoReadability": 2.023034187500001,
+      "h2mParserWithReadability": 14.911859200000018,
+      "turndown": 9.504790375000017,
+      "nodeHtmlMarkdown": 8.83344655000007,
+      "mdream": 2.862137887500046
     },
     {
       "name": "file_2",
-      "size": 70337,
-      "h2mParserNoReadability": 1.848538887499967,
-      "h2mParserWithReadability": 10.750928362500053,
-      "turndown": 10.62248037499993,
-      "nodeHtmlMarkdown": 6.223330525000006,
-      "mdream": 0.3502412250000589
+      "size": 66504,
+      "h2mParserNoReadability": 2.555409774999987,
+      "h2mParserWithReadability": 11.245435987499992,
+      "turndown": 12.542904437499999,
+      "nodeHtmlMarkdown": 7.943215174999875,
+      "mdream": 2.864946587500049
     },
     {
       "name": "file_3",
-      "size": 160839,
-      "h2mParserNoReadability": 3.4717896500001415,
-      "h2mParserWithReadability": 26.203415187499992,
-      "turndown": 22.84723814999993,
-      "nodeHtmlMarkdown": 12.909898950000002,
-      "mdream": 0.6097659374999693
+      "size": 171100,
+      "h2mParserNoReadability": 4.237516775000086,
+      "h2mParserWithReadability": 15.91060944999997,
+      "turndown": 28.59482971250002,
+      "nodeHtmlMarkdown": 26.338365287500096,
+      "mdream": 0.14823407500002758
     },
     {
       "name": "file_4",
-      "size": 99724,
-      "h2mParserNoReadability": 2.3304951375000655,
-      "h2mParserWithReadability": 12.93583626249997,
-      "turndown": 10.506350287500027,
-      "nodeHtmlMarkdown": 6.538136024999813,
-      "mdream": 2.465709987500122
+      "size": 50858,
+      "h2mParserNoReadability": 1.5055770375000521,
+      "h2mParserWithReadability": 7.206505875000085,
+      "turndown": 10.345732537500316,
+      "nodeHtmlMarkdown": 6.869192124999927,
+      "mdream": 2.8975213999997775
     },
     {
       "name": "file_5",
-      "size": 105057,
-      "h2mParserNoReadability": 3.025953062499957,
-      "h2mParserWithReadability": 15.661897500000123,
-      "turndown": 15.161564375000035,
-      "nodeHtmlMarkdown": 10.333688312499863,
-      "mdream": 1.5167582874999426
+      "size": 157066,
+      "h2mParserNoReadability": 7.289419237499805,
+      "h2mParserWithReadability": 14.612801325000055,
+      "turndown": 22.52880186249995,
+      "nodeHtmlMarkdown": 13.609757837499956,
+      "mdream": 2.1193900249999844
     },
     {
       "name": "file_6",
-      "size": 94725,
-      "h2mParserNoReadability": 3.4408508625001106,
-      "h2mParserWithReadability": 15.790026137499899,
-      "turndown": 19.049770837500045,
-      "nodeHtmlMarkdown": 14.431285225000101,
-      "mdream": 3.0903180249998514
+      "size": 78203,
+      "h2mParserNoReadability": 4.415910550000172,
+      "h2mParserWithReadability": 13.033007475000023,
+      "turndown": 16.006952100000216,
+      "nodeHtmlMarkdown": 12.397059137499763,
+      "mdream": 3.633653187499749
     },
     {
       "name": "file_7",
-      "size": 62759,
-      "h2mParserNoReadability": 2.0483638374997097,
-      "h2mParserWithReadability": 10.433472149999853,
-      "turndown": 10.356157150000309,
-      "nodeHtmlMarkdown": 6.268514037499699,
-      "mdream": 1.3985729749996607
+      "size": 42437,
+      "h2mParserNoReadability": 1.2641045874997872,
+      "h2mParserWithReadability": 6.0476291874999335,
+      "turndown": 6.437444175000292,
+      "nodeHtmlMarkdown": 2.8784838875002605,
+      "mdream": 1.037288724999962
     }
   ],
   "extras": {
