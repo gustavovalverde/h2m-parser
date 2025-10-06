@@ -18,7 +18,7 @@ async function ensureDistBuilt() {
 
   if (!buildPromise) {
     buildPromise = new Promise((resolve, reject) => {
-      const child = spawn("bun", ["build"], {
+      const child = spawn("bun", ["run", "build"], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
