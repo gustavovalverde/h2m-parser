@@ -1,0 +1,44 @@
+feat(build)!: migrate to Bun and add standalone binary compilation
+
+BREAKING CHANGES:
+- Package is now ESM-only (removed CommonJS builds)
+- Development requires Bun 1.2+ instead of pnpm
+- Node.js 22+ still supported for runtime consumption
+
+Features:
+- Add standalone binary compilation with Bun's --compile flag
+  - Support for linux-x64, linux-arm64, darwin-x64, darwin-arm64, windows-x64
+  - Baseline and modern CPU variants (Haswell/AVX2+)
+  - New GitHub workflow for automated binary builds on releases
+  - Binary build script with cross-platform support
+- Maintain Node.js compatibility with runtime detection for Bun.CryptoHasher
+
+Build System:
+- Replace tsup with Bun.build() for faster builds (~0.6s vs 1.5s)
+- Simplify package exports to ESM default only
+- Update all 30+ benchmark scripts to use Bun
+- Remove pnpm workspace configuration
+
+CI/CD:
+- Update all GitHub workflows to use Bun
+- Add build-binaries.yml workflow with artifact publishing
+- Use SHA-pinned GitHub Actions for security
+- Configure proper permissions and credential handling
+
+Development:
+- Replace pnpm scripts with Bun equivalents
+- Update Husky hooks for Bun compatibility
+- Simplify build configuration with fewer dependencies
+- Maintain compatibility with Node.js 22+ runtime
+
+Documentation:
+- Update CONTRIBUTING.md, README.md, and docs/ for Bun
+- Add BUN-MIGRATION.md with migration notes
+- Update CLAUDE.md with new command references
+
+Performance:
+- Build time improved from 1.5s to 0.6s
+- Faster hash computation in Bun with Node.js fallback
+- All benchmarks and tests passing
+
+Co-Authored-By: Claude <noreply@anthropic.com>

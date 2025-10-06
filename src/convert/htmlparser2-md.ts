@@ -3,7 +3,6 @@
  * tag translators inspired by node-html-markdown while staying TypeScript-friendly.
  */
 
-import { performance } from "node:perf_hooks";
 import { Parser } from "htmlparser2";
 import type {
   HtmlElementNode,

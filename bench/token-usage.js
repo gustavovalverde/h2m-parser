@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Estimate LLM token usage for raw HTML vs generated Markdown.

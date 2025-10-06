@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Checks for performance regressions against baseline.
@@ -26,7 +26,7 @@ async function checkRegression(options = {}) {
 
   // Check if baseline exists
   if (!existsSync(BASELINE_FILE)) {
-    console.log("⚠️ No baseline found. Run 'pnpm bench:baseline' first.");
+    console.log("⚠️ No baseline found. Run 'bun bench:baseline' first.");
     console.log("   Skipping regression check.");
     return { status: "no-baseline" };
   }

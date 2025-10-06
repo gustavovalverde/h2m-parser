@@ -16,7 +16,7 @@ export const SUITES = {
     description: "Full regression-style benchmark suite",
     tasks: [
       commandTask("Comparison benchmark (full)", [
-        "node",
+        "bun",
         "bench/compare.js",
         "--iterations",
         "100",
@@ -27,29 +27,29 @@ export const SUITES = {
         "--warmup",
         "3",
       ]),
-      commandTask("Workflow comparison", ["node", "bench/workflows.js"], {
+      commandTask("Workflow comparison", ["bun", "bench/workflows.js"], {
         env: { WORKFLOW_ITERATIONS: "10" },
       }),
       commandTask("Memory microbench", [
-        "node",
+        "bun",
         "bench/microbench/memory.js",
         "--mode",
         "h2m-reuse",
         "--iterations",
         "10",
       ]),
-      commandTask("Bundle size snapshot", ["node", "bench/measure-bundle.js"]),
-      commandTask("Token usage estimator", ["node", "bench/token-usage.js"]),
-      commandTask("Fetch end-to-end sample", ["node", "bench/fetch-e2e.js"], {
+      commandTask("Bundle size snapshot", ["bun", "bench/measure-bundle.js"]),
+      commandTask("Token usage estimator", ["bun", "bench/token-usage.js"]),
+      commandTask("Fetch end-to-end sample", ["bun", "bench/fetch-e2e.js"], {
         env: { FETCH_ITERATIONS: "3" },
       }),
-      commandTask("Export markdown (full dataset)", ["node", "bench/export-markdown.js"]),
+      commandTask("Export markdown (full dataset)", ["bun", "bench/export-markdown.js"]),
       customTask("Aggregate benchmark results", async (ctx) => {
         const { outputPath } = await aggregateResults();
         ctx.summaryPath = outputPath;
         console.log(`📦 Summary written to ${outputPath}`);
       }),
-      commandTask("Update README", ["node", "bench/update-readme.js", "--cached"]),
+      commandTask("Update README", ["bun", "bench/update-readme.js", "--cached"]),
     ],
   },
   quick: {
@@ -63,30 +63,30 @@ export const SUITES = {
     },
     tasks: [
       commandTask("Comparison benchmark (quick)", [
-        "node",
+        "bun",
         "bench/compare.js",
         "--iterations",
         "3",
         "--max-files",
         "3",
       ]),
-      commandTask("Workflow comparison", ["node", "bench/workflows.js"], {
+      commandTask("Workflow comparison", ["bun", "bench/workflows.js"], {
         env: { WORKFLOW_ITERATIONS: "3" },
       }),
-      commandTask("Token usage estimator", ["node", "bench/token-usage.js"]),
+      commandTask("Token usage estimator", ["bun", "bench/token-usage.js"]),
       commandTask("Memory microbench", [
-        "node",
+        "bun",
         "bench/microbench/memory.js",
         "--mode",
         "h2m-reuse",
         "--iterations",
         "1",
       ]),
-      commandTask("Fetch end-to-end sample", ["node", "bench/fetch-e2e.js"], {
+      commandTask("Fetch end-to-end sample", ["bun", "bench/fetch-e2e.js"], {
         env: { FETCH_ITERATIONS: "1" },
       }),
       commandTask("Export markdown sample", (ctx) => [
-        "node",
+        "bun",
         "bench/export-markdown.js",
         "--dataset",
         ctx.datasetDir ?? DEFAULT_FIXTURE,

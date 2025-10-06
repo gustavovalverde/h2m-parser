@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Bundle a fixture directory into a tar.gz archive that can be distributed outside of git.

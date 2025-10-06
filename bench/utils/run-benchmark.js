@@ -61,7 +61,7 @@ export async function runBenchmark(options = {}) {
 
   args.push(...extraArgs);
 
-  const result = spawnSync("node", args, { stdio: "inherit" });
+  const result = spawnSync("bun", args, { stdio: "inherit" });
   if (result.status !== 0) {
     throw new Error(`Benchmark process exited with code ${result.status}`);
   }

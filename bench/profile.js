@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Comprehensive performance profiler for h2m-parser.
  * Uses shared benchmark runner for consistency.
@@ -188,8 +188,10 @@ class PerformanceProfiler {
       return;
     }
 
-    if (!global.gc) {
-      console.log("Run with --expose-gc flag for accurate memory analysis");
+    // Bun has Bun.gc() built-in, Node.js needs --expose-gc flag
+    const gc = typeof Bun !== "undefined" && Bun.gc ? Bun.gc : global.gc;
+    if (!gc) {
+      console.log("Run with --expose-gc flag (Node.js) for accurate memory analysis");
       return;
     }
 
@@ -204,7 +206,7 @@ class PerformanceProfiler {
 
       for (const config of configs) {
         // Force garbage collection
-        global.gc();
+        gc();
         const beforeMemory = process.memoryUsage();
 
         // Run conversions

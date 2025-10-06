@@ -19,7 +19,7 @@ With that in place the workflow no longer needs an `NPM_TOKEN`; it exchanges an 
 
 ## Normal release flow
 
-1. **Author changesets** – whenever a PR needs a release entry run `pnpm changeset` and commit the generated file under `.changeset/`.
+1. **Author changesets** – whenever a PR needs a release entry run `bun changeset` and commit the generated file under `.changeset/`.
 2. **Merge feature PRs** – once on `main`, the release workflow opens/updates a `chore(release): version packages` PR with the aggregated changelog.
 3. **Review the release PR** – check the generated CHANGELOG and version bumps. When happy, merge it.
 4. **Approve the publish run** – the merge triggers the `release` job; approve the pending run in the *Actions* tab (required reviewer on the `release` environment). The job builds, tests, publishes via Changesets, and creates the GitHub release notes.
@@ -33,7 +33,7 @@ Need to kick a release outside of an automatic merge? Use **Actions → Release 
 
 - *Publish fails with auth errors*: confirm the npm trusted publisher entry still points at `.github/workflows/release.yml` and the `release` environment exists. Re-run the job after fixing.
 - *No release PR appears*: make sure there is at least one unpublished changeset file on `main`; otherwise the workflow exits early. You can run it manually via `workflow_dispatch`.
-- *Need to bypass automation*: as a last resort you can run `pnpm verify && pnpm build && npm publish --access public`, but follow up by re-running `pnpm changeset version` so history stays in sync.
+- *Need to bypass automation*: as a last resort you can run `bun verify && bun run build && npm publish --access public`, but follow up by re-running `bun changeset version` so history stays in sync.
 
 ## Retired workflows
 

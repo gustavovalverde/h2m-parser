@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Unified benchmark CLI - single entry point for all benchmark operations.
@@ -236,8 +236,8 @@ async function main() {
 h2m-parser Benchmark CLI
 
 Usage:
-  pnpm bench              # Interactive menu
-  pnpm bench <command>    # Run specific command
+  bun bench              # Interactive menu
+  bun bench <command>    # Run specific command
 
 Commands:
   quick       Quick benchmark (iterates over 3 fixtures)
@@ -256,14 +256,14 @@ Commands:
   fetch       Fetch live page and convert it
 
 Examples:
-  pnpm bench quick        # Run quick benchmark
-  pnpm bench regression   # Check for regressions
-  pnpm bench             # Open interactive menu
+  bun bench quick        # Run quick benchmark
+  bun bench regression   # Check for regressions
+  bun bench             # Open interactive menu
 `);
       process.exit(0);
     } else {
       console.log(`Unknown command: ${subcommand}`);
-      console.log("Run 'pnpm bench --help' for usage information");
+      console.log("Run 'bun bench --help' for usage information");
       process.exit(1);
     }
   }
