@@ -22,7 +22,7 @@ Thanks for your interest in improving h2m-parser! Keeping cognitive load low is 
 - Husky runs `lint-staged` to format/lint staged files. Make sure your commits are clean.
 - Use [Changesets](https://github.com/changesets/changesets) for release notes. After feature work, run `bun changeset` to document changes and version bumps.
 - When the release PR opens, review the changelog and, after merging, approve the pending run in the `release` environment to publish.
-- CI runs `bun lint`, `bun typecheck`, `bun test`, and `bun build`. Keep the `verify` script green locally before pushing.
+- CI runs `bun lint`, `bun typecheck`, `bun test`, and `bun run build`. Keep the `verify` script green locally before pushing.
 
 ## Reporting issues
 
@@ -54,7 +54,7 @@ bun regression
 bun qa
 
 # Development watch mode
-bun build:watch    # Terminal 1
+bun run build:watch    # Terminal 1
 bun test:watch     # Terminal 2
 ```
 
@@ -93,7 +93,7 @@ bun test:watch     # Terminal 2
 
 ```bash
 # Start development
-bun build:watch     # In terminal 1
+bun run build:watch     # In terminal 1
 bun test:watch     # In terminal 2
 
 # After making changes

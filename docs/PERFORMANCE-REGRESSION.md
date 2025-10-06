@@ -179,7 +179,7 @@ bun bench:compare:full
 
 ```bash
 # Watch mode - rerun on file changes
-bun build:watch & bun bench:compare:quick
+bun run build:watch & bun bench:compare:quick
 ```
 
 > ℹ️ **Configuration parity:** `bun bench:baseline`, `bun bench:regression`, and `bun bench:readme --fresh` all invoke the same comparison run (100 iterations, 3 warmups, 5MB per-file limit, dataset `tests/fixtures`). This keeps the baseline, regression gate, and published metrics directly comparable.

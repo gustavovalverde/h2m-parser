@@ -27,7 +27,7 @@ async function ensureDistBuilt() {
         if (code === 0) {
           resolve();
         } else {
-          reject(new Error(`bun build exited with code ${code}`));
+          reject(new Error(`bun run build exited with code ${code}`));
         }
       });
     }).finally(() => {

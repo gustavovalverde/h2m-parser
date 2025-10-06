@@ -33,7 +33,7 @@ Need to kick a release outside of an automatic merge? Use **Actions → Release 
 
 - *Publish fails with auth errors*: confirm the npm trusted publisher entry still points at `.github/workflows/release.yml` and the `release` environment exists. Re-run the job after fixing.
 - *No release PR appears*: make sure there is at least one unpublished changeset file on `main`; otherwise the workflow exits early. You can run it manually via `workflow_dispatch`.
-- *Need to bypass automation*: as a last resort you can run `bun verify && bun build && npm publish --access public`, but follow up by re-running `bun changeset version` so history stays in sync.
+- *Need to bypass automation*: as a last resort you can run `bun verify && bun run build && npm publish --access public`, but follow up by re-running `bun changeset version` so history stays in sync.
 
 ## Retired workflows
 

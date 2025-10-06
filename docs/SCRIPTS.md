@@ -4,11 +4,11 @@ This document mirrors the scripts defined in `package.json` so newcomers can dis
 
 ## Build & Packaging
 
-- `bun build` – Build the distributable bundles in `dist/` via tsup.
-- `bun build:watch` – Rebuild bundles on file changes (handy while working on the CLI).
+- `bun run build` – Build the distributable bundles in `dist/`.
+- `bun run build:watch` – Rebuild bundles on file changes (handy while working on the CLI).
 - `bun build:binary` – Compile standalone executable for current platform.
 - `bun build:binary:all` – Build binaries for all platforms (Linux, macOS, Windows)
-- `bun prepack` – Convenience alias used by npm when publishing; runs `bun build`.
+- `bun prepack` – Convenience alias used by npm when publishing; runs `bun run build`.
 
 ## Quality Gates
 
@@ -27,12 +27,12 @@ This document mirrors the scripts defined in `package.json` so newcomers can dis
 ## Publishing
 
 - `bun changeset` – Create or edit Changesets.
-- `bun release` – Build and publish using Changesets automation (calls `bun build` internally).
+- `bun release` – Build and publish using Changesets automation (calls `bun run build` internally).
 - `bun prepare` – Husky hook installer (runs automatically after install).
 
 ## Benchmarking & Performance Tooling
 
-The benchmarking utilities live under `bench/` and expect a fresh build (`bun build`) before running because they import from the compiled bundles. The `bun bench` command opens an interactive menu that wraps the most common flows; every entry has a matching script for CI usage.
+The benchmarking utilities live under `bench/` and expect a fresh build (`bun run build`) before running because they import from the compiled bundles. The `bun bench` command opens an interactive menu that wraps the most common flows; every entry has a matching script for CI usage.
 
 ### Everyday commands
 
@@ -77,7 +77,7 @@ The benchmarking utilities live under `bench/` and expect a fresh build (`bun bu
 ```bash
 bun install        # bootstrap
 bun verify         # lint + typecheck + tests
-bun build          # produce dist/ bundles
+bun run build      # produce dist/ bundles
 bun bench          # open interactive benchmark menu
 bun bench quick    # run quick benchmark via CLI shortcut
 bun bench:compare  # compare h2m-parser vs. other converters (Markdown output)

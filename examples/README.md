@@ -67,7 +67,7 @@ Make sure you've built the project first:
 bun install
 
 # Build the library
-bun build
+bun run build
 
 # Run an example
 node examples/basic.js

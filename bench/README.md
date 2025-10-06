@@ -5,7 +5,7 @@ This folder contains the benchmarking harness described in `performance-implemen
 ## Quick start
 
 ```bash
-bun build
+bun run build
 bun bench quick
 ```
 
