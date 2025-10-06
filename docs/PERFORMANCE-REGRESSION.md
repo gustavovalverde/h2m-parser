@@ -11,7 +11,7 @@ h2m-parser includes a comprehensive performance regression detection system to e
 Captures current performance metrics as a baseline for comparison.
 
 ```bash
-pnpm bench:baseline
+bun bench:baseline
 ```
 
 This creates `bench/.baseline/performance-baseline.json` with:
@@ -26,7 +26,7 @@ This creates `bench/.baseline/performance-baseline.json` with:
 Compares current performance against baseline and reports regressions.
 
 ```bash
-pnpm bench:regression
+bun bench:regression
 ```
 
 Features:
@@ -40,7 +40,7 @@ Features:
 Tracks performance over time across commits.
 
 ```bash
-pnpm bench:track
+bun bench:track
 ```
 
 Generates:
@@ -67,19 +67,19 @@ Automatic regression detection on PRs:
 
    ```bash
    git checkout main
-   pnpm bench:baseline
+   bun bench:baseline
    ```
 
 2. **After changes**, check for regressions (runs the identical configuration as the baseline):
 
    ```bash
-   pnpm bench:regression
+   bun bench:regression
    ```
 
 3. **View trends over time**:
 
    ```bash
-   pnpm bench:track
+   bun bench:track
    ```
 
 ### For Maintainers
@@ -89,7 +89,7 @@ Automatic regression detection on PRs:
 2. **Update baseline after improvements**:
 
    ```bash
-   pnpm bench:baseline
+   bun bench:baseline
    git add bench/.baseline/performance-baseline.json
    git commit -m "chore: update performance baseline"
    ```
@@ -97,7 +97,7 @@ Automatic regression detection on PRs:
 3. **Monitor long-term trends**:
 
    ```bash
-   pnpm bench:track
+   bun bench:track
    cat bench/.history/trend-report.md
    ```
 
@@ -128,8 +128,8 @@ When a regression is detected:
 2. **Profile the code**:
 
    ```bash
-   pnpm bench:profile
-   pnpm bench:analyze
+   bun bench:profile
+   bun bench:analyze
    ```
 
 3. **Common causes**:
@@ -143,7 +143,7 @@ When a regression is detected:
 
    ```bash
    # After fixes
-   pnpm bench:regression
+   bun bench:regression
    ```
 
 ## Accepting Performance Changes
@@ -157,7 +157,7 @@ Sometimes performance regressions are acceptable (e.g., for important features):
    ```bash
    git checkout main
    git pull
-   pnpm bench:baseline
+   bun bench:baseline
    git add bench/.baseline/performance-baseline.json
    git commit -m "chore: update baseline after feature X"
    git push
@@ -169,32 +169,32 @@ Sometimes performance regressions are acceptable (e.g., for important features):
 
 ```bash
 # Quick comparison (10 iterations, 10 files)
-pnpm bench:compare:quick
+bun bench:compare:quick
 
 # Full comparison (1000 iterations, all files)
-pnpm bench:compare:full
+bun bench:compare:full
 ```
 
 ### Continuous Monitoring
 
 ```bash
 # Watch mode - rerun on file changes
-pnpm build:watch & pnpm bench:compare:quick
+bun build:watch & bun bench:compare:quick
 ```
 
-> ℹ️ **Configuration parity:** `pnpm bench:baseline`, `pnpm bench:regression`, and `pnpm bench:readme --fresh` all invoke the same comparison run (100 iterations, 3 warmups, 5MB per-file limit, dataset `tests/fixtures`). This keeps the baseline, regression gate, and published metrics directly comparable.
+> ℹ️ **Configuration parity:** `bun bench:baseline`, `bun bench:regression`, and `bun bench:readme --fresh` all invoke the same comparison run (100 iterations, 3 warmups, 5MB per-file limit, dataset `tests/fixtures`). This keeps the baseline, regression gate, and published metrics directly comparable.
 
 ### Performance Debugging
 
 ```bash
 # Memory profiling
-pnpm bench:profile:memory
+bun bench:profile:memory
 
 # Detailed analysis
-pnpm bench:analyze
+bun bench:analyze
 
 # Component breakdown
-pnpm bench:analyze
+bun bench:analyze
 ```
 
 ## Best Practices
@@ -210,7 +210,7 @@ pnpm bench:analyze
 ### "No baseline found"
 
 ```bash
-pnpm bench:baseline
+bun bench:baseline
 ```
 
 ### "Regression detected but changes seem unrelated"

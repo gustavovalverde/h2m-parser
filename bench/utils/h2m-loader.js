@@ -8,7 +8,7 @@ let buildPromise;
 let modulePromise;
 
 async function ensureDistBuilt() {
-  const distPath = join(process.cwd(), "dist", "index.mjs");
+  const distPath = join(process.cwd(), "dist", "index.js");
   try {
     await access(distPath, constants.F_OK);
     return;
@@ -18,7 +18,7 @@ async function ensureDistBuilt() {
 
   if (!buildPromise) {
     buildPromise = new Promise((resolve, reject) => {
-      const child = spawn("pnpm", ["build"], {
+      const child = spawn("bun", ["build"], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
@@ -27,7 +27,7 @@ async function ensureDistBuilt() {
         if (code === 0) {
           resolve();
         } else {
-          reject(new Error(`pnpm build exited with code ${code}`));
+          reject(new Error(`bun build exited with code ${code}`));
         }
       });
     }).finally(() => {
@@ -42,7 +42,7 @@ export async function loadH2MModule() {
   if (!modulePromise) {
     modulePromise = (async () => {
       await ensureDistBuilt();
-      const distPath = join(process.cwd(), "dist", "index.mjs");
+      const distPath = join(process.cwd(), "dist", "index.js");
       return import(pathToFileURL(distPath).href);
     })();
   }
@@ -52,7 +52,7 @@ export async function loadH2MModule() {
 export async function loadH2MParser() {
   const mod = await loadH2MModule();
   if (!mod?.H2MParser) {
-    throw new Error("dist/index.mjs does not export H2MParser");
+    throw new Error("dist/index.js does not export H2MParser");
   }
   return mod.H2MParser;
 }

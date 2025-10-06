@@ -64,10 +64,10 @@ Make sure you've built the project first:
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Build the library
-pnpm build
+bun build
 
 # Run an example
 node examples/basic.js

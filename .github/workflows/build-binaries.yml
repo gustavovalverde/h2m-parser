@@ -1,0 +1,87 @@
+name: Build Binaries
+
+on:
+  release:
+    types: [published]
+ workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref (tag or branch) to build from'
+        required: false
+        default: ''
+
+concurrency:
+  group: build-binaries-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  OUTDIR: dist/bin
+
+jobs:
+  build:
+    name: Build Bun binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.ref || github.ref }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Verify project
+        run: bun run verify
+
+      - name: Build baseline binaries
+        run: bun run build:binary --all --outdir "$OUTDIR"
+
+      - name: Build modern binaries
+        run: bun run build:binary --all --modern --outdir "$OUTDIR"
+
+      - name: Generate checksums
+        run: |
+          cd "$OUTDIR"
+          sha256sum h2m-* > SHA256SUMS
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
+        with:
+          name: h2m-binaries-${{ github.run_id }}
+          path: ${{ env.OUTDIR }}/*
+          if-no-files-found: error
+
+  publish:
+    name: Attach release assets
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    needs: build
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: h2m-binaries-${{ github.run_id }}
+          path: ${{ env.OUTDIR }}
+
+      - name: List artifacts
+        run: ls -R $OUTDIR
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@62c96d0c4e8a889135c1f3a25910db8dbe0e85f7 # v2.3.4
+        with:
+          files: ${{ env.OUTDIR }}/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

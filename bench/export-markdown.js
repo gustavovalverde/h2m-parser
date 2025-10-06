@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Generate Markdown outputs for each fixture using multiple converters.
  * Creates per-library folders under bench/output/ for side-by-side comparison.

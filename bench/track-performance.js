@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Tracks performance over time and generates trend reports.
@@ -34,7 +34,7 @@ async function trackPerformance() {
 
   // Run benchmark
   console.log("Running benchmark...\n");
-  execSync("node bench/compare.js --iterations 30 --max-files 10", {
+  execSync("bun bench/compare.js --iterations 30 --max-files 10", {
     encoding: "utf8",
     stdio: "inherit",
   });
@@ -134,9 +134,7 @@ async function generateTrendReport(history) {
 
   console.log("\n📈 Trend Analysis:");
   console.log(`  h2m-parser Performance:        ${formatTrend(h2mParserTrend, true)}`);
-  console.log(
-    `  h2m-parser w/Readability:      ${formatTrend(h2m - parserReadabilityTrend, true)}`,
-  );
+  console.log(`  h2m-parser w/Readability:      ${formatTrend(_h2mParserReadabilityTrend, true)}`);
   console.log(`  vs Turndown Advantage:   ${formatTrend(turndownTrend, false)}`);
   console.log(`  vs NHM Advantage:        ${formatTrend(nodeHtmlMarkdownTrend, false)}`);
   console.log(`  vs mdream Advantage:     ${formatTrend(mdreamTrend, false)}`);
@@ -237,8 +235,8 @@ Generated: ${new Date().toISOString()}
 
 - **Mean Performance:** ${mean.toFixed(3)}ms
 - **Std Deviation:** ${stdDev.toFixed(3)}ms
-- **Best Performance:** ${Math.min(...(h2m - parserValues)).toFixed(3)}ms
-- **Worst Performance:** ${Math.max(...(h2m - parserValues)).toFixed(3)}ms
+- **Best Performance:** ${Math.min(...h2mParserValues).toFixed(3)}ms
+- **Worst Performance:** ${Math.max(...h2mParserValues).toFixed(3)}ms
 - **Total Measurements:** ${history.entries.length}
 
 ## Performance Goals

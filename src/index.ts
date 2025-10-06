@@ -4,7 +4,6 @@
  */
 
 import { createHash } from "node:crypto";
-import { performance } from "node:perf_hooks";
 import { htmlToMarkdown } from "./convert/htmlparser2-md";
 import { extractArticle } from "./extract/readability";
 import { createNdjsonTransform } from "./io/ndjson-transform";
@@ -304,5 +303,11 @@ function uniqStrings(defaults: string[], extra: string[] | undefined): string[] 
 }
 
 function computeHash(markdown: string): string {
+  // Use Bun's faster CryptoHasher when available, fall back to Node crypto for compatibility
+  if (typeof Bun !== "undefined" && Bun.CryptoHasher) {
+    const hasher = new Bun.CryptoHasher("sha256");
+    hasher.update(markdown);
+    return hasher.digest("hex");
+  }
   return createHash("sha256").update(markdown).digest("hex");
 }

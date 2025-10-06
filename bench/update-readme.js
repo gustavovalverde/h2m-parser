@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Updates README.md with benchmark results
  * Can either run fresh benchmarks or use cached results
@@ -577,7 +577,7 @@ ${performanceRow}
 - **Benchmark runner:** [\`bench/compare.js\`](bench/compare.js)
 - **Test dataset:** [\`tests/fixtures/\`](tests/fixtures/) (${realFiles} real HTML files)
 - **Statistical data:** Includes mean, median, P95, P99, min/max for each test
-- **Reproducible:** Run \`pnpm bench:compare:full\` to verify results`);
+- **Reproducible:** Run \`bun bench:compare:full\` to verify results`);
 
   const detailsContent = detailsSections.join("\n\n");
 
@@ -599,13 +599,13 @@ Run benchmarks yourself:
 
 \`\`\`bash
 # Quick comparison (10 iterations)
-pnpm bench:compare:quick
+bun bench:compare:quick
 
 # Full comparison (1000 iterations)
-pnpm bench:compare:full
+bun bench:compare:full
 
 # Update README with fresh results
-pnpm bench:readme
+bun bench:readme
 \`\`\`
 
 <!-- BENCHMARK:END -->`;
@@ -660,9 +660,9 @@ Options:
   --help, -h      Show this help message
 
 Examples:
-  pnpm bench:readme
-  pnpm bench:readme --fresh
-  pnpm bench:readme --cached
+  bun bench:readme
+  bun bench:readme --fresh
+  bun bench:readme --cached
 `);
     process.exit(0);
   }

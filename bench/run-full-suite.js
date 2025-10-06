@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import { spawn } from "node:child_process";
 import { aggregateResults } from "./aggregate-results.js";
@@ -26,7 +26,7 @@ async function main() {
     {
       name: "Comparison benchmark (full)",
       command: [
-        "node",
+        "bun",
         "bench/compare.js",
         "--iterations",
         "100",
@@ -40,29 +40,29 @@ async function main() {
     },
     {
       name: "Workflow comparison",
-      command: ["node", "bench/workflows.js"],
+      command: ["bun", "bench/workflows.js"],
       env: { WORKFLOW_ITERATIONS: "10" },
     },
     {
       name: "Memory microbench",
-      command: ["node", "bench/microbench/memory.js", "--mode", "h2m-reuse", "--iterations", "10"],
+      command: ["bun", "bench/microbench/memory.js", "--mode", "h2m-reuse", "--iterations", "10"],
     },
     {
       name: "Bundle size snapshot",
-      command: ["node", "bench/measure-bundle.js"],
+      command: ["bun", "bench/measure-bundle.js"],
     },
     {
       name: "Token usage estimator",
-      command: ["node", "bench/token-usage.js"],
+      command: ["bun", "bench/token-usage.js"],
     },
     {
       name: "Fetch end-to-end sample",
-      command: ["node", "bench/fetch-e2e.js"],
+      command: ["bun", "bench/fetch-e2e.js"],
       env: { FETCH_ITERATIONS: "3" },
     },
     {
       name: "Export markdown (full dataset)",
-      command: ["node", "bench/export-markdown.js"],
+      command: ["bun", "bench/export-markdown.js"],
     },
   ];
 
@@ -73,7 +73,7 @@ async function main() {
   const { outputPath } = await aggregateResults();
   console.log(`\n📦 Summary written to ${outputPath}`);
 
-  await runCommand("Update README", ["node", "bench/update-readme.js", "--cached"]);
+  await runCommand("Update README", ["bun", "bench/update-readme.js", "--cached"]);
 }
 
 main().catch((error) => {

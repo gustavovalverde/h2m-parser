@@ -45,70 +45,73 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./cli": {
       "types": "./dist/cli.d.ts",
-      "import": "./dist/cli.mjs",
-      "require": "./dist/cli.cjs"
+      "default": "./dist/cli.js"
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "!dist/*.map"
+    "!dist/*.map",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "bin": {
-    "h2m": "dist/cli.cjs"
+    "h2m": "dist/cli.js"
   },
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
-    "build:watch": "tsup --watch",
+    "build": "rm -rf dist && bun run build:bundle && bun run build:types",
+    "build:bundle": "bun build src/index.ts src/cli.ts --outdir dist --target node --format esm --packages=external --minify",
+    "build:bundle:watch": "bun build src/index.ts src/cli.ts --outdir dist --target node --format esm --packages=external --sourcemap=linked --watch",
+    "build:types": "bun tsc --project tsconfig.build.json --emitDeclarationOnly",
+    "build:watch": "rm -rf dist && bun run build:types && bash -lc 'bun tsc --project tsconfig.build.json --watch --preserveWatchOutput & bun build src/index.ts src/cli.ts --outdir dist --target node --format esm --packages=external --sourcemap=linked --watch; wait'",
+    "build:binary": "bun run scripts/build-binary.ts",
+    "build:binary:all": "bun run scripts/build-binary.ts --all",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "lint:fix": "biome check --write . --unsafe",
     "format:fix": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test",
+    "verify": "bun lint && bun typecheck && bun test",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
     "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs/api-markdown",
-    "bench": "node bench/cli.js",
-    "bench:quick": "node bench/cli.js quick",
-    "bench:compare": "node bench/compare.js --iterations 100 --output markdown --max-file-size 2MB",
-    "bench:compare:quick": "node bench/compare.js --iterations 10 --maxFiles 10",
-    "bench:compare:full": "node bench/compare.js --iterations 100 --output markdown --max-file-size 2MB",
-    "bench:compare:json": "node bench/compare.js --iterations 100 --output json --max-file-size 2MB",
-    "bench:profile": "node bench/profile.js --iterations 100",
-    "bench:profile:memory": "node --expose-gc bench/profile.js --memory",
-    "bench:analyze": "node bench/profile.js --type all --iterations 100",
-    "bench:export": "node bench/export-markdown.js",
-    "bench:quick:full": "node bench/run-quick-suite.js",
-    "bench:export:validate": "node bench/export-markdown.js && npx markdownlint bench/output/h2m-parser/*.md --config .markdownlint.json 2>&1 | tail -20",
-    "bench:baseline": "node bench/capture-baseline.js",
-    "bench:regression": "node bench/check-regression.js --exit-on-regression",
-    "bench:track": "node bench/track-performance.js",
-    "bench:readme": "node bench/update-readme.js",
-    "bench:readme:fresh": "node bench/update-readme.js --fresh",
-    "bench:readme:generate": "pnpm build && pnpm bench:refresh:all",
-    "bench:refresh:all": "node bench/run-full-suite.js",
-    "bench:readme:cached": "node bench/update-readme.js --cached",
-    "regression": "pnpm build && pnpm test && pnpm bench:export && pnpm bench:compare:quick",
-    "regression:full": "pnpm lint:fix && pnpm typecheck && pnpm build && pnpm test && pnpm bench:export && pnpm bench:compare",
-    "qa": "pnpm regression:full && pnpm bench:export:validate",
-    "qa:quick": "pnpm verify && pnpm bench:export",
+    "bench": "bun bench/cli.js",
+    "bench:quick": "bun bench/cli.js quick",
+    "bench:compare": "bun bench/compare.js --iterations 100 --output markdown --max-file-size 2MB",
+    "bench:compare:quick": "bun bench/compare.js --iterations 10 --maxFiles 10",
+    "bench:compare:full": "bun bench/compare.js --iterations 100 --output markdown --max-file-size 2MB",
+    "bench:compare:json": "bun bench/compare.js --iterations 100 --output json --max-file-size 2MB",
+    "bench:profile": "bun bench/profile.js --iterations 100",
+    "bench:profile:memory": "bun bench/profile.js --memory",
+    "bench:analyze": "bun bench/profile.js --type all --iterations 100",
+    "bench:export": "bun bench/export-markdown.js",
+    "bench:quick:full": "bun bench/run-quick-suite.js",
+    "bench:export:validate": "bun bench/export-markdown.js && npx markdownlint bench/output/h2m-parser/*.md --config .markdownlint.json 2>&1 | tail -20",
+    "bench:baseline": "bun bench/capture-baseline.js",
+    "bench:regression": "bun bench/check-regression.js --exit-on-regression",
+    "bench:track": "bun bench/track-performance.js",
+    "bench:readme": "bun bench/update-readme.js",
+    "bench:readme:fresh": "bun bench/update-readme.js --fresh",
+    "bench:readme:generate": "bun build && bun bench:refresh:all",
+    "bench:refresh:all": "bun bench/run-full-suite.js",
+    "bench:readme:cached": "bun bench/update-readme.js --cached",
+    "regression": "bun build && bun test && bun bench:export && bun bench:compare:quick",
+    "regression:full": "bun lint:fix && bun typecheck && bun build && bun test && bun bench:export && bun bench:compare",
+    "qa": "bun regression:full && bun bench:export:validate",
+    "qa:quick": "bun verify && bun bench:export",
     "prepare": "husky",
     "changeset": "changeset",
-    "release": "pnpm run build && pnpm changeset publish",
-    "prepack": "pnpm build"
+    "release": "bun run build && bun changeset publish",
+    "prepack": "bun run build"
   },
-  "packageManager": "pnpm@10.17.1",
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
     "htmlparser2": "^10.0.0",
@@ -117,22 +120,20 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
+    "@biomejs/biome": "^2.2.5",
     "@changesets/cli": "^2.29.7",
-    "@types/node": "^24.5.2",
+    "@types/bun": "^1.2.23",
     "@vitest/coverage-v8": "^3.2.4",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.1",
+    "lint-staged": "^16.2.3",
     "llm-cost": "^1.0.5",
     "markdownlint-cli": "^0.45.0",
-    "mdream": "^0.10.3",
+    "mdream": "^0.12.3",
     "node-html-markdown": "^1.3.0",
-    "tsup": "^8.5.0",
-    "tsx": "^4.20.6",
     "turndown": "^7.2.1",
     "typedoc": "^0.28.13",
     "typedoc-plugin-markdown": "^4.9.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
   "lint-staged": {
@@ -141,5 +142,8 @@
   "publishConfig": {
     "access": "public",
     "provenance": true
-  }
+  },
+  "workspaces": [
+    "."
+  ]
 }

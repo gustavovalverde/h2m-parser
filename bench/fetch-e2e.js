@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
  * Fetch a remote page and run end-to-end conversion using h2m-parser and mdream.

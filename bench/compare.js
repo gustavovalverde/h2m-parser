@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Comprehensive comparison of h2m-parser against competitor libraries.
  * Uses shared benchmark runner for consistency across all benchmark scripts.
